@@ -12,6 +12,7 @@ struct Package {
     description: String,
     source: String,
     sha256: String,
+    source_dir: String,
     deps: Vec<String>,
     build_steps: Vec<String>,
 }
@@ -439,7 +440,7 @@ fn extract_package(package: &Package) -> Result<(), String> {
 
     let filename = source_filename(package)?;
     let archive_path = format!("distfiles/{}", filename);
-    let source_dir = format!("build/{}-{}", package.name, package.version);
+    let source_dir = format!("build/{}", package.source_dir);
 
     if fs::metadata(&source_dir).is_ok() {
         println!("Already extracted: {}", source_dir);
