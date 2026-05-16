@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
+use std::mem;
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
@@ -120,6 +121,34 @@ fn main() {
                 }
             }
         }
+        "fetch" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        let Some(package) = find_packages(&packages, &package_name) else {
+                            eprintln!("error: package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        if let Err(message) = fetch_package(package) {
+                            eprintln!("Failed to fetch package '{}': {}", package.name, message);
+                            return;
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("{}", message);
+                }
+            }
+        }
         "build" => {
             if args.len() < 3 {
                 eprintln!("Missing package name");
@@ -177,6 +206,7 @@ fn print_help() {
     println!("  mahou install <name>");
     println!("  mahou deps <name>");
     println!("  mahou resolve <name>");
+    println!("  mahou fetch <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -265,4 +295,44 @@ fn load_repo_or_exit() -> Vec<Package> {
             std::process::exit(1);
         }
     }
+}
+
+fn fetch_package(package: &Package) -> Result<(), String> {
+    fs::create_dir_all("distfiles")
+        .map_err(|error| format!("Failed to create distfiles directory: {}", error))?;
+
+    let filename = package
+        .source
+        .rsplit('/')
+        .next()
+        .ok_or_else(|| format!("Invalid source URL for {}", package.name))?;
+
+    if filename.is_empty() {
+        return Err(format!("Invalid source URL for {}", package.name));
+    }
+
+    let output_path = format!("distfiles/{}", filename);
+
+    if fs::metadata(&output_path).is_ok() {
+        println!("Already fetched: {}", output_path);
+        return Ok(());
+    }
+
+    println!("Fetching {} from {}", package.name, package.source);
+
+    let response = reqwest::blocking::get(&package.source)
+        .map_err(|error| format!("Failed to download {}: {}", package.name, error))?
+        .error_for_status()
+        .map_err(|error| format!("Download failed for {}: {}", package.source, error))?;
+
+    let bytes = response
+        .bytes()
+        .map_err(|error| format!("Failed to read response for {}: {}", package.name, error))?;
+
+    fs::write(&output_path, &bytes)
+        .map_err(|error| format!("Failed to save {}: {}", output_path, error))?;
+
+    println!("Saved to {}", output_path);
+
+    Ok(())
 }
