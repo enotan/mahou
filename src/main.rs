@@ -213,6 +213,39 @@ fn main() {
                 }
             }
         }
+        "rebuild" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        let Some(package) = find_package(&packages, &package_name) else {
+                            eprintln!("Error: Package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        if let Err(message) = clean_stage(package) {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+
+                        if let Err(message) = build_package(package) {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
         "build" => {
             if args.len() < 3 {
                 eprintln!("Missing package name");
@@ -265,6 +298,7 @@ fn print_help() {
     println!("  mahou fetch <name>");
     println!("  mahou verify <name>");
     println!("  mahou extract <name>");
+    println!("  mahou rebuild <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -482,7 +516,7 @@ fn extract_package(package: &Package) -> Result<(), String> {
 
 fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
     let source_dir = format!("build/{}", package.source_dir);
-    let destdir = format!("{}/stage/{}", env!("CARGO_MANIFEST_DIR"), package.name);
+    let destdir = stage_dir(package);
 
     fs::create_dir_all(&destdir)
         .map_err(|error| format!("Failed to create stage directory '{}': {}", destdir, error))?;
@@ -505,6 +539,11 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 }
 
 fn build_package(package: &Package) -> Result<(), String> {
+    if is_built(package) {
+        println!("Already built: {}", package.name);
+        return Ok(());
+    }
+    
     extract_package(package)?;
 
     println!("Building {} {}", package.name, package.version);
@@ -512,6 +551,8 @@ fn build_package(package: &Package) -> Result<(), String> {
     for step in &package.build_steps {
         run_build_step(package, step)?;
     }
+
+    mark_built(package)?;
 
     println!("Built: {}", package.name);
 
@@ -526,4 +567,39 @@ fn sha256_file(path: &str) -> Result<String, String> {
     hasher.update(contents);
 
     Ok(hex::encode(hasher.finalize()))
+}
+
+fn stage_dir(package: &Package) -> String {
+    format!("{}/stage/{}", env!("CARGO_MANIFEST_DIR"), package.name)
+}
+
+fn build_marker_path(package: &Package) -> String {
+    format!("{}/.mahou-built", stage_dir(package))
+}
+
+fn is_built(package: &Package) -> bool {
+    fs::metadata(build_marker_path(package)).is_ok()
+}
+
+fn mark_built(package: &Package) -> Result<(), String> {
+    let marker_path = build_marker_path(package);
+
+    fs::write(
+        &marker_path,
+        format!("{} {}\n", package.name, package.version)
+    )
+    .map_err(|error| format!("Failed to write build marker {}: {}", marker_path, error))?;
+
+    Ok(())
+}
+
+fn clean_stage(package: &Package) -> Result<(), String> {
+    let path = stage_dir(package);
+
+    if fs::metadata(&path).is_ok() {
+        fs::remove_dir_all(&path)
+            .map_err(|error| format!("Failed to remove stage directory {}: {}", path, error))?;
+    }
+
+    Ok(())
 }
