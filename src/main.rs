@@ -417,12 +417,12 @@ fn load_repo_or_exit() -> Vec<Package> {
 }
 
 fn fetch_package(package: &Package) -> Result<(), String> {
-    fs::create_dir_all("distfiles")
+    fs::create_dir_all(distfiles_dir())
         .map_err(|error| format!("Failed to create distfiles directory: {}", error))?;
 
     let filename = source_filename(package)?;
 
-    let output_path = format!("distfiles/{}", filename);
+    let output_path = format!("{}/{}", distfiles_dir(), filename);
 
     let partial_path = format!("{}.part", output_path);
 
@@ -474,7 +474,7 @@ fn fetch_package(package: &Package) -> Result<(), String> {
 
 fn verify_package(package: &Package) -> Result<(), String> {
     let filename = source_filename(package)?;
-    let path = format!("distfiles/{}", filename);
+    let path = format!("{}/{}", distfiles_dir(), filename);
     let actual = sha256_file(&path)?;
 
     if actual != package.sha256 {
@@ -506,12 +506,12 @@ fn source_filename(package: &Package) -> Result<&str, String> {
 fn extract_package(package: &Package) -> Result<(), String> {
     fetch_package(package)?;
     
-    fs::create_dir_all("build")
+    fs::create_dir_all(build_dir())
         .map_err(|error| format!("Failed to create build directory: {}", error))?;
 
     let filename = source_filename(package)?;
-    let archive_path = format!("distfiles/{}", filename);
-    let source_dir = format!("build/{}", package.source_dir);
+    let archive_path = format!("{}/{}", distfiles_dir(), filename);
+    let source_dir = format!("{}/{}", build_dir(), package.source_dir);
 
     if fs::metadata(&source_dir).is_ok() {
         println!("Already extracted: {}", source_dir);
@@ -524,7 +524,7 @@ fn extract_package(package: &Package) -> Result<(), String> {
         .arg("-xf")
         .arg(&archive_path)
         .arg("-C")
-        .arg("build")
+        .arg(build_dir())
         .status()
         .map_err(|error| format!("Failed to run tar: {}", error))?;
 
@@ -542,7 +542,7 @@ fn extract_package(package: &Package) -> Result<(), String> {
 }
 
 fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
-    let source_dir = format!("build/{}", package.source_dir);
+    let source_dir = format!("{}/{}", build_dir(), package.source_dir);
     let destdir = stage_dir(package);
 
     fs::create_dir_all(&destdir)
@@ -594,10 +594,6 @@ fn sha256_file(path: &str) -> Result<String, String> {
     hasher.update(contents);
 
     Ok(hex::encode(hasher.finalize()))
-}
-
-fn stage_dir(package: &Package) -> String {
-    format!("{}/stage/{}", env!("CARGO_MANIFEST_DIR"), package.name)
 }
 
 fn build_marker_path(package: &Package) -> String {
@@ -752,4 +748,24 @@ fn install_package(package: &Package) -> Result<(), String> {
     println!("Installed: {} ({} files)", package.name, files.len());
 
     Ok(())
+}
+
+fn cache_dir() -> &'static str {
+    "/var/cache/mahou"
+}
+
+fn distfiles_dir() -> String {
+    format!("{}/distfiles", cache_dir())
+}
+
+fn build_dir() -> String {
+    format!("{}/build", cache_dir())
+}
+
+fn stage_root() -> String {
+    format!("{}/stage", cache_dir())
+}
+
+fn stage_dir(package: &Package) -> String {
+    format!("{}/{}", stage_root(), package.name)
 }
