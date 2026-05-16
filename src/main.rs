@@ -3,6 +3,7 @@ use std::fs;
 use std::collections::HashSet;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
+use std::process::Command;
 
 #[derive(Debug, Deserialize)]
 struct Package {
@@ -56,7 +57,7 @@ fn main() {
             let name = &args[2];
             let packages = load_repo_or_exit();
 
-            match find_packages(&packages, name) {
+            match find_package(&packages, name) {
                 Some(package) => {
                     println!("Name: {}", package.name);
                     println!("Version: {}", package.version);
@@ -93,7 +94,7 @@ fn main() {
             let name = &args[2];
             let packages = load_repo_or_exit();
 
-            match find_packages(&packages, name) {
+            match find_package(&packages, name) {
                 Some(package) => {
                     print_deps(&packages, package, 0);
                 }
@@ -134,7 +135,7 @@ fn main() {
             match resolve_package_order(&packages, name) {
                 Ok(order) => {
                     for package_name in order {
-                        let Some(package) = find_packages(&packages, &package_name) else {
+                        let Some(package) = find_package(&packages, &package_name) else {
                             eprintln!("error: package vanished from repo: {}", package_name);
                             return;
                         };
@@ -162,13 +163,46 @@ fn main() {
             match resolve_package_order(&packages, name) {
                 Ok(order) => {
                     for package_name in order {
-                        let Some(package) = find_packages(&packages, &package_name) else {
+                        let Some(package) = find_package(&packages, &package_name) else {
                             eprintln!("Error: package vanished from repo: {}", package_name);
                             return;
                         };
 
                         if let Err(message) = verify_package(package) {
                             eprintln!("Failed to verify package '{}': {}", package.name, message);
+                            return;
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
+        "extract" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        let Some(package) = find_package(&packages, &package_name) else {
+                            eprintln!("Error: Package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        if let Err(message) = fetch_package(package) {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+
+                        if let Err(message) = extract_package(package) {
+                            eprintln!("Error: {}", message);
                             return;
                         }
                     }
@@ -192,7 +226,7 @@ fn main() {
                     println!("Build plan:");
 
                     for package_name in order {
-                        let Some(package) = find_packages(&packages, &package_name) else {
+                        let Some(package) = find_package(&packages, &package_name) else {
                             eprintln!("Package vanished from repo: {}", package_name);
                             return;
                         };
@@ -237,6 +271,7 @@ fn print_help() {
     println!("  mahou resolve <name>");
     println!("  mahou fetch <name>");
     println!("  mahou verify <name>");
+    println!("  mahou extract <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -261,7 +296,7 @@ fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
     Ok(packages)
 }
 
-fn find_packages<'a>(packages: &'a [Package], name: &str) -> Option<&'a Package> {
+fn find_package<'a>(packages: &'a [Package], name: &str) -> Option<&'a Package> {
     packages.iter().find(|package| package.name == name)
 }
 
@@ -276,7 +311,7 @@ fn print_deps(packages: &[Package], package: &Package, depth: usize) {
     }
 
     for dep_name in &package.deps {
-        match find_packages(packages, dep_name) {
+        match find_package(packages, dep_name) {
             Some(dep) => print_deps(packages, dep, depth + 1),
             None => println!("{} └── {} (missing)", indent, dep_name),
         }
@@ -302,7 +337,7 @@ fn resolve_package(
         return Ok(());
     }
 
-    let Some(package) = find_packages(packages, name) else {
+    let Some(package) = find_package(packages, name) else {
         return Err(format!("Missing package: {}", name));
     };
 
@@ -396,4 +431,40 @@ fn source_filename(package: &Package) -> Result<&str, String> {
     }
 
     Ok(filename)
+}
+
+fn extract_package(package: &Package) -> Result<(), String> {
+    fs::create_dir_all("build")
+        .map_err(|error| format!("Failed to create build directory: {}", error))?;
+
+    let filename = source_filename(package)?;
+    let archive_path = format!("distfiles/{}", filename);
+    let source_dir = format!("build/{}-{}", package.name, package.version);
+
+    if fs::metadata(&source_dir).is_ok() {
+        println!("Already extracted: {}", source_dir);
+        return Ok(());
+    }
+
+    println!("Extracting {} into build/", archive_path);
+
+    let status = Command::new("tar")
+        .arg("-xf")
+        .arg(&archive_path)
+        .arg("-C")
+        .arg("build")
+        .status()
+        .map_err(|error| format!("Failed to run tar: {}", error))?;
+
+    if !status.success() {
+        return Err(format!("tar failed while extracting {}", archive_path));
+    }
+
+    if fs::metadata(&source_dir).is_ok() {
+        println!("Extracted: {}", source_dir);
+        Ok(())
+    }
+    else {
+        Err(format!("Expected source directory '{}' not found after extraction", source_dir))
+    }
 }
