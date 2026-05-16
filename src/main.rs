@@ -30,7 +30,13 @@ fn main() {
             }
 
             let query = &args[2];
-            let packages = load_packages("repo");
+            let packages = match load_packages("repo") {
+                Ok(packages) => packages,
+                Err(message) => {
+                    eprint!("error: {}", message);
+                    return;
+                }
+            };
 
             for package in packages {
                 if package.name.contains(query) {
@@ -46,7 +52,7 @@ fn main() {
             }
 
             let name = &args[2];
-            let packages = load_packages("repo");
+            let packages = load_repo_or_exit();
 
             match find_packages(&packages, name) {
                 Some(package) => {
@@ -83,7 +89,7 @@ fn main() {
             }
 
             let name = &args[2];
-            let packages = load_packages("repo");
+            let packages = load_repo_or_exit();
 
             match find_packages(&packages, name) {
                 Some(package) => {
@@ -101,7 +107,7 @@ fn main() {
             }
 
             let name = &args[2];
-            let packages = load_packages("repo");
+            let packages = load_repo_or_exit();
 
             match resolve_package_order(&packages, name) {
                 Ok(order) => {
@@ -121,7 +127,7 @@ fn main() {
             }
 
             let name = &args[2];
-            let packages = load_packages("repo");
+            let packages = load_repo_or_exit();
 
             match resolve_package_order(&packages, name) {
                 Ok(order) => {
@@ -173,26 +179,26 @@ fn print_help() {
     println!("  mahou resolve <name>");
 }
 
-fn load_packages(repo_path: &str) -> Vec<Package> {
+fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
     let mut packages = Vec::new();
 
-    let entries = fs::read_dir(repo_path).expect("failed to read repo directory");
+    let entries = fs::read_dir(repo_path).map_err(|error| format!("Failed to read repo directory '{}': {}", repo_path, error))?;
 
     for entry in entries {
-        let entry = entry.expect("failed to read directory entry");
+        let entry = entry.map_err(|error| format!("Failed to read directory entry: {}", error))?;
         let path = entry.path();
 
         if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
             continue;
         }
 
-        let contents = fs::read_to_string(&path).expect("failed to read package file");
-        let package = toml::from_str(&contents).expect("failed to parse package file");
+        let contents = fs::read_to_string(&path).map_err(|error| format!("Failed to read package file '{}': {}", path.display(), error))?;
+        let package = toml::from_str(&contents).map_err(|error| format!("Failed to parse package file '{}': {}", path.display(), error))?;
 
         packages.push(package);
     }
 
-    packages
+    Ok(packages)
 }
 
 fn find_packages<'a>(packages: &'a [Package], name: &str) -> Option<&'a Package> {
@@ -249,4 +255,14 @@ fn resolve_package(
     order.push(package.name.clone());
 
     Ok(())
+}
+
+fn load_repo_or_exit() -> Vec<Package> {
+    match load_packages("repo") {
+        Ok(packages) => packages,
+        Err(message) => {
+            eprintln!("{}", message);
+            std::process::exit(1);
+        }
+    }
 }
