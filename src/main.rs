@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
+use std::path;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::process::Command;
@@ -15,6 +16,13 @@ struct Package {
     source_dir: String,
     deps: Vec<String>,
     build_steps: Vec<String>,
+}
+
+#[derive(Debug)]
+struct InstallRecord {
+    name: String,
+    version: String,
+    files: Vec<String>,
 }
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -276,7 +284,32 @@ fn main() {
 
         }
         "install" => {
-            println!("Installing package...");
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        let Some(package) = find_package(&packages, &package_name) else {
+                            eprintln!("Error: Package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        if let Err(message) = install_package(package) {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
         }
         _ => {
             eprintln!("Unknown command: {}", command);
@@ -600,6 +633,108 @@ fn clean_stage(package: &Package) -> Result<(), String> {
         fs::remove_dir_all(&path)
             .map_err(|error| format!("Failed to remove stage directory {}: {}", path, error))?;
     }
+
+    Ok(())
+}
+
+fn install_db_dir() -> &'static str {
+    "/var/lib/mahou/installed"
+}
+
+fn install_record_path(package: &Package) -> String {
+    format!("{}/{}.toml", install_db_dir(), package.name)
+}
+
+fn collect_files(root: &str) -> Result<Vec<String>, String> {
+    let mut files = Vec::new();
+
+    collect_files_recursive(root, root, &mut files)?;
+
+    files.sort();
+
+    Ok(files)
+
+}
+
+fn collect_files_recursive(base: &str, current: &str, files: &mut Vec<String>) -> Result<(), String> {
+    let entries = fs::read_dir(current)
+        .map_err(|error| format!("Failed to read directory {}: {}", current, error))?;
+
+    for entry in entries {
+        let entry = entry.map_err(|error| format!("Failed to read directory entry: {}", error))?;
+        let path = entry.path();
+        let path_string = path.to_string_lossy().to_string();
+
+        if path.is_dir() {
+            collect_files_recursive(base, &path_string, files)?;        
+        } else if path.is_file() {
+            let relative = path
+                .strip_prefix(base)
+                .map_err(|error| format!("Failed to make relative path: {}", error))?
+                .to_string_lossy()
+                .to_string();
+
+            files.push(format!("/{}", relative));
+            
+        }
+    }
+
+    Ok(())
+}
+
+fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
+    let stage = stage_dir(package);
+    let files = collect_files(&stage)?;
+
+    for file in &files {
+        let source = format!("{}{}", stage, file);
+        let target = file.to_string();
+
+        if let Some(parent) = std::path::Path::new(&target).parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("Failed to create directory {}: {}", parent.display(), error))?;
+        }
+
+        fs::copy(&source, &target)
+            .map_err(|error| format!("Failed to copy {} to {}: {}", source, target, error))?;
+    }
+
+    Ok(files)
+
+}
+
+fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
+    fs::create_dir_all(install_db_dir())
+        .map_err(|error| format!("Failed to create install database: {}", error))?;
+
+    let path = install_record_path(package);
+
+    let mut contents = String::new();
+    contents.push_str(&format!("name = \"{}\"\n", package.name));
+    contents.push_str(&format!("version = \"{}\"\n", package.version));
+    contents.push_str("files = [\n");
+
+    for file in files {
+        contents.push_str(&format!("    \"{}\",\n", file));
+    }
+
+    contents.push_str("]\n");
+
+    fs::write(&path, contents)
+        .map_err(|error| format!("Failed to write install record {}: {}", path, error))?;
+
+    Ok(())
+}
+
+fn install_package(package: &Package) -> Result<(), String> {
+    build_package(package)?;
+
+    println!("Installing {} {}", package.name, package.version);
+
+    let files = install_staged_files(package)?;
+    write_install_record(package, &files)?;
+
+    println!("Installed: {} ({} files)", package.name, files.len());
 
     Ok(())
 }
