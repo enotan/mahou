@@ -9,6 +9,7 @@ struct Package {
     description: String,
     source: String,
     deps: Vec<String>,
+    build_steps: Vec<String>,
 }
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -59,6 +60,15 @@ fn main() {
                     } else {
                         println!("Dependencies: {}", package.deps.join(", "));
                     }
+
+                    if package.build_steps.is_empty() {
+                        println!("Build: None");
+                    } else {
+                        println!("Build:");
+                        for step in &package.build_steps {
+                            println!(" - {}", step);
+                        }
+                    }
                 }
                 None => {
                     eprintln!("Package not found: {}", name);
@@ -104,7 +114,40 @@ fn main() {
             }
         }
         "build" => {
-            println!("Building package...");
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_packages("repo");
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    println!("Build plan:");
+
+                    for package_name in order {
+                        let Some(package) = find_packages(&packages, &package_name) else {
+                            eprintln!("Package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        println!();
+                        println!("{} {}", package.name, package.version);
+
+                        if package.build_steps.is_empty() {
+                            println!("No build steps...");
+                        } else {
+                            for step in &package.build_steps {
+                                println!(" - {}", step);
+                            }
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("{}", message);
+                }
+            }
 
         }
         "install" => {
@@ -135,6 +178,7 @@ fn parse_package(contents: &str) -> Package {
     let mut description = String::new();
     let mut source = String::new();
     let mut deps = Vec::new();
+    let mut build_steps = Vec::new();
 
     for line in contents.lines() {
         let Some((key, value)) = line.split_once('=') else {
@@ -154,6 +198,14 @@ fn parse_package(contents: &str) -> Package {
                         .collect();
                 }
             }
+            "build" => {
+                if !value.is_empty() {
+                    build_steps = value
+                        .split(';')
+                        .map(|step| step.trim().to_string())
+                        .collect();
+                }
+            }
             _ => {}
         }
     }
@@ -164,6 +216,7 @@ fn parse_package(contents: &str) -> Package {
         description,
         source,
         deps,
+        build_steps,
     }
 }
 
