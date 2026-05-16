@@ -64,6 +64,24 @@ fn main() {
                 }
             }
         }
+        "deps" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_packages("repo");
+
+            match find_packages(&packages, name) {
+                Some(package) => {
+                    print_deps(&packages, package, 0);
+                }
+                None => {
+                    eprintln!("Package not found: {}", name);
+                }
+            }
+        }
         "build" => {
             println!("Building package...");
 
@@ -86,6 +104,7 @@ fn print_help() {
     println!("  mahou info <name>");
     println!("  mahou build <name>");
     println!("  mahou install <name>");
+    println!("  mahou deps <name>");
 }
 
 fn parse_package(contents: &str) -> Package {
@@ -150,4 +169,22 @@ fn load_packages(repo_path: &str) -> Vec<Package> {
 
 fn find_packages<'a>(packages: &'a [Package], name: &str) -> Option<&'a Package> {
     packages.iter().find(|package| package.name == name)
+}
+
+fn print_deps(packages: &[Package], package: &Package, depth: usize) {
+    let indent = "  ".repeat(depth);
+
+    if depth == 0 {
+        println!("{}", package.name);
+
+    } else {
+        println!("{}└── {}", indent, package.name);
+    }
+
+    for dep_name in &package.deps {
+        match find_packages(packages, dep_name) {
+            Some(dep) => print_deps(packages, dep, depth + 1),
+            None => println!("{} └── {} (missing)", indent, dep_name),
+        }
+    }
 }

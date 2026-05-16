@@ -1,0 +1,5 @@
+name=freetype
+version=2.14.3
+description=Font rendering library
+source=https://download.savannah.gnu.org/releases/freetype/freetype-2.14.3.tar.xz
+deps=zlib,libpng
