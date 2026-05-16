@@ -1,5 +1,6 @@
 use std::env;
 use std::fs;
+use std::collections::HashSet;
 
 #[derive(Debug)]
 struct Package {
@@ -82,6 +83,26 @@ fn main() {
                 }
             }
         }
+        "resolve" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_packages("repo");
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        println!("{}", package_name);
+                    }
+                }
+                Err(message) => {
+                    eprint!("{}", message);
+                }
+            }
+        }
         "build" => {
             println!("Building package...");
 
@@ -105,6 +126,7 @@ fn print_help() {
     println!("  mahou build <name>");
     println!("  mahou install <name>");
     println!("  mahou deps <name>");
+    println!("  mahou resolve <name>");
 }
 
 fn parse_package(contents: &str) -> Package {
@@ -187,4 +209,38 @@ fn print_deps(packages: &[Package], package: &Package, depth: usize) {
             None => println!("{} └── {} (missing)", indent, dep_name),
         }
     }
+}
+
+fn resolve_package_order(packages: &[Package], name: &str) -> Result<Vec<String>, String> {
+    let mut visited = HashSet::new();
+    let mut order = Vec::new();
+
+    resolve_package(packages, name, &mut visited, &mut order)?;
+
+    Ok(order)
+}
+
+fn resolve_package(
+    packages: &[Package],
+    name: &str,
+    visited: &mut HashSet<String>,
+    order: &mut Vec<String>,    
+) -> Result<(), String> {
+    if visited.contains(name) {
+        return Ok(());
+    }
+
+    let Some(package) = find_packages(packages, name) else {
+        return Err(format!("Missing package: {}", name));
+    };
+
+    visited.insert(name.to_string());
+
+    for dep_name in &package.deps {
+        resolve_package(packages, dep_name, visited, order)?;
+    }
+
+    order.push(package.name.clone());
+
+    Ok(())
 }
