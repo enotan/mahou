@@ -1,8 +1,9 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
+use serde::Deserialize;
 
-#[derive(Debug)]
+#[derive(Debug, Deserialize)]
 struct Package {
     name: String,
     version: String,
@@ -172,54 +173,6 @@ fn print_help() {
     println!("  mahou resolve <name>");
 }
 
-fn parse_package(contents: &str) -> Package {
-    let mut name = String::new();
-    let mut version = String::new();
-    let mut description = String::new();
-    let mut source = String::new();
-    let mut deps = Vec::new();
-    let mut build_steps = Vec::new();
-
-    for line in contents.lines() {
-        let Some((key, value)) = line.split_once('=') else {
-            continue;
-        };
-
-        match key {
-            "name" => name = value.to_string(),
-            "version" => version = value.to_string(),
-            "description" => description = value.to_string(),
-            "source" => source = value.to_string(),
-            "deps" => {
-                if !value.is_empty() {
-                    deps = value.
-                        split(',')
-                        .map(|dep| dep.trim().to_string())
-                        .collect();
-                }
-            }
-            "build" => {
-                if !value.is_empty() {
-                    build_steps = value
-                        .split(';')
-                        .map(|step| step.trim().to_string())
-                        .collect();
-                }
-            }
-            _ => {}
-        }
-    }
-
-    Package {
-        name,
-        version,
-        description,
-        source,
-        deps,
-        build_steps,
-    }
-}
-
 fn load_packages(repo_path: &str) -> Vec<Package> {
     let mut packages = Vec::new();
 
@@ -229,12 +182,12 @@ fn load_packages(repo_path: &str) -> Vec<Package> {
         let entry = entry.expect("failed to read directory entry");
         let path = entry.path();
 
-        if path.extension().and_then(|ext| ext.to_str()) != Some("pkg") {
+        if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
             continue;
         }
 
         let contents = fs::read_to_string(&path).expect("failed to read package file");
-        let package = parse_package(&contents);
+        let package = toml::from_str(&contents).expect("failed to parse package file");
 
         packages.push(package);
     }

@@ -1,0 +1,10 @@
+name = "libpng"
+version = "1.6.58"
+description = "PNG reference library"
+source = "https://download.sourceforge.net/libpng/libpng-1.6.58.tar.xz"
+deps = ["zlib"]
+build_steps = [
+    "./configure --prefix=/usr",
+    "make",
+    "make install"
+]
