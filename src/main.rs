@@ -1,10 +1,10 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
-use std::path;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::process::Command;
+use std::os::unix::fs as unix_fs;
 
 #[derive(Debug, Deserialize)]
 struct Package {
@@ -18,12 +18,6 @@ struct Package {
     build_steps: Vec<String>,
 }
 
-#[derive(Debug)]
-struct InstallRecord {
-    name: String,
-    version: String,
-    files: Vec<String>,
-}
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -665,9 +659,12 @@ fn collect_files_recursive(base: &str, current: &str, files: &mut Vec<String>) -
         let path = entry.path();
         let path_string = path.to_string_lossy().to_string();
 
-        if path.is_dir() {
-            collect_files_recursive(base, &path_string, files)?;        
-        } else if path.is_file() {
+        let metadata = fs::symlink_metadata(&path)
+            .map_err(|error| format!("Failed to inspect {}: {}", path.display(), error))?;
+
+        if metadata.is_dir() {
+            collect_files_recursive(base, &path_string, files)?;
+        } else if metadata.is_file() || metadata.file_type().is_symlink() {
             let relative = path
                 .strip_prefix(base)
                 .map_err(|error| format!("Failed to make relative path: {}", error))?
@@ -675,11 +672,12 @@ fn collect_files_recursive(base: &str, current: &str, files: &mut Vec<String>) -
                 .to_string();
 
             files.push(format!("/{}", relative));
-            
         }
+
     }
 
     Ok(())
+
 }
 
 fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
@@ -695,8 +693,25 @@ fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
                 .map_err(|error| format!("Failed to create directory {}: {}", parent.display(), error))?;
         }
 
-        fs::copy(&source, &target)
-            .map_err(|error| format!("Failed to copy {} to {}: {}", source, target, error))?;
+        let metadata = fs::symlink_metadata(&source)
+            .map_err(|error| format!("Failed to inspect {}: {}", source, error))?;
+
+        if metadata.file_type().is_symlink() {
+            let link_target = fs::read_link(&source)
+                .map_err(|error| format!("Failed to read symlink {}: {}", source, error))?;
+
+            if fs::symlink_metadata(&target).is_ok() {
+                fs::remove_file(&target)
+                    .map_err(|error| format!("Failed to replace symlink {}: {}", target, error))?;
+            }
+
+            unix_fs::symlink(&link_target, &target)
+                .map_err(|error| format!("Failed to create symlink {}: {}", target, error))?;
+        }
+        else {
+            fs::copy(&source, &target)
+                .map_err(|error| format!("Failed to copy {} to {}: {}", source, target, error))?;
+        }
     }
 
     Ok(files)
