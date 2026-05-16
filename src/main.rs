@@ -18,6 +18,12 @@ struct Package {
     build_steps: Vec<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct InstallRecord {
+    name: String,
+    version: String,
+    files: Vec<String>,
+}
 fn main() {
     let args: Vec<String> = env::args().collect();
 
@@ -305,6 +311,73 @@ fn main() {
                 }
             }
         }
+        "list" => {
+            match load_installed_packages() {
+                Ok(records) => {
+                    if records.is_empty() {
+                        println!("No packages installed");
+                        return;
+                    }
+
+                    for record in records {
+                        println!("{} {}", record.name, record.version);
+                    }
+                }
+
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
+        "files" => {
+            if args.len() < 3 {
+                eprintln!("missing package name");
+                return;
+            }
+
+            let name = &args[2];
+
+            match load_install_record(name) {
+                Ok(Some(record)) => {
+                    for file in record.files {
+                        println!("{}", file);
+                    }
+                }
+                Ok(None) => {
+                    eprintln!("Package is not installed: {}", name);
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
+        "outdated" => {
+            let packages = load_repo_or_exit();
+
+            match load_installed_packages() {
+                Ok(records) => {
+                    let mut found = false;
+
+                    for record in records {
+                        let Some(package) = find_package(&packages, &record.name) else {
+                            continue;
+                        };
+
+                        if record.version != package.version {
+                            println!("{} {} -> {}", record.name, record.version, package.version);
+                            found = true;
+                        }
+                    }
+
+                    if !found {
+                        println!("All packages are up to date");
+                    }
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -326,6 +399,9 @@ fn print_help() {
     println!("  mahou verify <name>");
     println!("  mahou extract <name>");
     println!("  mahou rebuild <name>");
+    println!("  mahou help");
+    println!("  mahou files <name>");
+    println!("  mahou outdated");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -768,4 +844,55 @@ fn stage_root() -> String {
 
 fn stage_dir(package: &Package) -> String {
     format!("{}/{}", stage_root(), package.name)
+}
+
+fn install_record_path_for_name(name: &str) -> String {
+    format!("{}/{}.toml", install_db_dir(), name)
+}
+
+fn load_install_record(name: &str) -> Result<Option<InstallRecord>, String> {
+    let path = install_record_path_for_name(name);
+
+    if fs::metadata(&path).is_err() {
+        return Ok(None);
+    }
+
+    let contents = fs::read_to_string(&path)
+        .map_err(|error| format!("Failed to read install record {}: {}", path, error))?;
+
+    let record = toml::from_str(&contents)
+        .map_err(|error| format!("Failed to parse install record {}: {}", path, error))?;
+
+    Ok(Some(record))
+}
+
+fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
+    let mut records = Vec::new();
+
+    if fs::metadata(install_db_dir()).is_err() {
+        return Ok(records);
+    }
+
+    let entries = fs::read_dir(install_db_dir())
+        .map_err(|error| format!("Failed to read install database: {}", error))?;
+
+    for entry in entries {
+        let entry = entry.map_err(|error| format!("Failed to read install database entry: {}", error))?;
+        let path = entry.path();
+
+        if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
+            continue;
+        }
+
+        let contents = fs::read_to_string(&path)
+            .map_err(|error| format!("Failed to read {}: {}", path.display(), error))?;
+
+        let record = toml::from_str(&contents)
+            .map_err(|error| format!("Failed to parse {}: {}", path.display(), error))?;
+
+        records.push(record);
+    }
+
+    records.sort_by(|a, b| a.name.cmp(&b.name));
+    Ok(records)
 }
