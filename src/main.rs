@@ -224,23 +224,15 @@ fn main() {
 
             match resolve_package_order(&packages, name) {
                 Ok(order) => {
-                    println!("Build plan:");
-
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
-                            eprintln!("Package vanished from repo: {}", package_name);
+                            eprintln!("Error: Package vanished from repo: {}", package_name);
                             return;
                         };
 
-                        println!();
-                        println!("{} {}", package.name, package.version);
-
-                        if package.build_steps.is_empty() {
-                            println!("No build steps...");
-                        } else {
-                            for step in &package.build_steps {
-                                println!(" - {}", step);
-                            }
+                        if let Err(message) = build_package(package) {
+                            eprintln!("Error: {}", message);
+                            return;
                         }
                     }
                 }
@@ -371,14 +363,23 @@ fn fetch_package(package: &Package) -> Result<(), String> {
 
     let output_path = format!("distfiles/{}", filename);
 
+    let partial_path = format!("{}.part", output_path);
+
     if fs::metadata(&output_path).is_ok() {
         println!("Already fetched: {}", output_path);
         return verify_package(package);
     }
 
     println!("Fetching {} from {}", package.name, package.source);
+    
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("mahou/0.1")
+        .build()
+        .map_err(|error| format!("Failed to create HTTP client: {}", error))?;
 
-    let response = reqwest::blocking::get(&package.source)
+    let response = client
+        .get(&package.source)
+        .send()
         .map_err(|error| format!("Failed to download {}: {}", package.name, error))?
         .error_for_status()
         .map_err(|error| format!("Download failed for {}: {}", package.source, error))?;
@@ -387,12 +388,25 @@ fn fetch_package(package: &Package) -> Result<(), String> {
         .bytes()
         .map_err(|error| format!("Failed to read response for {}: {}", package.name, error))?;
 
-    fs::write(&output_path, &bytes)
+    fs::write(&partial_path, &bytes)
+        .map_err(|error| format!("Failed to save {}: {}", partial_path, error))?;
+
+    let actual = sha256_file(&partial_path)?;
+
+    if actual != package.sha256 {
+        let _ = fs::remove_file(&partial_path);
+
+        return Err(format!(
+            "Checksum mismatch for {}\n expected: {}\n   actual: {}",
+            package.name, package.sha256, actual
+        ));
+    }
+
+    fs::rename(&partial_path, &output_path)
         .map_err(|error| format!("Failed to save {}: {}", output_path, error))?;
 
     println!("Saved to {}", output_path);
-
-    verify_package(package)?;
+    println!("Verified: {}", output_path);
 
     Ok(())
 }
@@ -400,13 +414,7 @@ fn fetch_package(package: &Package) -> Result<(), String> {
 fn verify_package(package: &Package) -> Result<(), String> {
     let filename = source_filename(package)?;
     let path = format!("distfiles/{}", filename);
-
-    let contents = fs::read(&path)
-        .map_err(|error| format!("failed to read {}: {}", path, error))?;
-
-    let mut hasher = Sha256::new();
-    hasher.update(contents);
-    let actual = hex::encode(hasher.finalize());
+    let actual = sha256_file(&path)?;
 
     if actual != package.sha256 {
         return Err(format!(
@@ -435,6 +443,8 @@ fn source_filename(package: &Package) -> Result<&str, String> {
 }
 
 fn extract_package(package: &Package) -> Result<(), String> {
+    fetch_package(package)?;
+    
     fs::create_dir_all("build")
         .map_err(|error| format!("Failed to create build directory: {}", error))?;
 
@@ -468,4 +478,52 @@ fn extract_package(package: &Package) -> Result<(), String> {
     else {
         Err(format!("Expected source directory '{}' not found after extraction", source_dir))
     }
+}
+
+fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
+    let source_dir = format!("build/{}", package.source_dir);
+    let destdir = format!("{}/stage/{}", env!("CARGO_MANIFEST_DIR"), package.name);
+
+    fs::create_dir_all(&destdir)
+        .map_err(|error| format!("Failed to create stage directory '{}': {}", destdir, error))?;
+
+    println!("Running build step for {}: {}", package.name, step);
+
+    let status = Command::new("sh")
+        .arg("-c")
+        .arg(step)
+        .current_dir(&source_dir)
+        .env("MAHOU_DESTDIR", &destdir)
+        .status()
+        .map_err(|error| format!("Failed to run build step '{}': {}", step, error))?;
+
+    if !status.success() {
+        return Err(format!("Build step failed for {}: {}", package.name, step));
+    }
+
+    Ok(())
+}
+
+fn build_package(package: &Package) -> Result<(), String> {
+    extract_package(package)?;
+
+    println!("Building {} {}", package.name, package.version);
+
+    for step in &package.build_steps {
+        run_build_step(package, step)?;
+    }
+
+    println!("Built: {}", package.name);
+
+    Ok(())
+}
+
+fn sha256_file(path: &str) -> Result<String, String> {
+    let contents = fs::read(path)
+        .map_err(|error| format!("Failed to read {}: {}", path, error))?;
+
+    let mut hasher = Sha256::new();
+    hasher.update(contents);
+
+    Ok(hex::encode(hasher.finalize()))
 }
