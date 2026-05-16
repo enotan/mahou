@@ -1,8 +1,8 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
-use std::mem;
 use serde::Deserialize;
+use sha2::{Sha256, Digest};
 
 #[derive(Debug, Deserialize)]
 struct Package {
@@ -10,6 +10,7 @@ struct Package {
     version: String,
     description: String,
     source: String,
+    sha256: String,
     deps: Vec<String>,
     build_steps: Vec<String>,
 }
@@ -149,6 +150,34 @@ fn main() {
                 }
             }
         }
+        "verify" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match resolve_package_order(&packages, name) {
+                Ok(order) => {
+                    for package_name in order {
+                        let Some(package) = find_packages(&packages, &package_name) else {
+                            eprintln!("Error: package vanished from repo: {}", package_name);
+                            return;
+                        };
+
+                        if let Err(message) = verify_package(package) {
+                            eprintln!("Failed to verify package '{}': {}", package.name, message);
+                            return;
+                        }
+                    }
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
         "build" => {
             if args.len() < 3 {
                 eprintln!("Missing package name");
@@ -207,6 +236,7 @@ fn print_help() {
     println!("  mahou deps <name>");
     println!("  mahou resolve <name>");
     println!("  mahou fetch <name>");
+    println!("  mahou verify <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -301,21 +331,13 @@ fn fetch_package(package: &Package) -> Result<(), String> {
     fs::create_dir_all("distfiles")
         .map_err(|error| format!("Failed to create distfiles directory: {}", error))?;
 
-    let filename = package
-        .source
-        .rsplit('/')
-        .next()
-        .ok_or_else(|| format!("Invalid source URL for {}", package.name))?;
-
-    if filename.is_empty() {
-        return Err(format!("Invalid source URL for {}", package.name));
-    }
+    let filename = source_filename(package)?;
 
     let output_path = format!("distfiles/{}", filename);
 
     if fs::metadata(&output_path).is_ok() {
         println!("Already fetched: {}", output_path);
-        return Ok(());
+        return verify_package(package);
     }
 
     println!("Fetching {} from {}", package.name, package.source);
@@ -334,5 +356,44 @@ fn fetch_package(package: &Package) -> Result<(), String> {
 
     println!("Saved to {}", output_path);
 
+    verify_package(package)?;
+
     Ok(())
+}
+
+fn verify_package(package: &Package) -> Result<(), String> {
+    let filename = source_filename(package)?;
+    let path = format!("distfiles/{}", filename);
+
+    let contents = fs::read(&path)
+        .map_err(|error| format!("failed to read {}: {}", path, error))?;
+
+    let mut hasher = Sha256::new();
+    hasher.update(contents);
+    let actual = hex::encode(hasher.finalize());
+
+    if actual != package.sha256 {
+        return Err(format!(
+            "Checksum mismatch for {}\n expected: {}\n   actual: {}",
+            package.name, package.sha256, actual
+        ));
+    }
+
+    println!("Verified: {}", path);
+
+    Ok(())
+}
+
+fn source_filename(package: &Package) -> Result<&str, String> {
+    let filename = package
+        .source
+        .rsplit('/')
+        .next()
+        .ok_or_else(|| format!("Invalid source URL for {}", package.name))?;
+
+    if filename.is_empty() {
+        return Err(format!("Invalid source URL for {}", package.name));
+    }
+
+    Ok(filename)
 }

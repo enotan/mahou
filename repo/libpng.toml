@@ -2,6 +2,7 @@ name = "libpng"
 version = "1.6.58"
 description = "PNG reference library"
 source = "https://download.sourceforge.net/libpng/libpng-1.6.58.tar.xz"
+sha256 = "d58b22d43bef917c83673511ffffd829f1eaf3aead2b04f8fd928a192a5b1504"
 deps = ["zlib"]
 build_steps = [
     "./configure --prefix=/usr",
