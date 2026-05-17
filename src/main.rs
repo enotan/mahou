@@ -1,7 +1,6 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
-use regex::bytes;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::process::Command;
@@ -35,6 +34,13 @@ struct InstallRecord {
     name: String,
     version: String,
     files: Vec<String>,
+}
+
+struct RecipeUpdate {
+    version: String,
+    source: String,
+    sha256: String,
+    source_dir: String,
 }
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -408,22 +414,61 @@ fn main() {
                             } else {
                                 println!("{} {} -> {}", package.name, package.version, latest);
 
-                                if let Some(update) = &package.update {
-                                    let source = render_update_template(&update.source_template, &latest);
-                                    let source_dir = render_update_template(&update.source_dir_template, &latest);
-
-                                    println!("New source: {}", source);
-                                    println!("New source dir: {}", source_dir);
-
-                                    match download_bytes(&source) {
-                                        Ok(bytes) => {
-                                            let sha256 = sha256_bytes(&bytes);
-                                            println!("New sha256: {}", sha256);
-                                        }
-                                        Err(message) => {
-                                            eprintln!("Failed to calculate sha256: {}", message);
-                                        }
+                                match plan_recipe_update(package, &latest) {
+                                    Ok(plan) => {
+                                        println!("New source: {}", plan.source);
+                                        println!("New source dir: {}", plan.source_dir);
+                                        println!("New sha256: {}", plan.sha256);
                                     }
+                                    Err(message) => {
+                                        eprintln!("Failed to plan recipe update: {}", message);
+                                    }
+                                }
+                            }
+                        }
+                        Ok(None) => {
+                            println!("{} has no update metadata", package.name);
+                        }
+                        Err(message) => {
+                            eprintln!("Error: {}", message);
+                        }
+                    }
+                }
+                None => {
+                    eprintln!("Package not found: {}", name);
+                }
+            }
+        }
+        "update-recipe" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match find_package(&packages, name) {
+                Some(package) => {
+                    match check_for_update(package) {
+                        Ok(Some(latest)) => {
+                            if latest == package.version {
+                                println!("{} is already up to date ({})", package.name, package.version);
+                                return;
+                            }
+
+                            match plan_recipe_update(package, &latest) {
+                                Ok(plan) => {
+                                    if let Err(message) = write_recipe_update(package, &plan) {
+                                        eprintln!("Error: {}", message);
+                                        return;
+                                    }
+
+                                    println!("Updated recipe: {}", recipe_path(&package.name));
+                                    println!("{} {} -> {}", package.name, package.version, plan.version);
+                                }
+                                Err(message) => {
+                                    eprintln!("Error: {}", message);
                                 }
                             }
                         }
@@ -465,6 +510,7 @@ fn print_help() {
     println!("  mahou files <name>");
     println!("  mahou outdated");
     println!("  mahou update-check <name>");
+    println!("  mahou update-recipe <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -1049,4 +1095,61 @@ fn download_bytes(url: &str) -> Result<Vec<u8>, String> {
         .map_err(|error| format!("Failed to read response for {}: {}", url, error))?;
 
     Ok(bytes.to_vec())
+}
+
+fn recipe_path(name: &str) -> String {
+    format!("repo/{}.toml", name)
+}
+
+fn plan_recipe_update(package: &Package, latest: &str) -> Result<RecipeUpdate, String> {
+    let Some(update) = &package.update else {
+        return Err(format!("{} has no update metadata", package.name));
+    };
+
+    let source = render_update_template(&update.source_template, latest);
+    let source_dir = render_update_template(&update.source_dir_template, latest);
+    let bytes = download_bytes(&source)?;
+    let sha256 = sha256_bytes(&bytes);
+
+    Ok(RecipeUpdate {
+        version: latest.to_string(),
+        source,
+        sha256,
+        source_dir,
+    })
+}
+
+fn replace_toml_string_field(contents: &str, key: &str, value: &str) -> String {
+    let mut result = String::new();
+    let prefix = format!("{} = ", key);
+    let replacement = format!("{} = \"{}\"", key, value);
+
+    for line in contents.lines() {
+        if line.starts_with(&prefix) {
+            result.push_str(&replacement);
+        } else {
+            result.push_str(line);
+        }
+
+        result.push('\n');
+    }
+
+    result
+}
+
+fn write_recipe_update(package: &Package, plan: &RecipeUpdate) -> Result<(), String> {
+    let path = recipe_path(&package.name);
+
+    let contents = fs::read_to_string(&path)
+        .map_err(|error| format!("Failed to read {}: {}", path, error))?;
+
+    let contents = replace_toml_string_field(&contents, "version", &plan.version);
+    let contents = replace_toml_string_field(&contents, "source", &plan.source);
+    let contents = replace_toml_string_field(&contents, "sha256", &plan.sha256);
+    let contents = replace_toml_string_field(&contents, "source_dir", &plan.source_dir);
+
+    fs::write(&path, contents)
+        .map_err(|error| format!("Failed to write {}: {}", path, error))?;
+
+    Ok(())
 }
