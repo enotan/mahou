@@ -1,12 +1,12 @@
+use regex::Regex;
+use serde::Deserialize;
+use sha2::{Digest, Sha256};
+use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::env;
 use std::fs;
-use std::collections::HashSet;
-use serde::Deserialize;
-use sha2::{Sha256, Digest};
-use std::process::Command;
 use std::os::unix::fs as unix_fs;
-use regex::Regex;
-use std::cmp::Ordering;
+use std::process::Command;
 
 #[derive(Debug, Deserialize)]
 struct Package {
@@ -72,10 +72,12 @@ fn main() {
 
             for package in packages {
                 if package.name.contains(query) {
-                    println!("{} {} - {}", package.name, package.version, package.description);
+                    println!(
+                        "{} {} - {}",
+                        package.name, package.version, package.description
+                    );
                 }
             }
-
         }
         "info" => {
             if args.len() < 3 {
@@ -92,10 +94,9 @@ fn main() {
                     println!("Version: {}", package.version);
                     println!("Description: {}", package.description);
                     println!("Source: {}", package.source);
-                    
+
                     if package.deps.is_empty() {
                         println!("Dependencies: None");
-
                     } else {
                         println!("Dependencies: {}", package.deps.join(", "));
                     }
@@ -301,7 +302,6 @@ fn main() {
                     eprintln!("{}", message);
                 }
             }
-
         }
         "install" => {
             if args.len() < 3 {
@@ -351,24 +351,22 @@ fn main() {
                 }
             }
         }
-        "list" => {
-            match load_installed_packages() {
-                Ok(records) => {
-                    if records.is_empty() {
-                        println!("No packages installed");
-                        return;
-                    }
-
-                    for record in records {
-                        println!("{} {}", record.name, record.version);
-                    }
+        "list" => match load_installed_packages() {
+            Ok(records) => {
+                if records.is_empty() {
+                    println!("No packages installed");
+                    return;
                 }
 
-                Err(message) => {
-                    eprintln!("Error: {}", message);
+                for record in records {
+                    println!("{} {}", record.name, record.version);
                 }
             }
-        }
+
+            Err(message) => {
+                eprintln!("Error: {}", message);
+            }
+        },
         "files" => {
             if args.len() < 3 {
                 eprintln!("missing package name");
@@ -428,34 +426,32 @@ fn main() {
             let packages = load_repo_or_exit();
 
             match find_package(&packages, name) {
-                Some(package) => {
-                    match check_for_update(package) {
-                        Ok(Some(latest)) => {
-                            if latest == package.version {
-                                println!("{} is up to date ({})", package.name, package.version);
-                            } else {
-                                println!("{} {} -> {}", package.name, package.version, latest);
+                Some(package) => match check_for_update(package) {
+                    Ok(Some(latest)) => {
+                        if latest == package.version {
+                            println!("{} is up to date ({})", package.name, package.version);
+                        } else {
+                            println!("{} {} -> {}", package.name, package.version, latest);
 
-                                match plan_recipe_update(package, &latest) {
-                                    Ok(plan) => {
-                                        println!("New source: {}", plan.source);
-                                        println!("New source dir: {}", plan.source_dir);
-                                        println!("New sha256: {}", plan.sha256);
-                                    }
-                                    Err(message) => {
-                                        eprintln!("Failed to plan recipe update: {}", message);
-                                    }
+                            match plan_recipe_update(package, &latest) {
+                                Ok(plan) => {
+                                    println!("New source: {}", plan.source);
+                                    println!("New source dir: {}", plan.source_dir);
+                                    println!("New sha256: {}", plan.sha256);
+                                }
+                                Err(message) => {
+                                    eprintln!("Failed to plan recipe update: {}", message);
                                 }
                             }
                         }
-                        Ok(None) => {
-                            println!("{} has no update metadata", package.name);
-                        }
-                        Err(message) => {
-                            eprintln!("Error: {}", message);
-                        }
                     }
-                }
+                    Ok(None) => {
+                        println!("{} has no update metadata", package.name);
+                    }
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                    }
+                },
                 None => {
                     eprintln!("Package not found: {}", name);
                 }
@@ -471,37 +467,41 @@ fn main() {
             let packages = load_repo_or_exit();
 
             match find_package(&packages, name) {
-                Some(package) => {
-                    match check_for_update(package) {
-                        Ok(Some(latest)) => {
-                            if latest == package.version {
-                                println!("{} is already up to date ({})", package.name, package.version);
-                                return;
-                            }
+                Some(package) => match check_for_update(package) {
+                    Ok(Some(latest)) => {
+                        if latest == package.version {
+                            println!(
+                                "{} is already up to date ({})",
+                                package.name, package.version
+                            );
+                            return;
+                        }
 
-                            match plan_recipe_update(package, &latest) {
-                                Ok(plan) => {
-                                    if let Err(message) = write_recipe_update(package, &plan) {
-                                        eprintln!("Error: {}", message);
-                                        return;
-                                    }
-
-                                    println!("Updated recipe: {}", recipe_path(&package.name));
-                                    println!("{} {} -> {}", package.name, package.version, plan.version);
-                                }
-                                Err(message) => {
+                        match plan_recipe_update(package, &latest) {
+                            Ok(plan) => {
+                                if let Err(message) = write_recipe_update(package, &plan) {
                                     eprintln!("Error: {}", message);
+                                    return;
                                 }
+
+                                println!("Updated recipe: {}", recipe_path(&package.name));
+                                println!(
+                                    "{} {} -> {}",
+                                    package.name, package.version, plan.version
+                                );
                             }
-                        }
-                        Ok(None) => {
-                            println!("{} has no update metadata", package.name);
-                        }
-                        Err(message) => {
-                            eprintln!("Error: {}", message);
+                            Err(message) => {
+                                eprintln!("Error: {}", message);
+                            }
                         }
                     }
-                }
+                    Ok(None) => {
+                        println!("{} has no update metadata", package.name);
+                    }
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                    }
+                },
                 None => {
                     eprintln!("Package not found: {}", name);
                 }
@@ -559,7 +559,8 @@ fn print_help() {
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
     let mut packages = Vec::new();
 
-    let entries = fs::read_dir(repo_path).map_err(|error| format!("Failed to read repo directory '{}': {}", repo_path, error))?;
+    let entries = fs::read_dir(repo_path)
+        .map_err(|error| format!("Failed to read repo directory '{}': {}", repo_path, error))?;
 
     for entry in entries {
         let entry = entry.map_err(|error| format!("Failed to read directory entry: {}", error))?;
@@ -569,8 +570,20 @@ fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
             continue;
         }
 
-        let contents = fs::read_to_string(&path).map_err(|error| format!("Failed to read package file '{}': {}", path.display(), error))?;
-        let package = toml::from_str(&contents).map_err(|error| format!("Failed to parse package file '{}': {}", path.display(), error))?;
+        let contents = fs::read_to_string(&path).map_err(|error| {
+            format!(
+                "Failed to read package file '{}': {}",
+                path.display(),
+                error
+            )
+        })?;
+        let package = toml::from_str(&contents).map_err(|error| {
+            format!(
+                "Failed to parse package file '{}': {}",
+                path.display(),
+                error
+            )
+        })?;
 
         packages.push(package);
     }
@@ -587,7 +600,6 @@ fn print_deps(packages: &[Package], package: &Package, depth: usize) {
 
     if depth == 0 {
         println!("{}", package.name);
-
     } else {
         println!("{}└── {}", indent, package.name);
     }
@@ -613,7 +625,7 @@ fn resolve_package(
     packages: &[Package],
     name: &str,
     visited: &mut HashSet<String>,
-    order: &mut Vec<String>,    
+    order: &mut Vec<String>,
 ) -> Result<(), String> {
     if visited.contains(name) {
         return Ok(());
@@ -662,7 +674,7 @@ fn fetch_package(package: &Package) -> Result<(), String> {
     }
 
     println!("Fetching {} from {}", package.name, package.source);
-    
+
     let client = reqwest::blocking::Client::builder()
         .user_agent("mahou/0.1")
         .build()
@@ -735,7 +747,7 @@ fn source_filename(package: &Package) -> Result<&str, String> {
 
 fn extract_package(package: &Package) -> Result<(), String> {
     fetch_package(package)?;
-    
+
     fs::create_dir_all(build_dir())
         .map_err(|error| format!("Failed to create build directory: {}", error))?;
 
@@ -765,9 +777,11 @@ fn extract_package(package: &Package) -> Result<(), String> {
     if fs::metadata(&source_dir).is_ok() {
         println!("Extracted: {}", source_dir);
         Ok(())
-    }
-    else {
-        Err(format!("Expected source directory '{}' not found after extraction", source_dir))
+    } else {
+        Err(format!(
+            "Expected source directory '{}' not found after extraction",
+            source_dir
+        ))
     }
 }
 
@@ -802,7 +816,7 @@ fn build_package(package: &Package) -> Result<(), String> {
     }
 
     clean_stage(package)?;
-    
+
     extract_package(package)?;
 
     println!("Building {} {}", package.name, package.version);
@@ -819,8 +833,7 @@ fn build_package(package: &Package) -> Result<(), String> {
 }
 
 fn sha256_file(path: &str) -> Result<String, String> {
-    let contents = fs::read(path)
-        .map_err(|error| format!("Failed to read {}: {}", path, error))?;
+    let contents = fs::read(path).map_err(|error| format!("Failed to read {}: {}", path, error))?;
 
     Ok(sha256_bytes(&contents))
 }
@@ -851,7 +864,7 @@ fn mark_built(package: &Package) -> Result<(), String> {
 
     fs::write(
         &marker_path,
-        format!("{} {}\n", package.name, package.version)
+        format!("{} {}\n", package.name, package.version),
     )
     .map_err(|error| format!("Failed to write build marker {}: {}", marker_path, error))?;
 
@@ -885,10 +898,13 @@ fn collect_files(root: &str) -> Result<Vec<String>, String> {
     files.sort();
 
     Ok(files)
-
 }
 
-fn collect_files_recursive(base: &str, current: &str, files: &mut Vec<String>) -> Result<(), String> {
+fn collect_files_recursive(
+    base: &str,
+    current: &str,
+    files: &mut Vec<String>,
+) -> Result<(), String> {
     let entries = fs::read_dir(current)
         .map_err(|error| format!("Failed to read directory {}: {}", current, error))?;
 
@@ -911,11 +927,9 @@ fn collect_files_recursive(base: &str, current: &str, files: &mut Vec<String>) -
 
             files.push(format!("/{}", relative));
         }
-
     }
 
     Ok(())
-
 }
 
 fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
@@ -927,8 +941,9 @@ fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
         let target = file.to_string();
 
         if let Some(parent) = std::path::Path::new(&target).parent() {
-            fs::create_dir_all(parent)
-                .map_err(|error| format!("Failed to create directory {}: {}", parent.display(), error))?;
+            fs::create_dir_all(parent).map_err(|error| {
+                format!("Failed to create directory {}: {}", parent.display(), error)
+            })?;
         }
 
         let metadata = fs::symlink_metadata(&source)
@@ -945,15 +960,13 @@ fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
 
             unix_fs::symlink(&link_target, &target)
                 .map_err(|error| format!("Failed to create symlink {}: {}", target, error))?;
-        }
-        else {
+        } else {
             fs::copy(&source, &target)
                 .map_err(|error| format!("Failed to copy {} to {}: {}", source, target, error))?;
         }
     }
 
     Ok(files)
-
 }
 
 fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
@@ -1043,7 +1056,8 @@ fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
         .map_err(|error| format!("Failed to read install database: {}", error))?;
 
     for entry in entries {
-        let entry = entry.map_err(|error| format!("Failed to read install database entry: {}", error))?;
+        let entry =
+            entry.map_err(|error| format!("Failed to read install database entry: {}", error))?;
         let path = entry.path();
 
         if path.extension().and_then(|ext| ext.to_str()) != Some("toml") {
@@ -1193,16 +1207,15 @@ fn replace_toml_string_field(contents: &str, key: &str, value: &str) -> String {
 fn write_recipe_update(package: &Package, plan: &RecipeUpdate) -> Result<(), String> {
     let path = recipe_path(&package.name);
 
-    let contents = fs::read_to_string(&path)
-        .map_err(|error| format!("Failed to read {}: {}", path, error))?;
+    let contents =
+        fs::read_to_string(&path).map_err(|error| format!("Failed to read {}: {}", path, error))?;
 
     let contents = replace_toml_string_field(&contents, "version", &plan.version);
     let contents = replace_toml_string_field(&contents, "source", &plan.source);
     let contents = replace_toml_string_field(&contents, "sha256", &plan.sha256);
     let contents = replace_toml_string_field(&contents, "source_dir", &plan.source_dir);
 
-    fs::write(&path, contents)
-        .map_err(|error| format!("Failed to write {}: {}", path, error))?;
+    fs::write(&path, contents).map_err(|error| format!("Failed to write {}: {}", path, error))?;
 
     Ok(())
 }
@@ -1260,7 +1273,6 @@ fn recipe_repo_url() -> &'static str {
 }
 
 fn sync_recipe_repo() -> Result<(), String> {
-
     let repo_path = "/var/lib/mahou/repos/main";
 
     if fs::metadata(repo_path).is_ok() {
@@ -1305,13 +1317,25 @@ fn sync_recipe_repo() -> Result<(), String> {
 fn sync_upstream_recipes() -> Result<(), String> {
     let packages = load_repo_or_exit();
 
-    for package in &packages {
-        let Some(_) = &package.update else {
-            continue;
-        };
+    let mut checked = 0;
+    let mut updated = 0;
+    let mut failed = 0;
 
-        let Some(latest) = check_for_update(package)? else {
+    for package in &packages {
+        if package.update.is_none() {
             continue;
+        }
+
+        checked += 1;
+
+        let latest = match check_for_update(package) {
+            Ok(Some(latest)) => latest,
+            Ok(None) => continue,
+            Err(message) => {
+                failed += 1;
+                eprintln!("Warning: failed to check {}: {}", package.name, message);
+                continue;
+            }
         };
 
         if latest == package.version {
@@ -1319,12 +1343,38 @@ fn sync_upstream_recipes() -> Result<(), String> {
             continue;
         }
 
-        let plan = plan_recipe_update(package, &latest)?;
-        write_recipe_update(package, &plan)?;
+        let plan = match plan_recipe_update(package, &latest) {
+            Ok(plan) => plan,
+            Err(message) => {
+                failed += 1;
+                eprintln!(
+                    "Warning: failed to prepare update for {}: {}",
+                    package.name, message
+                );
+                continue;
+            }
+        };
 
-        println!("Updated: {} {} -> {}", package.name, package.version, plan.version);
+        if let Err(message) = write_recipe_update(package, &plan) {
+            failed += 1;
+            eprintln!(
+                "Warning: failed to write update for {}: {}",
+                package.name, message
+            );
+            continue;
+        }
 
+        updated += 1;
+        println!(
+            "Updated: {} {} -> {}",
+            package.name, package.version, plan.version
+        );
     }
+
+    println!(
+        "Sync complete: checked {}, updated {}, failed {}",
+        checked, updated, failed
+    );
 
     Ok(())
 }
