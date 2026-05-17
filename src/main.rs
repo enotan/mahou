@@ -5,6 +5,8 @@ use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::process::Command;
 use std::os::unix::fs as unix_fs;
+use regex::Regex;
+use std::cmp::Ordering;
 
 #[derive(Debug, Deserialize)]
 struct Package {
@@ -16,6 +18,15 @@ struct Package {
     source_dir: String,
     deps: Vec<String>,
     build_steps: Vec<String>,
+    update: Option<UpdateInfo>,
+}
+
+#[derive(Debug, Deserialize)]
+struct UpdateInfo {
+    check_url: String,
+    version_pattern: String,
+    source_template: String,
+    source_dir_template: String,
 }
 
 #[derive(Debug, Deserialize)]
@@ -378,6 +389,38 @@ fn main() {
                 }
             }
         }
+        "update-check" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+
+            match find_package(&packages, name) {
+                Some(package) => {
+                    match check_for_update(package) {
+                        Ok(Some(latest)) => {
+                            if latest == package.version {
+                                println!("{} is up to date ({})", package.name, package.version);
+                            } else {
+                                println!("{} {} -> {}", package.name, package.version, latest);
+                            }
+                        }
+                        Ok(None) => {
+                            println!("{} has no update metadata", package.name);
+                        }
+                        Err(message) => {
+                            eprintln!("Error: {}", message);
+                        }
+                    }
+                }
+                None => {
+                    eprintln!("Package not found: {}", name);
+                }
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -402,6 +445,7 @@ fn print_help() {
     println!("  mahou help");
     println!("  mahou files <name>");
     println!("  mahou outdated");
+    println!("  mahou update-check <name>");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -895,4 +939,67 @@ fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
 
     records.sort_by(|a, b| a.name.cmp(&b.name));
     Ok(records)
+}
+
+fn check_for_update(package: &Package) -> Result<Option<String>, String> {
+    let Some(update) = &package.update else {
+        return Ok(None);
+    };
+
+    let body = reqwest::blocking::Client::builder()
+        .user_agent("mahou/0.1")
+        .build()
+        .map_err(|error| format!("Failed to create HTTP client: {}", error))?
+        .get(&update.check_url)
+        .send()
+        .map_err(|error| format!("Failed to check {}: {}", update.check_url, error))?
+        .error_for_status()
+        .map_err(|error| format!("Update check failed for {}: {}", update.check_url, error))?
+        .text()
+        .map_err(|error| format!("Failed to read update response: {}", error))?;
+
+    let regex = Regex::new(&update.version_pattern)
+        .map_err(|error| format!("Invalid version pattern for {}: {}", package.name, error))?;
+
+    let mut newest = package.version.clone();
+
+    for captures in regex.captures_iter(&body) {
+        let Some(version) = captures.get(1) else {
+            continue;
+        };
+
+        let version = version.as_str();
+
+        if compare_versions(version, &newest).is_gt() {
+            newest = version.to_string();
+        }
+    }
+
+    Ok(Some(newest))
+}
+
+fn version_parts(version: &str) -> Vec<u64> {
+    version
+        .split(|character: char| !character.is_ascii_digit())
+        .filter(|part| !part.is_empty())
+        .map(|part| part.parse::<u64>().unwrap_or(0))
+        .collect()
+}
+
+fn compare_versions(left: &str, right: &str) -> Ordering {
+    let left_parts = version_parts(left);
+    let right_parts = version_parts(right);
+    let max_len = left_parts.len().max(right_parts.len());
+
+    for i in 0..max_len {
+        let left_part = left_parts.get(i).copied().unwrap_or(0);
+        let right_part = right_parts.get(i).copied().unwrap_or(0);
+
+        match left_part.cmp(&right_part) {
+            Ordering::Equal => {}
+            ordering => return ordering,
+        }
+    }
+
+    Ordering::Equal
 }
