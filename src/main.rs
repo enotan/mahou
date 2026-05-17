@@ -510,6 +510,16 @@ fn main() {
         "repo-path" => {
             println!("{}", recipe_repo_path());
         }
+        "sync" => {
+            if let Err(message) = sync_recipe_repo() {
+                eprintln!("Error: {}", message);
+                return;
+            }
+
+            if let Err(message) = sync_upstream_recipes() {
+                eprintln!("Error: {}", message);
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -537,6 +547,7 @@ fn print_help() {
     println!("  mahou update-check <name>");
     println!("  mahou update-recipe <name>");
     println!("  mahou repo-path");
+    println!("  mahou sync");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -1226,6 +1237,80 @@ fn recipe_repo_path() -> String {
     if fs::metadata("repo").is_ok() {
         "repo".to_string()
     } else {
-        "/var/lib/mahou/repos/main".to_string()
+        "/var/lib/mahou/repos/main/repo".to_string()
     }
+}
+
+fn recipe_repo_url() -> &'static str {
+    "https://github.com/enotan/mahou-recipes.git"
+}
+
+fn sync_recipe_repo() -> Result<(), String> {
+
+    let repo_path = "/var/lib/mahou/repos/main";
+
+    if fs::metadata(repo_path).is_ok() {
+        println!("Syncing recipe repo: {}", repo_path);
+
+        let status = Command::new("git")
+            .arg("-C")
+            .arg(repo_path)
+            .arg("pull")
+            .arg("--ff-only")
+            .status()
+            .map_err(|error| format!("Failed to run git pull: {}", error))?;
+
+        if !status.success() {
+            return Err("git pull failed".to_string());
+        }
+
+        return Ok(());
+    }
+
+    println!("Cloning recipe repo into {}", repo_path);
+
+    if let Some(parent) = std::path::Path::new(repo_path).parent() {
+        fs::create_dir_all(parent)
+            .map_err(|error| format!("Failed to create repo directory: {}", error))?;
+    }
+
+    let status = Command::new("git")
+        .arg("clone")
+        .arg(recipe_repo_url())
+        .arg(repo_path)
+        .status()
+        .map_err(|error| format!("Failed to run git clone: {}", error))?;
+
+    if !status.success() {
+        return Err("Git clone failed".to_string());
+    }
+
+    Ok(())
+}
+
+fn sync_upstream_recipes() -> Result<(), String> {
+    let packages = load_repo_or_exit();
+
+    for package in &packages {
+        let Some(_) = &package.update else {
+            continue;
+        };
+
+        let Some(latest) = check_for_update(package)? else {
+            continue;
+        };
+
+        if latest == package.version {
+            println!("Up to date: {}", package.name);
+            continue;
+        }
+
+        let plan = plan_recipe_update(package, &latest)?;
+        write_recipe_update(package, &plan)?;
+
+        println!("Updated: {} {} -> {}", package.name, package.version, plan.version);
+
+    }
+
+    Ok(())
 }
