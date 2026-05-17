@@ -60,7 +60,9 @@ fn main() {
             }
 
             let query = &args[2];
-            let packages = match load_packages("repo") {
+            let repo_path = recipe_repo_path();
+
+            let packages = match load_packages(&repo_path) {
                 Ok(packages) => packages,
                 Err(message) => {
                     eprint!("error: {}", message);
@@ -505,6 +507,9 @@ fn main() {
                 }
             }
         }
+        "repo-path" => {
+            println!("{}", recipe_repo_path());
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -531,6 +536,7 @@ fn print_help() {
     println!("  mahou outdated");
     println!("  mahou update-check <name>");
     println!("  mahou update-recipe <name>");
+    println!("  mahou repo-path");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -612,7 +618,9 @@ fn resolve_package(
 }
 
 fn load_repo_or_exit() -> Vec<Package> {
-    match load_packages("repo") {
+    let repo_path = recipe_repo_path();
+
+    match load_packages(&repo_path) {
         Ok(packages) => packages,
         Err(message) => {
             eprintln!("{}", message);
@@ -1212,4 +1220,12 @@ fn refresh_recipes_for_order(packages: &[Package], order: &[String]) -> Result<b
     }
 
     Ok(changed)
+}
+
+fn recipe_repo_path() -> String {
+    if fs::metadata("repo").is_ok() {
+        "repo".to_string()
+    } else {
+        "/var/lib/mahou/repos/main".to_string()
+    }
 }
