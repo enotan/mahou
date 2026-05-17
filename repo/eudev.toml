@@ -1,0 +1,19 @@
+name = "eudev"
+version = "3.2.14"
+description = "Linux device manager providing libudev"
+source = "https://github.com/eudev-project/eudev/releases/download/v3.2.14/eudev-3.2.14.tar.gz"
+sha256 = "8da4319102f24abbf7fff5ce9c416af848df163b29590e666d334cc1927f006f"
+source_dir = "eudev-3.2.14"
+deps = ["gperf", "m4"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --libdir=/usr/lib --with-rootprefix=/usr --with-rootlibdir=/usr/lib --with-rootlibexecdir=/usr/lib/udev --disable-blkid --disable-selinux --disable-manpages --disable-kmod --disable-hwdb --disable-rule-generator --disable-mtd_probe",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/eudev-project/eudev/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/eudev-project/eudev/releases/download/v{version}/eudev-{version}.tar.gz"
+source_dir_template = "eudev-{version}"

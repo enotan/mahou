@@ -1,0 +1,19 @@
+name = "nmap"
+version = "7.99"
+description = "Network exploration and security auditing utility"
+source = "https://nmap.org/dist/nmap-7.99.tar.bz2"
+sha256 = "df512492ffd108e53a27a06f26d8635bbe89e0e569455dc8ffef058c035d51b2"
+source_dir = "nmap-7.99"
+deps = ["libpcap", "libssh2", "openssl", "pcre2", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --without-zenmap --with-openssl=/usr --with-libpcap=/usr --with-libpcre=/usr --with-libz=/usr --with-libssh2=/usr --with-liblua=included --with-liblinear=included",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://nmap.org/dist/"
+version_pattern = "nmap-([0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://nmap.org/dist/nmap-{version}.tar.bz2"
+source_dir_template = "nmap-{version}"

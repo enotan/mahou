@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "http://dist.schmorp.de/libev/"
+version_pattern = "libev-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://dist.schmorp.de/libev/libev-{version}.tar.gz"
+source_dir_template = "libev-{version}"

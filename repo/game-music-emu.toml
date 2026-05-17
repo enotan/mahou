@@ -1,0 +1,19 @@
+name = "game-music-emu"
+version = "0.6.5"
+description = "Video game music file emulation library"
+source = "https://github.com/libgme/game-music-emu/archive/refs/tags/0.6.5.tar.gz"
+sha256 = "8531678502451c2cf04248cda45c8b4645e19fcfb63e6a7ec2549641c47bb392"
+source_dir = "game-music-emu-0.6.5"
+deps = ["cmake", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DGME_BUILD_SHARED=ON -DGME_BUILD_STATIC=OFF -DGME_BUILD_TESTING=OFF -DGME_BUILD_EXAMPLES=OFF -DGME_UNRAR=OFF -DGME_ZLIB=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libgme/game-music-emu/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libgme/game-music-emu/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "game-music-emu-{version}"

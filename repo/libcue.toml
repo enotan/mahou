@@ -1,0 +1,18 @@
+name = "libcue"
+version = "2.3.0"
+description = "CUE sheet parsing library"
+source = "https://github.com/lipnitsk/libcue/archive/refs/tags/v2.3.0.tar.gz"
+sha256 = "cc1b3a65c60bd88b77a1ddd1574042d83cf7cc32b85fe9481c99613359eb7cfe"
+source_dir = "libcue-2.3.0"
+deps = ["bison", "cmake", "flex"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/lipnitsk/libcue/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/lipnitsk/libcue/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libcue-{version}"

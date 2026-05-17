@@ -3,7 +3,7 @@ version = "2.3.8"
 description = "An implementation of the IDNA2008 specifications (RFCs 5890, 5891, 5892, 5893)"
 source = "https://ftpmirror.gnu.org/libidn/libidn2-2.3.8.tar.gz"
 sha256 = "f557911bf6171621e1f72ff35f5b1825bb35b52ed45325dcdee931e5d3c0787a"
-source_dir = "${WORKDIR}"
+source_dir = "libidn2-2.3.8"
 deps = []
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libidn/"
+version_pattern = "libidn2-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://ftpmirror.gnu.org/libidn/libidn2-{version}.tar.gz"
+source_dir_template = "libidn2-{version}"

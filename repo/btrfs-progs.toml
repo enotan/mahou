@@ -1,0 +1,19 @@
+name = "btrfs-progs"
+version = "7.0"
+description = "User-space utilities for the Btrfs filesystem"
+source = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v7.0.tar.xz"
+sha256 = "c286d6876cbcd72327a0b417e4cfd280353ec23e37b549fdbcd7800a832d9a99"
+source_dir = "btrfs-progs-v7.0"
+deps = ["eudev", "lzo", "util-linux", "zlib", "zstd"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-documentation --disable-python --disable-convert --disable-zoned --with-crypto=builtin",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/"
+version_pattern = "btrfs-progs-v?([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/kdave/btrfs-progs/btrfs-progs-v{version}.tar.xz"
+source_dir_template = "btrfs-progs-v{version}"

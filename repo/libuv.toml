@@ -11,3 +11,9 @@ build_steps = [
   "cmake --build build",
   "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/libuv/libuv/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://dist.libuv.org/dist/v{version}/libuv-v{version}.tar.gz"
+source_dir_template = "libuv-v{version}"

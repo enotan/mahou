@@ -1,0 +1,19 @@
+name = "getdns"
+version = "1.7.3"
+description = "Modern asynchronous DNS API"
+source = "https://github.com/getdnsapi/getdns/archive/refs/tags/v1.7.3.tar.gz"
+sha256 = "7cbdaf094db739dae1c17be00ae59d4bc3f06bf17e1ded326a8eaf65f2a07889"
+source_dir = "getdns-1.7.3"
+deps = ["cmake", "libevent", "libidn2", "openssl", "unbound"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED=ON -DENABLE_STATIC=OFF -DUSE_LIBIDN2=ON -DUSE_GNUTLS=OFF -DENABLE_STUB_ONLY=OFF -DENABLE_UNBOUND_EVENT_API=ON -DBUILD_LIBEV=OFF -DBUILD_LIBEVENT2=ON -DBUILD_LIBUV=OFF -DBUILD_EXAMPLES=OFF -DBUILD_STUBBY=OFF -DBUILD_DOXYGEN=OFF -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/getdnsapi/getdns/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/getdnsapi/getdns/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "getdns-{version}"

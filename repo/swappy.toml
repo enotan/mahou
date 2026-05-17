@@ -1,0 +1,19 @@
+name = "swappy"
+version = "1.8.0"
+description = "Wayland screenshot annotation tool"
+source = "https://github.com/jtheoof/swappy/archive/refs/tags/v1.8.0.tar.gz"
+sha256 = "11f5bedde6cce4db0d27eb7107d7ce46e20d021255450eeba2c2036e10570520"
+source_dir = "swappy-1.8.0"
+deps = ["cairo", "gtk+", "pango"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jtheoof/swappy/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jtheoof/swappy/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "swappy-{version}"

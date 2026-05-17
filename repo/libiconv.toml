@@ -1,0 +1,23 @@
+name = "libiconv"
+version = "1.18"
+description = "Character set conversion library"
+license = "LGPL-2.1-or-later"
+homepage = "https://www.gnu.org/software/libiconv/"
+
+source = "https://ftp.gnu.org/gnu/libiconv/libiconv-1.18.tar.gz"
+sha256 = "3b08f5f4f9b4eb82f151a7040bfd6fe6c6fb922efe4b1659c66ea933276965e8"
+source_dir = "libiconv-1.18"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libiconv/"
+version_pattern = "libiconv-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/libiconv/libiconv-{version}.tar.gz"
+source_dir_template = "libiconv-{version}"

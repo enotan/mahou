@@ -1,0 +1,19 @@
+name = "cjson"
+version = "1.7.19"
+description = "Ultralightweight JSON parser in ANSI C"
+source = "https://github.com/DaveGamble/cJSON/archive/refs/tags/v1.7.19.tar.gz"
+sha256 = "7fa616e3046edfa7a28a32d5f9eacfd23f92900fe1f8ccd988c1662f30454562"
+source_dir = "cJSON-1.7.19"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_CJSON_TEST=OFF -DENABLE_CJSON_UTILS=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/DaveGamble/cJSON/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/DaveGamble/cJSON/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "cJSON-{version}"

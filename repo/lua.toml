@@ -1,0 +1,18 @@
+name = "lua"
+version = "5.4.8"
+description = "Lightweight embeddable scripting language"
+source = "https://www.lua.org/ftp/lua-5.4.8.tar.gz"
+sha256 = "4f18ddae154e793e46eeab727c59ef1c0c0c2b744e7b94219710d76f530629ae"
+source_dir = "lua-5.4.8"
+deps = ["readline"]
+
+build_steps = [
+  "make linux-readline",
+  "make INSTALL_TOP=${MAHOU_DESTDIR}/usr INSTALL_MAN=${MAHOU_DESTDIR}/usr/share/man/man1 install",
+]
+
+[update]
+check_url = "https://www.lua.org/ftp/"
+version_pattern = "lua-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.lua.org/ftp/lua-{version}.tar.gz"
+source_dir_template = "lua-{version}"

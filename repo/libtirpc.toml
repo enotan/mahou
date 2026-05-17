@@ -1,0 +1,19 @@
+name = "libtirpc"
+version = "1.3.7"
+description = "Transport Independent RPC library"
+source = "https://downloads.sourceforge.net/libtirpc/libtirpc-1.3.7.tar.bz2"
+sha256 = "b47d3ac19d3549e54a05d0019a6c400674da716123858cfdb6d3bdd70a66c702"
+source_dir = "libtirpc-1.3.7"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-gssapi",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/libtirpc/files/libtirpc/"
+version_pattern = "libtirpc-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://downloads.sourceforge.net/libtirpc/libtirpc-{version}.tar.bz2"
+source_dir_template = "libtirpc-{version}"

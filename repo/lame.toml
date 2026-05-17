@@ -1,0 +1,19 @@
+name = "lame"
+version = "3.100"
+description = "High quality MPEG Audio Layer III encoder"
+source = "https://downloads.sourceforge.net/project/lame/lame/3.100/lame-3.100.tar.gz"
+sha256 = "ddfe36cab873794038ae2c1210557ad34857a4b6bdc515785d1da9e175b1da1e"
+source_dir = "lame-3.100"
+deps = ["nasm"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --enable-nasm",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/lame/files/lame/"
+version_pattern = "/lame/([0-9]+\\.[0-9]+)/"
+source_template = "https://downloads.sourceforge.net/project/lame/lame/{version}/lame-{version}.tar.gz"
+source_dir_template = "lame-{version}"

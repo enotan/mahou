@@ -1,0 +1,23 @@
+name = "units"
+version = "2.24"
+description = "Unit conversion and calculation utility"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/units/"
+
+source = "https://ftp.gnu.org/gnu/units/units-2.24.tar.gz"
+sha256 = "1e502c4edfacf20b29284716c72e5ddb51a495a2365d7b03e7960494c4a0c902"
+source_dir = "units-2.24"
+
+deps = ["readline"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/units/"
+version_pattern = "units-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/units/units-{version}.tar.gz"
+source_dir_template = "units-{version}"

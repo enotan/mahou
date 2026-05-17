@@ -1,0 +1,19 @@
+name = "tidy-html5"
+version = "5.8.0"
+description = "HTML and XML syntax checker and reformatter"
+source = "https://github.com/htacg/tidy-html5/archive/refs/tags/5.8.0.tar.gz"
+sha256 = "59c86d5b2e452f63c5cdb29c866a12a4c55b1741d7025cf2f3ce0cde99b0660e"
+source_dir = "tidy-html5-5.8.0"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DSUPPORT_LOCALIZATIONS=OFF -DBUILD_TAB2SPACE=OFF -DBUILD_SAMPLE_CODE=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/htacg/tidy-html5/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/htacg/tidy-html5/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "tidy-html5-{version}"

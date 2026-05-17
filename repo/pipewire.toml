@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://gitlab.freedesktop.org/pipewire/pipewire/-/tags"
+version_pattern = "pipewire-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/{version}/pipewire-{version}.tar.bz2"
+source_dir_template = "pipewire-{version}"

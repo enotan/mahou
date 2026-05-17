@@ -1,0 +1,19 @@
+name = "cscope"
+version = "15.8b"
+description = "Text screen based source browser"
+source = "https://downloads.sourceforge.net/project/cscope/cscope/15.8b/cscope-15.8b.tar.gz"
+sha256 = "4889d091f05aa0845384b1e4965aa31d2b20911fb2c001b2cdcffbcb7212d3af"
+source_dir = "cscope-15.8b"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/cscope/files/cscope/"
+version_pattern = "cscope/([0-9]+\\.[0-9]+[a-z]?)"
+source_template = "https://downloads.sourceforge.net/project/cscope/cscope/{version}/cscope-{version}.tar.gz"
+source_dir_template = "cscope-{version}"

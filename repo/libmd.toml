@@ -1,0 +1,19 @@
+name = "libmd"
+version = "1.2.0"
+description = "Message digest functions from BSD systems"
+source = "https://archive.hadrons.org/software/libmd/libmd-1.2.0.tar.xz"
+sha256 = "ac15ffb8430502fbaccdec66c5a82ee0eab0b0f36220df56710feadfeb13d0a0"
+source_dir = "libmd-1.2.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://archive.hadrons.org/software/libmd/"
+version_pattern = "libmd-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://archive.hadrons.org/software/libmd/libmd-{version}.tar.xz"
+source_dir_template = "libmd-{version}"

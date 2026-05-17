@@ -1,0 +1,19 @@
+name = "nghttp3"
+version = "1.12.0"
+description = "HTTP/3 library written in C"
+source = "https://github.com/ngtcp2/nghttp3/releases/download/v1.12.0/nghttp3-1.12.0.tar.xz"
+sha256 = "6ca1e523b7edd75c02502f2bcf961125c25577e29405479016589c5da48fc43d"
+source_dir = "nghttp3-1.12.0"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED_LIB=ON -DENABLE_STATIC_LIB=OFF -DENABLE_LIB_ONLY=ON -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ngtcp2/nghttp3/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ngtcp2/nghttp3/releases/download/v{version}/nghttp3-{version}.tar.xz"
+source_dir_template = "nghttp3-{version}"

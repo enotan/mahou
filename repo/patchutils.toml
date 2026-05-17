@@ -1,0 +1,19 @@
+name = "patchutils"
+version = "0.4.5"
+description = "Utilities for manipulating patch files"
+source = "https://github.com/twaugh/patchutils/releases/download/0.4.5/patchutils-0.4.5.tar.xz"
+sha256 = "8386a35a4d2d3cbc28fdcc93c5be007c382c78e3ee079070139f0d822e013325"
+source_dir = "patchutils-0.4.5"
+deps = ["diffutils", "patch"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-pcre2=no --with-diff=/usr/bin/diff --with-patch=/usr/bin/patch",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/twaugh/patchutils/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/twaugh/patchutils/releases/download/{version}/patchutils-{version}.tar.xz"
+source_dir_template = "patchutils-{version}"

@@ -1,0 +1,19 @@
+name = "bubblewrap"
+version = "0.11.2"
+description = "Unprivileged sandboxing tool using Linux namespaces"
+source = "https://github.com/containers/bubblewrap/archive/refs/tags/v0.11.2.tar.gz"
+sha256 = "3fc7b94dd133539365dc573fe79d207802ce433e6e34b791a8b1080b17803a28"
+source_dir = "bubblewrap-0.11.2"
+deps = ["libcap", "meson", "ninja", "pkgconf"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dman=disabled -Dselinux=disabled -Dtests=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/containers/bubblewrap/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/containers/bubblewrap/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "bubblewrap-{version}"

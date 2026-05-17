@@ -1,0 +1,23 @@
+name = "datamash"
+version = "1.9"
+description = "Command-line statistical and text processing tool"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/datamash/"
+
+source = "https://ftp.gnu.org/gnu/datamash/datamash-1.9.tar.gz"
+sha256 = "f382ebda03650dd679161f758f9c0a6cc9293213438d4a77a8eda325aacb87d2"
+source_dir = "datamash-1.9"
+
+deps = ["gmp"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/datamash/"
+version_pattern = "datamash-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/datamash/datamash-{version}.tar.gz"
+source_dir_template = "datamash-{version}"

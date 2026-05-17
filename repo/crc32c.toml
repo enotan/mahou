@@ -1,0 +1,18 @@
+name = "crc32c"
+version = "1.1.2"
+description = "CRC32C implementation with CPU-specific acceleration"
+source = "https://github.com/google/crc32c/archive/refs/tags/1.1.2.tar.gz"
+sha256 = "ac07840513072b7fcebda6e821068aa04889018f24e10e46181068fb214d7e56"
+source_dir = "crc32c-1.1.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCRC32C_BUILD_TESTS=OFF -DCRC32C_BUILD_BENCHMARKS=OFF -DCRC32C_USE_GLOG=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/crc32c/tags"
+version_pattern = "\"name\"\\s*:\\s*\"([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/google/crc32c/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "crc32c-{version}"

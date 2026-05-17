@@ -1,0 +1,19 @@
+name = "minicom"
+version = "2.11.1"
+description = "Menu-driven serial communication program"
+source = "https://salsa.debian.org/minicom-team/minicom/-/archive/2.11.1/minicom-2.11.1.tar.bz2"
+sha256 = "87cf0da91af0531357cd61b8e1906b907edd2c9ef82f9ae74c277e1893d0f98c"
+source_dir = "minicom-2.11.1"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-nls --disable-lockdev --enable-lock-dir=/var/lock",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://salsa.debian.org/minicom-team/minicom/-/tags"
+version_pattern = "minicom-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.bz2"
+source_template = "https://salsa.debian.org/minicom-team/minicom/-/archive/{version}/minicom-{version}.tar.bz2"
+source_dir_template = "minicom-{version}"

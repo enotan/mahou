@@ -1,0 +1,19 @@
+name = "openexr"
+version = "3.4.11"
+description = "High dynamic-range image file format libraries and tools"
+source = "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v3.4.11.tar.gz"
+sha256 = "63730442f5fd6c5a79395bdd199040ab3821c229066049f52a57424a984b16ed"
+source_dir = "openexr-3.4.11"
+deps = ["cmake", "imath", "libdeflate", "pkgconf"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF -DOPENEXR_BUILD_PYTHON=OFF -DOPENEXR_BUILD_EXAMPLES=OFF -DOPENEXR_TEST_LIBRARIES=OFF -DOPENEXR_TEST_TOOLS=OFF -DOPENEXR_FORCE_INTERNAL_IMATH=OFF -DOPENEXR_FORCE_INTERNAL_DEFLATE=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/AcademySoftwareFoundation/openexr/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/AcademySoftwareFoundation/openexr/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "openexr-{version}"

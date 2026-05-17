@@ -1,0 +1,19 @@
+name = "twolame"
+version = "0.4.0"
+description = "Optimized MPEG Audio Layer 2 encoder"
+source = "https://downloads.sourceforge.net/project/twolame/twolame/0.4.0/twolame-0.4.0.tar.gz"
+sha256 = "cc35424f6019a88c6f52570b63e1baf50f62963a3eac52a03a800bb070d7c87d"
+source_dir = "twolame-0.4.0"
+deps = ["libsndfile"]
+
+build_steps = [
+  "./configure --prefix=/usr --enable-sndfile",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/twolame/files/twolame/"
+version_pattern = "twolame-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/project/twolame/twolame/{version}/twolame-{version}.tar.gz"
+source_dir_template = "twolame-{version}"

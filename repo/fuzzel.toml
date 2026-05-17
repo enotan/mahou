@@ -1,0 +1,19 @@
+name = "fuzzel"
+version = "1.14.1"
+description = "Wayland application launcher"
+source = "https://codeberg.org/dnkl/fuzzel/archive/1.14.1.tar.gz"
+sha256 = "c6416786c3a0600b8ad91ed951c43c002a639870c3823b4a60c910442f4ae097"
+source_dir = "fuzzel"
+deps = ["cairo", "fcft", "libpng", "libxkbcommon", "pixman", "tllist", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://codeberg.org/dnkl/fuzzel/releases"
+version_pattern = "releases/tag/([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://codeberg.org/dnkl/fuzzel/archive/{version}.tar.gz"
+source_dir_template = "fuzzel"

@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/linuxwacom/libwacom/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"libwacom-([^\"]+)\""
+source_template = "https://github.com/linuxwacom/libwacom/releases/download/libwacom-{version}/libwacom-{version}.tar.xz"
+source_dir_template = "libwacom-{version}"

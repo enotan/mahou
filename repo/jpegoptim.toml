@@ -1,0 +1,19 @@
+name = "jpegoptim"
+version = "1.5.6"
+description = "JPEG optimizer"
+source = "https://github.com/tjko/jpegoptim/releases/download/v1.5.6/jpegoptim-1.5.6.tar.gz"
+sha256 = "661a808dfffa933d78c6beb47a2937d572b9f03e94cbaaab3d4c0d72f410e9be"
+source_dir = "jpegoptim-1.5.6"
+deps = ["libjpeg-turbo"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/tjko/jpegoptim/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/tjko/jpegoptim/releases/download/v{version}/jpegoptim-{version}.tar.gz"
+source_dir_template = "jpegoptim-{version}"

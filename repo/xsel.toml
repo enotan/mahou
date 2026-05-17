@@ -1,0 +1,19 @@
+name = "xsel"
+version = "1.2.0"
+description = "Command-line X11 selection and clipboard tool"
+source = "https://www.vergenet.net/~conrad/software/xsel/download/xsel-1.2.0.tar.gz"
+sha256 = "b927ce08dc82f4c30140223959b90cf65e1076f000ce95e520419ec32f5b141c"
+source_dir = "xsel-1.2.0"
+deps = ["libX11"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.vergenet.net/~conrad/software/xsel/download/"
+version_pattern = "xsel-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.vergenet.net/~conrad/software/xsel/download/xsel-{version}.tar.gz"
+source_dir_template = "xsel-{version}"

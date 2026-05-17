@@ -1,0 +1,19 @@
+name = "libplacebo"
+version = "7.360.1"
+description = "Reusable GPU-accelerated video rendering library"
+source = "https://github.com/haasn/libplacebo/archive/refs/tags/v7.360.1.tar.gz"
+sha256 = "d05fdf90bea2f629eaa2d115e909fd356388ac639e54f77b87a018a6d76224bd"
+source_dir = "libplacebo-7.360.1"
+deps = ["lcms", "xxhash"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dvulkan=disabled -Dopengl=disabled -Dglslang=disabled -Dshaderc=disabled -Ddovi=disabled -Dlibdovi=disabled -Ddemos=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/haasn/libplacebo/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/haasn/libplacebo/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libplacebo-{version}"

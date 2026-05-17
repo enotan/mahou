@@ -1,0 +1,18 @@
+name = "swww"
+version = "0.11.2"
+description = "Efficient animated wallpaper daemon for Wayland"
+source = "https://github.com/LGFae/swww/archive/refs/tags/v0.11.2.tar.gz"
+sha256 = "ec903cc75deb007a7f842deac851d4d2fadb6361d7491e98e900d4858f2c8eb7"
+source_dir = "swww-0.11.2"
+deps = ["wayland"]
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/LGFae/swww/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/LGFae/swww/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "swww-{version}"

@@ -1,0 +1,18 @@
+name = "lmdb"
+version = "0.9.35"
+description = "Lightning Memory-Mapped Database"
+source = "https://github.com/LMDB/lmdb/archive/refs/tags/LMDB_0.9.35.tar.gz"
+sha256 = "18b021fd589d30cc08860a9550a30ae51637117451385e9581616da751326632"
+source_dir = "lmdb-LMDB_0.9.35"
+deps = []
+
+build_steps = [
+  "make -C libraries/liblmdb",
+  "make -C libraries/liblmdb DESTDIR=${MAHOU_DESTDIR} prefix=/usr install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/LMDB/lmdb/tags"
+version_pattern = "\"name\"\\s*:\\s*\"LMDB_([^\"]+)\""
+source_template = "https://github.com/LMDB/lmdb/archive/refs/tags/LMDB_{version}.tar.gz"
+source_dir_template = "lmdb-LMDB_{version}"

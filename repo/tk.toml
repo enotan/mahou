@@ -1,0 +1,19 @@
+name = "tk"
+version = "8.6.17"
+description = "Graphical toolkit for Tcl"
+source = "https://downloads.sourceforge.net/project/tcl/Tcl/8.6.17/tk8.6.17-src.tar.gz"
+sha256 = "e4982df6f969c08bf9dd858a6891059b4a3f50dc6c87c10abadbbe2fc4838946"
+source_dir = "tk8.6.17"
+deps = ["libX11", "libXext", "libXft", "tcl"]
+
+build_steps = [
+  "cd unix && ./configure --prefix=/usr --mandir=/usr/share/man --enable-threads --enable-shared --enable-xft --with-tcl=/usr/lib",
+  "cd unix && make",
+  "cd unix && make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/tcl/files/Tcl/"
+version_pattern = "/Tcl/([0-9]+\\.[0-9]+\\.[0-9]+)/"
+source_template = "https://downloads.sourceforge.net/project/tcl/Tcl/{version}/tk{version}-src.tar.gz"
+source_dir_template = "tk{version}"

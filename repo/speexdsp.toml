@@ -1,0 +1,19 @@
+name = "speexdsp"
+version = "1.2.1"
+description = "DSP library derived from Speex"
+source = "https://downloads.xiph.org/releases/speex/speexdsp-1.2.1.tar.gz"
+sha256 = "8c777343e4a6399569c72abc38a95b24db56882c83dbdb6c6424a5f4aeb54d3d"
+source_dir = "speexdsp-1.2.1"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://downloads.xiph.org/releases/speex/"
+version_pattern = "speexdsp-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.xiph.org/releases/speex/speexdsp-{version}.tar.gz"
+source_dir_template = "speexdsp-{version}"

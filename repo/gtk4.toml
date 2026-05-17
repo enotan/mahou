@@ -1,0 +1,19 @@
+name = "gtk4"
+version = "4.20.4"
+description = "GTK graphical user interface toolkit, version 4"
+source = "https://download.gnome.org/sources/gtk/4.20/gtk-4.20.4.tar.xz"
+sha256 = "a21f825bd44afc4dd99ba4eea8ff57c8f2e51085cb402a68ed4cbb35299826a4"
+source_dir = "gtk-4.20.4"
+deps = ["cairo", "fribidi", "gdk-pixbuf", "glib", "graphene", "harfbuzz", "libdrm", "libepoxy", "libjpeg-turbo", "libpng", "libxkbcommon", "pango", "tiff", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dx11-backend=false -Dmedia-gstreamer=disabled -Dvulkan=disabled -Dprint-cups=disabled -Dintrospection=disabled -Dbuild-demos=false -Dbuild-tests=false -Dbuild-testsuite=false -Dbuild-examples=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.gnome.org/sources/gtk/4.20/"
+version_pattern = "gtk-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/gtk/4.20/gtk-{version}.tar.xz"
+source_dir_template = "gtk-{version}"

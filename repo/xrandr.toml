@@ -1,0 +1,19 @@
+name = "xrandr"
+version = "1.5.4"
+description = "Command-line interface to the X Resize and Rotate extension"
+source = "https://www.x.org/releases/individual/app/xrandr-1.5.4.tar.xz"
+sha256 = "2cafccb2aaf2491a4068676117a0d4f90ab307724b96fffc54cd1da953779400"
+source_dir = "xrandr-1.5.4"
+deps = ["libX11", "libXrandr", "libXrender"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xrandr-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xrandr-{version}.tar.xz"
+source_dir_template = "xrandr-{version}"

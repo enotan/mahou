@@ -1,0 +1,18 @@
+name = "c-blosc"
+version = "1.21.6"
+description = "Blocking, shuffling, and lossless compression library"
+source = "https://github.com/Blosc/c-blosc/archive/refs/tags/v1.21.6.tar.gz"
+sha256 = "9fcd60301aae28f97f1301b735f966cc19e7c49b6b4321b839b4579a0c156f38"
+source_dir = "c-blosc-1.21.6"
+deps = ["cmake", "lz4", "zlib", "zstd"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED=ON -DBUILD_STATIC=OFF -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF -DPREFER_EXTERNAL_LZ4=ON -DPREFER_EXTERNAL_ZLIB=ON -DPREFER_EXTERNAL_ZSTD=ON",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Blosc/c-blosc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Blosc/c-blosc/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "c-blosc-{version}"

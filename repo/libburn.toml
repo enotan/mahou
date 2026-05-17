@@ -1,0 +1,19 @@
+name = "libburn"
+version = "1.5.6"
+description = "Library for reading and writing optical discs"
+source = "https://files.libburnia-project.org/releases/libburn-1.5.6.tar.gz"
+sha256 = "7295491b4be5eeac5e7a3fb2067e236e2955ffdc6bbd45f546466edee321644b"
+source_dir = "libburn-1.5.6"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-static --disable-libcdio --disable-ldconfig-at-install",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://files.libburnia-project.org/releases/"
+version_pattern = "libburn-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://files.libburnia-project.org/releases/libburn-{version}.tar.gz"
+source_dir_template = "libburn-{version}"

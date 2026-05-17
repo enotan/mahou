@@ -1,0 +1,19 @@
+name = "patchelf"
+version = "0.18.0"
+description = "Utility for modifying ELF interpreter and RPATH fields"
+source = "https://github.com/NixOS/patchelf/releases/download/0.18.0/patchelf-0.18.0.tar.bz2"
+sha256 = "1952b2a782ba576279c211ee942e341748fdb44997f704dd53def46cd055470b"
+source_dir = "patchelf-0.18.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/NixOS/patchelf/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/NixOS/patchelf/releases/download/{version}/patchelf-{version}.tar.bz2"
+source_dir_template = "patchelf-{version}"

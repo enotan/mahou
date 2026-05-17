@@ -1,0 +1,20 @@
+name = "lrzip"
+version = "0.651"
+description = "Long range ZIP compression program"
+source = "https://github.com/ckolivas/lrzip/archive/refs/tags/v0.651.tar.gz"
+sha256 = "f4c84de778a059123040681fd47c17565fcc4fec0ccc68fcf32d97fad16cd892"
+source_dir = "lrzip-0.651"
+deps = ["autoconf", "automake", "bzip2", "libtool", "lzo", "lz4", "pkgconf", "zlib"]
+
+build_steps = [
+  "NOCONFIGURE=1 ./autogen.sh",
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ckolivas/lrzip/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ckolivas/lrzip/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "lrzip-{version}"

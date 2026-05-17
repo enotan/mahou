@@ -1,0 +1,19 @@
+name = "xev"
+version = "1.2.6"
+description = "Print X events"
+source = "https://www.x.org/releases/individual/app/xev-1.2.6.tar.xz"
+sha256 = "61e1c5e008ac9973aca7cdddf36e9df7410e77083b030eb04f4dc737c51807d7"
+source_dir = "xev-1.2.6"
+deps = ["libX11", "libXrandr", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xev-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xev-{version}.tar.xz"
+source_dir_template = "xev-{version}"

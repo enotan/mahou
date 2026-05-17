@@ -1,0 +1,19 @@
+name = "gst-plugins-base"
+version = "1.28.3"
+description = "Base plugins and libraries for GStreamer"
+source = "https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-1.28.3.tar.xz"
+sha256 = "27880f3d87efa3bb5aa5f99f7ef6e4be7c95229f44eee928c1633d32e87d0099"
+source_dir = "gst-plugins-base-1.28.3"
+deps = ["alsa-lib", "glib", "gstreamer", "libdrm", "libogg", "libvorbis", "opus", "pango"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dexamples=disabled -Dtests=disabled -Dintrospection=disabled -Ddoc=disabled -Dgl=disabled -Dx11=disabled -Dxshm=disabled -Dxvideo=disabled -Dxi=disabled -Dcdparanoia=disabled -Dlibvisual=disabled -Dtheora=disabled -Dtremor=disabled -Dorc=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://gstreamer.freedesktop.org/src/gst-plugins-base/"
+version_pattern = "gst-plugins-base-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://gstreamer.freedesktop.org/src/gst-plugins-base/gst-plugins-base-{version}.tar.xz"
+source_dir_template = "gst-plugins-base-{version}"

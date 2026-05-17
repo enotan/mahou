@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://codeberg.org/dnkl/foot/releases"
+version_pattern = "foot-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://codeberg.org/dnkl/foot/releases/download/{version}/foot-{version}.tar.gz"
+source_dir_template = "foot-{version}"

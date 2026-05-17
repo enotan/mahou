@@ -1,0 +1,19 @@
+name = "protobuf"
+version = "34.1"
+description = "Protocol Buffers data interchange format"
+source = "https://github.com/protocolbuffers/protobuf/releases/download/v34.1/protobuf-34.1.tar.gz"
+sha256 = "e4e6ff10760cf747a2decd1867741f561b216bd60cc4038c87564713a6da1848"
+source_dir = "protobuf-34.1"
+deps = ["abseil-cpp", "cmake", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -Dprotobuf_BUILD_SHARED_LIBS=ON -Dprotobuf_LOCAL_DEPENDENCIES_ONLY=ON -Dprotobuf_BUILD_TESTS=OFF -Dprotobuf_BUILD_CONFORMANCE=OFF -Dprotobuf_BUILD_EXAMPLES=OFF -Dprotobuf_BUILD_PROTOBUF_BINARIES=ON -Dprotobuf_BUILD_PROTOC_BINARIES=ON -Dprotobuf_BUILD_LIBUPB=OFF -Dprotobuf_WITH_ZLIB=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/protocolbuffers/protobuf/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/protocolbuffers/protobuf/releases/download/v{version}/protobuf-{version}.tar.gz"
+source_dir_template = "protobuf-{version}"

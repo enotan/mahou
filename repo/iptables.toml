@@ -1,0 +1,19 @@
+name = "iptables"
+version = "1.8.13"
+description = "Linux kernel packet control tools"
+source = "https://www.netfilter.org/pub/iptables/iptables-1.8.13.tar.xz"
+sha256 = "1afcd33da9e8f913ace6a2126788162e207e26f5d5e29c6573c0e581ffc58b99"
+source_dir = "iptables-1.8.13"
+deps = ["libmnl", "libnftnl", "libnfnetlink"]
+
+build_steps = [
+  "./configure --prefix=/usr --sbindir=/usr/bin --enable-devel --with-xtlibdir=/usr/lib/xtables",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://git.netfilter.org/iptables/refs/tags"
+version_pattern = "v([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://www.netfilter.org/pub/iptables/iptables-{version}.tar.xz"
+source_dir_template = "iptables-{version}"

@@ -1,0 +1,19 @@
+name = "capnproto"
+version = "1.4.0"
+description = "Cap'n Proto serialization and RPC system"
+source = "https://github.com/capnproto/capnproto/archive/refs/tags/v1.4.0.tar.gz"
+sha256 = "d14a9149b79c055fee9d5aa778defe8e8cee0d2a11f0729865cd30dcc345eef2"
+source_dir = "capnproto-1.4.0"
+deps = ["cmake", "openssl", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DWITH_OPENSSL=ON -DWITH_ZLIB=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/capnproto/capnproto/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/capnproto/capnproto/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "capnproto-{version}"

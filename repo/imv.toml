@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://git.sr.ht/~exec64/imv/refs"
+version_pattern = "imv/archive/v([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://git.sr.ht/~exec64/imv/archive/v{version}.tar.gz"
+source_dir_template = "imv-v{version}"

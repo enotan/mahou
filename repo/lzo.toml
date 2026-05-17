@@ -1,0 +1,19 @@
+name = "lzo"
+version = "2.10"
+description = "Portable lossless data compression library"
+source = "https://www.oberhumer.com/opensource/lzo/download/lzo-2.10.tar.gz"
+sha256 = "c0f892943208266f9b6543b3ae308fab6284c5c90e627931446fb49b4221a072"
+source_dir = "lzo-2.10"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.oberhumer.com/opensource/lzo/download/"
+version_pattern = "lzo-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.oberhumer.com/opensource/lzo/download/lzo-{version}.tar.gz"
+source_dir_template = "lzo-{version}"

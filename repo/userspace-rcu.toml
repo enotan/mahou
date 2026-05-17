@@ -1,0 +1,19 @@
+name = "userspace-rcu"
+version = "0.15.6"
+description = "Userspace RCU synchronization library"
+source = "https://lttng.org/files/urcu/userspace-rcu-0.15.6.tar.bz2"
+sha256 = "850b192096eb11ebf2c70e8f97bc7da7479ee41da1bebeb44e3986908bac414f"
+source_dir = "userspace-rcu-0.15.6"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://lttng.org/files/urcu/"
+version_pattern = "userspace-rcu-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://lttng.org/files/urcu/userspace-rcu-{version}.tar.bz2"
+source_dir_template = "userspace-rcu-{version}"

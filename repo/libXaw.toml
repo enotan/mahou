@@ -1,0 +1,19 @@
+name = "libXaw"
+version = "1.0.16"
+description = "X11 Athena widget library"
+source = "https://www.x.org/releases/individual/lib/libXaw-1.0.16.tar.xz"
+sha256 = "731d572b54c708f81e197a6afa8016918e2e06dfd3025e066ca642a5b8c39c8f"
+source_dir = "libXaw-1.0.16"
+deps = ["libX11", "libXext", "libXt", "libXmu", "libXpm", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXaw-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXaw-{version}.tar.xz"
+source_dir_template = "libXaw-{version}"

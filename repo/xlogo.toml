@@ -1,0 +1,19 @@
+name = "xlogo"
+version = "1.0.7"
+description = "Display the X Window System logo"
+source = "https://www.x.org/releases/individual/app/xlogo-1.0.7.tar.xz"
+sha256 = "8a3f67b20407a53286a7de1a04dbda12d272234d59ef35e68ecfaf7633d83624"
+source_dir = "xlogo-1.0.7"
+deps = ["libSM", "libX11", "libXaw", "libXext", "libXmu", "libXt", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr --without-render --without-xkb",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xlogo-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xlogo-{version}.tar.xz"
+source_dir_template = "xlogo-{version}"

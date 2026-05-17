@@ -11,3 +11,9 @@ build_steps = [
   "cmake --build build",
   "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
 ]
+
+[update]
+check_url = "https://s3.amazonaws.com/json-c_releases/releases/"
+version_pattern = "json-c-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://s3.amazonaws.com/json-c_releases/releases/json-c-{version}.tar.gz"
+source_dir_template = "json-c-{version}"

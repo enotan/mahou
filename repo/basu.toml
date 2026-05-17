@@ -1,0 +1,19 @@
+name = "basu"
+version = "0.2.0"
+description = "sd-bus compatibility library"
+source = "https://github.com/emersion/basu/releases/download/v0.2.0/basu-0.2.0.tar.gz"
+sha256 = "e2fda9b69fc6c4530173fcf8db94c29aa5f3ed932d948cc6a31892623cde5e4b"
+source_dir = "basu-0.2.0"
+deps = []
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/emersion/basu/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/emersion/basu/releases/download/v{version}/basu-{version}.tar.gz"
+source_dir_template = "basu-{version}"

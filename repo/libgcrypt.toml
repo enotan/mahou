@@ -1,0 +1,19 @@
+name = "libgcrypt"
+version = "1.12.2"
+description = "General-purpose cryptographic library"
+source = "https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-1.12.2.tar.bz2"
+sha256 = "7ce33c2492221a0436f96a8500215e9f3e3dcb5fd26a757cd415e7a843babd5e"
+source_dir = "libgcrypt-1.12.2"
+deps = ["libgpg-error"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.gnupg.org/ftp/gcrypt/libgcrypt/"
+version_pattern = "libgcrypt-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://www.gnupg.org/ftp/gcrypt/libgcrypt/libgcrypt-{version}.tar.bz2"
+source_dir_template = "libgcrypt-{version}"

@@ -1,0 +1,18 @@
+name = "jemalloc"
+version = "5.3.0"
+description = "General purpose malloc implementation"
+source = "https://github.com/jemalloc/jemalloc/releases/download/5.3.0/jemalloc-5.3.0.tar.bz2"
+sha256 = "2db82d1e7119df3e71b7640219b6dfe84789bc0537983c3b7ac4f7189aecfeaa"
+source_dir = "jemalloc-5.3.0"
+deps = []
+build_steps = [
+    "./configure --prefix=/usr --disable-debug --disable-static",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jemalloc/jemalloc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jemalloc/jemalloc/releases/download/{version}/jemalloc-{version}.tar.bz2"
+source_dir_template = "jemalloc-{version}"

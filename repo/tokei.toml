@@ -1,0 +1,18 @@
+name = "tokei"
+version = "14.0.0"
+description = "Program that displays statistics about code"
+source = "https://github.com/XAMPPRocky/tokei/archive/refs/tags/v14.0.0.tar.gz"
+sha256 = "4e561dbb83ef1b46359714fc623fd45eddfb14821ece63a219470500fdd1cd26"
+source_dir = "tokei-14.0.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/XAMPPRocky/tokei/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/XAMPPRocky/tokei/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "tokei-{version}"

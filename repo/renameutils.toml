@@ -1,0 +1,19 @@
+name = "renameutils"
+version = "0.12.0"
+description = "File renaming utilities"
+source = "https://download.savannah.gnu.org/releases/renameutils/renameutils-0.12.0.tar.gz"
+sha256 = "cbd2f002027ccf5a923135c3f529c6d17fabbca7d85506a394ca37694a9eb4a3"
+source_dir = "renameutils-0.12.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-nls",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.savannah.gnu.org/releases/renameutils/"
+version_pattern = "renameutils-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://download.savannah.gnu.org/releases/renameutils/renameutils-{version}.tar.gz"
+source_dir_template = "renameutils-{version}"

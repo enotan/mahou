@@ -1,0 +1,19 @@
+name = "fuse3"
+version = "3.18.2"
+description = "Filesystem in Userspace library and tools"
+source = "https://github.com/libfuse/libfuse/releases/download/fuse-3.18.2/fuse-3.18.2.tar.gz"
+sha256 = "f01de85717e20adf5f98aff324acd85dd73d61a5ca3834d573dcf0bd6e54a298"
+source_dir = "fuse-3.18.2"
+deps = []
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dexamples=false -Dtests=false -Dinitscriptdir=",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libfuse/libfuse/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"fuse-([^\"]+)\""
+source_template = "https://github.com/libfuse/libfuse/releases/download/fuse-{version}/fuse-{version}.tar.gz"
+source_dir_template = "fuse-{version}"

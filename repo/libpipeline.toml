@@ -1,0 +1,19 @@
+name = "libpipeline"
+version = "1.5.8"
+description = "Pipeline manipulation library"
+source = "https://download.savannah.nongnu.org/releases/libpipeline/libpipeline-1.5.8.tar.gz"
+sha256 = "1b1203ca152ccd63983c3f2112f7fe6fa5afd453218ede5153d1b31e11bb8405"
+source_dir = "libpipeline-1.5.8"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.savannah.nongnu.org/releases/libpipeline/"
+version_pattern = "libpipeline-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://download.savannah.nongnu.org/releases/libpipeline/libpipeline-{version}.tar.gz"
+source_dir_template = "libpipeline-{version}"

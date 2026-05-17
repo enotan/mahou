@@ -1,0 +1,18 @@
+name = "nnn"
+version = "5.2"
+description = "Fast terminal file manager"
+source = "https://github.com/jarun/nnn/releases/download/v5.2/nnn-v5.2.tar.gz"
+sha256 = "cb31dd220f74d15744e3fcbf402a99a426301b207babc6ffe7a6e33a06b1bd0c"
+source_dir = "nnn-5.2"
+deps = ["ncurses", "pkgconf", "readline"]
+
+build_steps = [
+  "make PREFIX=/usr O_NOX11=1",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jarun/nnn/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jarun/nnn/releases/download/v{version}/nnn-v{version}.tar.gz"
+source_dir_template = "nnn-{version}"

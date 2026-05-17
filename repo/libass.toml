@@ -1,0 +1,19 @@
+name = "libass"
+version = "0.17.4"
+description = "ASS/SSA subtitle rendering library"
+source = "https://github.com/libass/libass/releases/download/0.17.4/libass-0.17.4.tar.xz"
+sha256 = "78f1179b838d025e9c26e8fef33f8092f65611444ffa1bfc0cfac6a33511a05a"
+source_dir = "libass-0.17.4"
+deps = ["fontconfig", "freetype", "fribidi", "harfbuzz", "libpng"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libass/libass/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libass/libass/releases/download/{version}/libass-{version}.tar.xz"
+source_dir_template = "libass-{version}"

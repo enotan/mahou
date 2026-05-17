@@ -1,0 +1,19 @@
+name = "rlwrap"
+version = "0.48"
+description = "Readline wrapper for command-line programs"
+source = "https://github.com/hanslub42/rlwrap/releases/download/v0.48/rlwrap-0.48.tar.gz"
+sha256 = "cdf69074a216a8284574dddd145dd046c904ad5330a616e0eed53c9043f2ecbc"
+source_dir = "rlwrap-0.48"
+deps = ["ncurses", "perl", "readline"]
+
+build_steps = [
+  "./configure --prefix=/usr --without-libptytty",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/hanslub42/rlwrap/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/hanslub42/rlwrap/releases/download/v{version}/rlwrap-{version}.tar.gz"
+source_dir_template = "rlwrap-{version}"

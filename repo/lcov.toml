@@ -1,0 +1,18 @@
+name = "lcov"
+version = "2.4"
+description = "Graphical front-end for GCC coverage testing"
+source = "https://github.com/linux-test-project/lcov/archive/refs/tags/v2.4.tar.gz"
+sha256 = "d2dcf4f5bd28dc51314765cb03cee3b13d96795d8365ca045bd7da447e4568d2"
+source_dir = "lcov-2.4"
+deps = ["perl", "python"]
+
+build_steps = [
+  "make PREFIX=/usr",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/linux-test-project/lcov/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/linux-test-project/lcov/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "lcov-{version}"

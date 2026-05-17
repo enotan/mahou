@@ -1,0 +1,18 @@
+name = "alacritty"
+version = "0.17.0"
+description = "GPU-accelerated terminal emulator"
+source = "https://github.com/alacritty/alacritty/archive/refs/tags/v0.17.0.tar.gz"
+sha256 = "38d6527d346cda5c6049332a1f3338a89ea66cd7981b54d4c3ce801b392496f8"
+source_dir = "alacritty-0.17.0"
+deps = ["fontconfig", "freetype", "libxkbcommon", "wayland"]
+
+build_steps = [
+  "cargo install --path alacritty --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/alacritty/alacritty/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/alacritty/alacritty/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "alacritty-{version}"

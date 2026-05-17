@@ -1,0 +1,19 @@
+name = "opendoas"
+version = "6.8.2"
+description = "Portable version of the OpenBSD doas command"
+source = "https://github.com/Duncaen/OpenDoas/archive/refs/tags/v6.8.2.tar.gz"
+sha256 = "6da058a0e70b7543bc60624389b0b00b686189ec933828c522bf8b2600495a67"
+source_dir = "OpenDoas-6.8.2"
+deps = ["bison", "pam"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --with-pam",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Duncaen/OpenDoas/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Duncaen/OpenDoas/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "OpenDoas-{version}"

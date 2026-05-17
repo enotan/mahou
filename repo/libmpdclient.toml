@@ -1,0 +1,19 @@
+name = "libmpdclient"
+version = "2.23"
+description = "Asynchronous API library for interfacing MPD"
+source = "https://www.musicpd.org/download/libmpdclient/2/libmpdclient-2.23.tar.xz"
+sha256 = "4a1b6c7f783d8cac3d3b8e4cbe9ad021c45491e383de3b893ea4eedefbc71607"
+source_dir = "libmpdclient-2.23"
+deps = ["meson", "ninja"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Ddocumentation=false -Dtest=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://www.musicpd.org/download/libmpdclient/2/"
+version_pattern = "libmpdclient-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.musicpd.org/download/libmpdclient/2/libmpdclient-{version}.tar.xz"
+source_dir_template = "libmpdclient-{version}"

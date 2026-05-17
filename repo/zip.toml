@@ -1,0 +1,21 @@
+name = "zip"
+version = "3.0"
+description = "Info-ZIP file compression utility"
+source = "https://downloads.sourceforge.net/infozip/zip30.tar.gz"
+sha256 = "f0e8bb1f9b7eb0b01285495a2699df3a4b766784c1765a8f1aeedf63c0806369"
+source_dir = "zip30"
+deps = []
+
+build_steps = [
+  "make -f unix/Makefile generic",
+  "install -Dm755 zip ${MAHOU_DESTDIR}/usr/bin/zip",
+  "install -Dm755 zipcloak ${MAHOU_DESTDIR}/usr/bin/zipcloak",
+  "install -Dm755 zipnote ${MAHOU_DESTDIR}/usr/bin/zipnote",
+  "install -Dm755 zipsplit ${MAHOU_DESTDIR}/usr/bin/zipsplit",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/infozip/files/Zip%203.x%20%28latest%29/"
+version_pattern = "zip30\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/infozip/zip30.tar.gz"
+source_dir_template = "zip30"

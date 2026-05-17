@@ -1,0 +1,19 @@
+name = "universal-ctags"
+version = "6.2.1"
+description = "Maintained implementation of ctags for source code indexing"
+source = "https://github.com/universal-ctags/ctags/releases/download/v6.2.1/universal-ctags-6.2.1.tar.gz"
+sha256 = "2c63efe9e0e083dc50e6fdd8c5414781cc8873d8c8940cf553c01870ed962f8c"
+source_dir = "universal-ctags-6.2.1"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-json --disable-yaml --disable-xml --disable-seccomp --disable-pcre2",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/universal-ctags/ctags/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/universal-ctags/ctags/releases/download/v{version}/universal-ctags-{version}.tar.gz"
+source_dir_template = "universal-ctags-{version}"

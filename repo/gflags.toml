@@ -1,0 +1,19 @@
+name = "gflags"
+version = "2.3.0"
+description = "Commandline flags library"
+source = "https://github.com/gflags/gflags/archive/refs/tags/v2.3.0.tar.gz"
+sha256 = "f619a51371f41c0ad6837b2a98af9d4643b3371015d873887f7e8d3237320b2f"
+source_dir = "gflags-2.3.0"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/gflags/gflags/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/gflags/gflags/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "gflags-{version}"

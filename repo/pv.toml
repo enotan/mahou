@@ -1,0 +1,19 @@
+name = "pv"
+version = "1.10.5"
+description = "Pipe viewer for monitoring data through a pipeline"
+source = "https://www.ivarch.com/programs/sources/pv-1.10.5.tar.gz"
+sha256 = "ab21b4f8662280646b6a02e1b9f096790918f89c952bbe0d06fef75d3b52fb15"
+source_dir = "pv-1.10.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.ivarch.com/programs/pv.shtml"
+version_pattern = "pv-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.ivarch.com/programs/sources/pv-{version}.tar.gz"
+source_dir_template = "pv-{version}"

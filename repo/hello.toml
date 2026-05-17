@@ -1,0 +1,23 @@
+name = "hello"
+version = "2.12.2"
+description = "GNU greeting program"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/hello/"
+
+source = "https://ftp.gnu.org/gnu/hello/hello-2.12.2.tar.gz"
+sha256 = "5a9a996dc292cc24dcf411cee87e92f6aae5b8d13bd9c6819b4c7a9dce0818ab"
+source_dir = "hello-2.12.2"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/hello/"
+version_pattern = "hello-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/hello/hello-{version}.tar.gz"
+source_dir_template = "hello-{version}"

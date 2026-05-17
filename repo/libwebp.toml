@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/index.html"
+version_pattern = "libwebp-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-{version}.tar.gz"
+source_dir_template = "libwebp-{version}"

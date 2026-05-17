@@ -1,0 +1,19 @@
+name = "bdftopcf"
+version = "1.1.2"
+description = "Convert X11 BDF fonts to PCF format"
+source = "https://www.x.org/releases/individual/util/bdftopcf-1.1.2.tar.xz"
+sha256 = "bc60be5904330faaa3ddd2aed7874bee2f29e4387c245d6787552f067eb0523a"
+source_dir = "bdftopcf-1.1.2"
+deps = ["xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/util/"
+version_pattern = "bdftopcf-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/util/bdftopcf-{version}.tar.xz"
+source_dir_template = "bdftopcf-{version}"

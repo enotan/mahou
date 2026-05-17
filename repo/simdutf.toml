@@ -1,0 +1,18 @@
+name = "simdutf"
+version = "9.0.0"
+description = "Unicode validation and transcoding library using SIMD"
+source = "https://github.com/simdutf/simdutf/archive/refs/tags/v9.0.0.tar.gz"
+sha256 = "fd2ce975f29809a975a8da8843cfb3a7265af3f71be548f199d23cf65e101764"
+source_dir = "simdutf-9.0.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DSIMDUTF_TESTS=OFF -DSIMDUTF_BENCHMARKS=OFF -DSIMDUTF_TOOLS=OFF -DSIMDUTF_ICONV=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/simdutf/simdutf/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/simdutf/simdutf/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "simdutf-{version}"

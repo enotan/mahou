@@ -1,0 +1,18 @@
+name = "sd"
+version = "1.1.0"
+description = "Intuitive find and replace command-line tool"
+source = "https://github.com/chmln/sd/archive/refs/tags/v1.1.0.tar.gz"
+sha256 = "defdce484f8c92f265e1282490572575028967c2c55d356111d1e49a3ea9a88e"
+source_dir = "sd-1.1.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/chmln/sd/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/chmln/sd/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "sd-{version}"

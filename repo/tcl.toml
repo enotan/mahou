@@ -1,0 +1,19 @@
+name = "tcl"
+version = "8.6.17"
+description = "Tool Command Language interpreter and library"
+source = "https://downloads.sourceforge.net/project/tcl/Tcl/8.6.17/tcl8.6.17-src.tar.gz"
+sha256 = "a3903371efcce8a405c5c245d029e9f6850258a60fa3761c4d58995610949b31"
+source_dir = "tcl8.6.17"
+deps = []
+
+build_steps = [
+  "cd unix && ./configure --prefix=/usr --mandir=/usr/share/man --enable-threads --enable-shared",
+  "cd unix && make",
+  "cd unix && make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/tcl/files/Tcl/"
+version_pattern = "/Tcl/([0-9]+\\.[0-9]+\\.[0-9]+)/"
+source_template = "https://downloads.sourceforge.net/project/tcl/Tcl/{version}/tcl{version}-src.tar.gz"
+source_dir_template = "tcl{version}"

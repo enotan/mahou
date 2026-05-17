@@ -1,0 +1,19 @@
+name = "xauth"
+version = "1.1.5"
+description = "X authority file utility"
+source = "https://www.x.org/releases/individual/app/xauth-1.1.5.tar.xz"
+sha256 = "a4000e2f441facebf569026bedecc23ba262cc6927be52070abe0002625cfbe0"
+source_dir = "xauth-1.1.5"
+deps = ["libX11", "libXau", "libXext", "libXmu", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xauth-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xauth-{version}.tar.xz"
+source_dir_template = "xauth-{version}"

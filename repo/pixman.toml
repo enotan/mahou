@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "pixman-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/pixman-{version}.tar.xz"
+source_dir_template = "pixman-{version}"

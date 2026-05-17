@@ -1,0 +1,20 @@
+name = "procps-ng"
+version = "4.0.6"
+description = "Command line and full-screen utilities for browsing procfs"
+source = "https://gitlab.com/procps-ng/procps/-/archive/v4.0.6/procps-v4.0.6.tar.gz"
+sha256 = "1bbe8ff21dcd05a6adcda99a67d2e99cbd515c9e3a78fd3cc915b12aeb330d40"
+source_dir = "procps-v4.0.6"
+deps = ["autoconf", "automake", "gettext", "libtool", "ncurses", "pkgconf"]
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --exec-prefix=/usr --libdir=/usr/lib --sysconfdir=/etc --disable-static --without-systemd --without-elogind",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://gitlab.com/api/v4/projects/procps-ng%2Fprocps/repository/tags?per_page=1"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://gitlab.com/procps-ng/procps/-/archive/v{version}/procps-v{version}.tar.gz"
+source_dir_template = "procps-v{version}"

@@ -1,0 +1,18 @@
+name = "lm_sensors"
+version = "3-6-2"
+description = "Hardware health monitoring utilities"
+source = "https://github.com/lm-sensors/lm-sensors/archive/refs/tags/V3-6-2.tar.gz"
+sha256 = "c6a0587e565778a40d88891928bf8943f27d353f382d5b745a997d635978a8f0"
+source_dir = "lm-sensors-3-6-2"
+deps = ["bison", "flex"]
+
+build_steps = [
+  "make PREFIX=/usr MANDIR=/usr/share/man",
+  "make PREFIX=/usr MANDIR=/usr/share/man DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/lm-sensors/lm-sensors/tags"
+version_pattern = "\"name\"\\s*:\\s*\"V([0-9]+-[0-9]+-[0-9]+)\""
+source_template = "https://github.com/lm-sensors/lm-sensors/archive/refs/tags/V{version}.tar.gz"
+source_dir_template = "lm-sensors-{version}"

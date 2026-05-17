@@ -1,0 +1,19 @@
+name = "xdg-utils"
+version = "1.1.3"
+description = "Command line tools for desktop integration"
+source = "https://portland.freedesktop.org/download/xdg-utils-1.1.3.tar.gz"
+sha256 = "d798b08af8a8e2063ddde6c9fa3398ca81484f27dec642c5627ffcaa0d4051d9"
+source_dir = "xdg-utils-1.1.3"
+deps = ["desktop-file-utils", "shared-mime-info"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://portland.freedesktop.org/download/"
+version_pattern = "xdg-utils-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://portland.freedesktop.org/download/xdg-utils-{version}.tar.gz"
+source_dir_template = "xdg-utils-{version}"

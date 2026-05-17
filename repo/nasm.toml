@@ -1,0 +1,19 @@
+name = "nasm"
+version = "3.01"
+description = "Netwide Assembler"
+source = "https://www.nasm.us/pub/nasm/releasebuilds/3.01/nasm-3.01.tar.xz"
+sha256 = "b7324cbe86e767b65f26f467ed8b12ad80e124e3ccb89076855c98e43a9eddd4"
+source_dir = "nasm-3.01"
+deps = ["zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.nasm.us/pub/nasm/releasebuilds/"
+version_pattern = "href=\"([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\/\""
+source_template = "https://www.nasm.us/pub/nasm/releasebuilds/{version}/nasm-{version}.tar.xz"
+source_dir_template = "nasm-{version}"

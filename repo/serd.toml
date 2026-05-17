@@ -1,0 +1,18 @@
+name = "serd"
+version = "0.32.8"
+description = "Lightweight RDF syntax library"
+source = "https://download.drobilla.net/serd-0.32.8.tar.xz"
+sha256 = "f47259bc38ba553b0deb8b6dab6b5b73d3630469a7c9439ccdca80e06d7c1ece"
+source_dir = "serd-0.32.8"
+deps = ["meson"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared -Ddocs=disabled -Dtests=disabled -Dman=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.drobilla.net/"
+version_pattern = "serd-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.drobilla.net/serd-{version}.tar.xz"
+source_dir_template = "serd-{version}"

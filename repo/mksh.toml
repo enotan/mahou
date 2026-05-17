@@ -1,0 +1,20 @@
+name = "mksh"
+version = "R59c"
+description = "MirBSD Korn shell"
+source = "http://www.mirbsd.org/MirOS/dist/mir/mksh/mksh-R59c.tgz"
+sha256 = "77ae1665a337f1c48c61d6b961db3e52119b38e58884d1c89684af31f87bc506"
+source_dir = "mksh"
+deps = []
+
+build_steps = [
+  "sh Build.sh -r",
+  "install -Dm755 mksh ${MAHOU_DESTDIR}/usr/bin/mksh",
+  "install -Dm644 mksh.1 ${MAHOU_DESTDIR}/usr/share/man/man1/mksh.1",
+  "install -Dm644 dot.mkshrc ${MAHOU_DESTDIR}/usr/share/doc/mksh/dot.mkshrc",
+]
+
+[update]
+check_url = "http://www.mirbsd.org/MirOS/dist/mir/mksh/"
+version_pattern = "mksh-(R[0-9]+[a-z]?)\\.tgz"
+source_template = "http://www.mirbsd.org/MirOS/dist/mir/mksh/mksh-{version}.tgz"
+source_dir_template = "mksh"

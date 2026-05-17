@@ -1,0 +1,19 @@
+name = "mbedtls"
+version = "4.1.0"
+description = "Portable TLS and cryptography library"
+source = "https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-4.1.0/mbedtls-4.1.0.tar.bz2"
+sha256 = "377a09cf8eb81b5fb2707045e5522d5489d3309fed5006c9874e60558fc81d10"
+source_dir = "mbedtls-4.1.0"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_TESTING=OFF -DMBEDTLS_FATAL_WARNINGS=OFF -DUSE_SHARED_MBEDTLS_LIBRARY=ON -DUSE_STATIC_MBEDTLS_LIBRARY=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Mbed-TLS/mbedtls/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"mbedtls-([^\"]+)\""
+source_template = "https://github.com/Mbed-TLS/mbedtls/releases/download/mbedtls-{version}/mbedtls-{version}.tar.bz2"
+source_dir_template = "mbedtls-{version}"

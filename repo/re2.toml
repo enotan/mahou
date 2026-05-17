@@ -1,0 +1,19 @@
+name = "re2"
+version = "2025-11-05"
+description = "Fast, safe regular expression engine"
+source = "https://github.com/google/re2/archive/refs/tags/2025-11-05.tar.gz"
+sha256 = "87f6029d2f6de8aa023654240a03ada90e876ce9a4676e258dd01ea4c26ffd67"
+source_dir = "re2-2025-11-05"
+deps = ["abseil-cpp", "cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DRE2_USE_ICU=OFF -DRE2_TEST=OFF -DRE2_BENCHMARK=OFF -DRE2_BUILD_TESTING=OFF -DRE2_INSTALL=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/re2/tags"
+version_pattern = "\"name\"\\s*:\\s*\"([0-9]{4}-[0-9]{2}-[0-9]{2})\""
+source_template = "https://github.com/google/re2/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "re2-{version}"

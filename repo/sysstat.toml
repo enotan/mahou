@@ -1,0 +1,19 @@
+name = "sysstat"
+version = "12.7.9"
+description = "System performance monitoring tools"
+source = "https://github.com/sysstat/sysstat/archive/refs/tags/v12.7.9.tar.gz"
+sha256 = "e48fc69401135dc08d2cd4ff58dbdbfce9b7485f76fc9049d97848e313c08dda"
+source_dir = "sysstat-12.7.9"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --disable-sensors --disable-documentation --disable-file-attr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/sysstat/sysstat/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sysstat/sysstat/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "sysstat-{version}"

@@ -1,0 +1,19 @@
+name = "liburing"
+version = "2.14"
+description = "Linux-native io_uring access library"
+source = "https://github.com/axboe/liburing/archive/refs/tags/liburing-2.14.tar.gz"
+sha256 = "5f80964108981c6ad979c735f0b4877d5f49914c2a062f8e88282f26bf61de0c"
+source_dir = "liburing-liburing-2.14"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/axboe/liburing/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"liburing-([^\"]+)\""
+source_template = "https://github.com/axboe/liburing/archive/refs/tags/liburing-{version}.tar.gz"
+source_dir_template = "liburing-liburing-{version}"

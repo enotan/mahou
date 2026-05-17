@@ -1,0 +1,19 @@
+name = "poppler"
+version = "26.05.0"
+description = "PDF rendering library based on the xpdf codebase"
+source = "https://poppler.freedesktop.org/poppler-26.05.0.tar.xz"
+sha256 = "6fef27ff04f37db43054c86bcdff6128c9fb1f6af4ef3c8b369a7e9abd68d0bb"
+source_dir = "poppler-26.05.0"
+deps = ["cairo", "cmake", "fontconfig", "freetype", "lcms2", "libjpeg-turbo", "libpng", "openjpeg", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_CPP_TESTS=OFF -DBUILD_GTK_TESTS=OFF -DBUILD_MANUAL_TESTS=OFF -DBUILD_QT5_TESTS=OFF -DBUILD_QT6_TESTS=OFF -DENABLE_BOOST=OFF -DENABLE_CPP=ON -DENABLE_GLIB=OFF -DENABLE_GOBJECT_INTROSPECTION=OFF -DENABLE_GPGME=OFF -DENABLE_GTK_DOC=OFF -DENABLE_LIBCURL=OFF -DENABLE_LIBOPENJPEG=openjpeg2 -DENABLE_LIBTIFF=OFF -DENABLE_NSS3=OFF -DENABLE_QT5=OFF -DENABLE_QT6=OFF -DENABLE_UTILS=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://poppler.freedesktop.org/"
+version_pattern = "poppler-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://poppler.freedesktop.org/poppler-{version}.tar.xz"
+source_dir_template = "poppler-{version}"

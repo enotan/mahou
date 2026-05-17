@@ -1,0 +1,18 @@
+name = "whois"
+version = "5.6.6"
+description = "Intelligent WHOIS client"
+source = "https://github.com/rfc1036/whois/archive/refs/tags/v5.6.6.tar.gz"
+sha256 = "43d3b3cc64c75e8bd10aee6feff3906e9488ed335076d206e70f3b25bf644969"
+source_dir = "whois-5.6.6"
+deps = ["perl", "libidn2"]
+
+build_steps = [
+  "make prefix=/usr",
+  "make prefix=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/rfc1036/whois/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/rfc1036/whois/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "whois-{version}"

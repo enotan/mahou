@@ -1,0 +1,19 @@
+name = "net-tools"
+version = "2.10"
+description = "Traditional Linux networking tools"
+source = "https://github.com/ecki/net-tools/archive/refs/tags/v2.10.tar.gz"
+sha256 = "8e186f65f0ff304989b3dc8b0067c3a07d36ae777da60667bdd6ccb2730908d2"
+source_dir = "net-tools-2.10"
+deps = ["pkgconf"]
+
+build_steps = [
+  "yes '' | make config",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} BINDIR=/usr/bin SBINDIR=/usr/bin install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ecki/net-tools/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ecki/net-tools/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "net-tools-{version}"

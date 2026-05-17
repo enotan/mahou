@@ -1,0 +1,18 @@
+name = "hexyl"
+version = "0.17.0"
+description = "Command-line hex viewer"
+source = "https://github.com/sharkdp/hexyl/archive/refs/tags/v0.17.0.tar.gz"
+sha256 = "72fa17397ad187eec6b295d02c7caabbb209a6e0d5706187b8a599bd5df8615e"
+source_dir = "hexyl-0.17.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/sharkdp/hexyl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sharkdp/hexyl/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "hexyl-{version}"

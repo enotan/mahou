@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://dri.freedesktop.org/libdrm/"
+version_pattern = "libdrm-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://dri.freedesktop.org/libdrm/libdrm-{version}.tar.xz"
+source_dir_template = "libdrm-{version}"

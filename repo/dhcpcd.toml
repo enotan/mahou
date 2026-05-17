@@ -1,0 +1,19 @@
+name = "dhcpcd"
+version = "10.3.2"
+description = "RFC compliant DHCP client daemon"
+source = "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v10.3.2/dhcpcd-10.3.2.tar.xz"
+sha256 = "b6aa46932074906a9badef1bfe142b8aff9d041c2689e1ef8b74c12e9fd942bd"
+source_dir = "dhcpcd-10.3.2"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --libexecdir=/usr/lib/dhcpcd --dbdir=/var/lib/dhcpcd --mandir=/usr/share/man --without-udev --without-openssl",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/NetworkConfiguration/dhcpcd/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/NetworkConfiguration/dhcpcd/releases/download/v{version}/dhcpcd-{version}.tar.xz"
+source_dir_template = "dhcpcd-{version}"

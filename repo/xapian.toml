@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://oligarchy.co.uk/xapian/"
+version_pattern = "xapian-core-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://oligarchy.co.uk/xapian/{version}/xapian-core-{version}.tar.xz"
+source_dir_template = "xapian-core-{version}"

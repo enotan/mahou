@@ -1,0 +1,19 @@
+name = "xclipboard"
+version = "1.1.5"
+description = "X clipboard client"
+source = "https://www.x.org/releases/individual/app/xclipboard-1.1.5.tar.xz"
+sha256 = "8e47a4e18a88d47b14e8eb61a5f298687624a38f9decee9988d8b51a20514c45"
+source_dir = "xclipboard-1.1.5"
+deps = ["libX11", "libXaw", "libXmu", "libXt", "libxkbfile", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xclipboard-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xclipboard-{version}.tar.xz"
+source_dir_template = "xclipboard-{version}"

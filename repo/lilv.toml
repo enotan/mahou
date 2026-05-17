@@ -1,0 +1,18 @@
+name = "lilv"
+version = "0.26.4"
+description = "Library for hosting LV2 plugins"
+source = "https://download.drobilla.net/lilv-0.26.4.tar.xz"
+sha256 = "1c8b5fcb78718173e67d76e51ad423f5113a9ff68463f2566195ae46396089e3"
+source_dir = "lilv-0.26.4"
+deps = ["libsndfile", "lv2", "meson", "serd", "sord", "sratom", "zix"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared -Ddocs=disabled -Dtests=disabled -Dbindings_cpp=disabled -Dbindings_py=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.drobilla.net/"
+version_pattern = "lilv-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.drobilla.net/lilv-{version}.tar.xz"
+source_dir_template = "lilv-{version}"

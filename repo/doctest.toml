@@ -1,0 +1,18 @@
+name = "doctest"
+version = "2.5.2"
+description = "Fast single-header C++ testing framework"
+source = "https://github.com/doctest/doctest/archive/refs/tags/v2.5.2.tar.gz"
+sha256 = "9189960c2bbbc4f3382ce0773b2bb5f13e3afd8fed47f55f193e11e85a4f9854"
+source_dir = "doctest-2.5.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DDOCTEST_WITH_TESTS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/doctest/doctest/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/doctest/doctest/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "doctest-{version}"

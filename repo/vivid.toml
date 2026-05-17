@@ -1,0 +1,18 @@
+name = "vivid"
+version = "0.11.1"
+description = "LS_COLORS generator with multiple color themes"
+source = "https://github.com/sharkdp/vivid/archive/refs/tags/v0.11.1.tar.gz"
+sha256 = "a43ccfbc6554055181a08f2740664f9280fa2d0e57c4641850c60dd0e5323720"
+source_dir = "vivid-0.11.1"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/sharkdp/vivid/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sharkdp/vivid/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "vivid-{version}"

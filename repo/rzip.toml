@@ -1,0 +1,19 @@
+name = "rzip"
+version = "2.1"
+description = "Large-file compression utility"
+source = "https://rzip.samba.org/ftp/rzip/rzip-2.1.tar.gz"
+sha256 = "4bb96f4d58ccf16749ed3f836957ce97dbcff3e3ee5fd50266229a48f89815b7"
+source_dir = "rzip-2.1"
+deps = ["bzip2"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://rzip.samba.org/ftp/rzip/"
+version_pattern = "rzip-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://rzip.samba.org/ftp/rzip/rzip-{version}.tar.gz"
+source_dir_template = "rzip-{version}"

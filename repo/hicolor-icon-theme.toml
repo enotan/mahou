@@ -1,0 +1,19 @@
+name = "hicolor-icon-theme"
+version = "0.18"
+description = "Fallback icon theme from freedesktop.org"
+source = "https://icon-theme.freedesktop.org/releases/hicolor-icon-theme-0.18.tar.xz"
+sha256 = "db0e50a80aa3bf64bb45cbca5cf9f75efd9348cf2ac690b907435238c3cf81d7"
+source_dir = "hicolor-icon-theme-0.18"
+deps = []
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://icon-theme.freedesktop.org/releases/"
+version_pattern = "hicolor-icon-theme-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://icon-theme.freedesktop.org/releases/hicolor-icon-theme-{version}.tar.xz"
+source_dir_template = "hicolor-icon-theme-{version}"

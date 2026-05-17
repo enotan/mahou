@@ -3,7 +3,7 @@ version = "4.0.0"
 description = "Robust, full-featured Open Source Toolkit for the Transport Layer Security (TLS)"
 source = "https://github.com/openssl/openssl/releases/download/openssl-4.0.0/openssl-4.0.0.tar.gz"
 sha256 = "c32cf49a959c4f345f9606982dd36e7d28f7c58b19c2e25d75624d2b3d2f79ac"
-source_dir = "${WORKDIR}"
+source_dir = "openssl-4.0.0"
 deps = ["zlib"]
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install_sw",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/openssl/openssl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"openssl-([^\"]+)\""
+source_template = "https://github.com/openssl/openssl/releases/download/openssl-{version}/openssl-{version}.tar.gz"
+source_dir_template = "openssl-{version}"

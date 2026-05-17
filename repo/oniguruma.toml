@@ -1,0 +1,19 @@
+name = "oniguruma"
+version = "6.9.10"
+description = "Regular expression library with Unicode support"
+source = "https://github.com/kkos/oniguruma/archive/refs/tags/v6.9.10.tar.gz"
+sha256 = "ad92309d0d13eebc27f6592e875f3efbfa3dda2bf6da5952e00f0a2120c921a8"
+source_dir = "oniguruma-6.9.10"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TEST=OFF -DINSTALL_DOCUMENTATION=OFF -DINSTALL_EXAMPLES=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/kkos/oniguruma/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/kkos/oniguruma/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "oniguruma-{version}"

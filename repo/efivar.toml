@@ -1,0 +1,18 @@
+name = "efivar"
+version = "39"
+description = "Tools and library for manipulating UEFI variables"
+source = "https://github.com/rhboot/efivar/archive/refs/tags/39.tar.gz"
+sha256 = "c9edd15f2eeeea63232f3e669a48e992c7be9aff57ee22672ac31f5eca1609a6"
+source_dir = "efivar-39"
+deps = ["pkgconf"]
+
+build_steps = [
+  "make ENABLE_DOCS=0 ERRORS=",
+  "make DESTDIR=${MAHOU_DESTDIR} PREFIX=/usr LIBDIR=/usr/lib PCDIR=/usr/lib/pkgconfig ENABLE_DOCS=0 install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/rhboot/efivar/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"([0-9]+)\""
+source_template = "https://github.com/rhboot/efivar/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "efivar-{version}"

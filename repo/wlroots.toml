@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://gitlab.freedesktop.org/wlroots/wlroots/-/releases"
+version_pattern = "wlroots-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://gitlab.freedesktop.org/wlroots/wlroots/-/releases/{version}/downloads/wlroots-{version}.tar.gz"
+source_dir_template = "wlroots-{version}"

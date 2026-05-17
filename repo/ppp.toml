@@ -1,0 +1,19 @@
+name = "ppp"
+version = "2.5.2"
+description = "Point-to-Point Protocol daemon and utilities"
+source = "https://www.samba.org/ftp/ppp/ppp-2.5.2.tar.gz"
+sha256 = "47da358de54a10cb10bf6ff2cf9b1c03c0d3555518f6182e8f701b8e55733cb2"
+source_dir = "ppp-2.5.2"
+deps = ["openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --disable-systemd --disable-eaptls --disable-peap --with-pam=no",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.samba.org/ftp/ppp/"
+version_pattern = "ppp-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.samba.org/ftp/ppp/ppp-{version}.tar.gz"
+source_dir_template = "ppp-{version}"

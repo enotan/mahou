@@ -1,0 +1,18 @@
+name = "memtester"
+version = "4.7.1"
+description = "Userspace utility for testing memory subsystem faults"
+source = "http://pyropus.ca/software/memtester/old-versions/memtester-4.7.1.tar.gz"
+sha256 = "e427de663f7bd22d1ebee8af12506a852c010bd4fcbca1e0e6b02972d298b5bb"
+source_dir = "memtester-4.7.1"
+deps = []
+
+build_steps = [
+  "make",
+  "make INSTALLPATH=${MAHOU_DESTDIR}/usr install",
+]
+
+[update]
+check_url = "http://pyropus.ca/software/memtester/"
+version_pattern = "memtester-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://pyropus.ca/software/memtester/old-versions/memtester-{version}.tar.gz"
+source_dir_template = "memtester-{version}"

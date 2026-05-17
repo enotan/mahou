@@ -1,0 +1,19 @@
+name = "libusb"
+version = "1.0.29"
+description = "Userspace USB device access library"
+source = "https://github.com/libusb/libusb/releases/download/v1.0.29/libusb-1.0.29.tar.bz2"
+sha256 = "5977fc950f8d1395ccea9bd48c06b3f808fd3c2c961b44b0c2e6e29fc3a70a85"
+source_dir = "libusb-1.0.29"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libusb/libusb/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libusb/libusb/releases/download/v{version}/libusb-{version}.tar.bz2"
+source_dir_template = "libusb-{version}"

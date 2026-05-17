@@ -1,0 +1,20 @@
+name = "detox"
+version = "3.0.1"
+description = "Rename files to make names easier to work with"
+source = "https://github.com/dharple/detox/archive/refs/tags/v3.0.1.tar.gz"
+sha256 = "15dc32ca5856a3edc2fff237c8cbcb29979a25292aac738a272181d2152699ea"
+source_dir = "detox-3.0.1"
+deps = ["autoconf", "automake"]
+
+build_steps = [
+  "autoreconf -fi",
+  "./configure --prefix=/usr --sysconfdir=/etc",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/dharple/detox/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dharple/detox/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "detox-{version}"

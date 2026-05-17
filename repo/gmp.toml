@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://gmplib.org/download/gmp/"
+version_pattern = "gmp-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://gmplib.org/download/gmp/gmp-{version}.tar.xz"
+source_dir_template = "gmp-{version}"

@@ -1,0 +1,19 @@
+name = "xterm"
+version = "410"
+description = "Terminal emulator for the X Window System"
+source = "https://invisible-island.net/archives/xterm/xterm-410.tgz"
+sha256 = "7ba9fbb303dd3d95d06ca24360d019048d84e5822dc6fe722cd77369bdbf231f"
+source_dir = "xterm-410"
+deps = ["ncurses", "pcre2", "libX11", "libXt", "libXmu", "libXaw", "libXpm", "libXft", "libXinerama", "libXcursor"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --disable-setuid --disable-setgid --with-pcre2 --with-xpm --without-Xaw3d",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://invisible-island.net/archives/xterm/"
+version_pattern = "xterm-([0-9]+)\\.tgz"
+source_template = "https://invisible-island.net/archives/xterm/xterm-{version}.tgz"
+source_dir_template = "xterm-{version}"

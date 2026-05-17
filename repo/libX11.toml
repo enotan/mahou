@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libX11-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libX11-{version}.tar.xz"
+source_dir_template = "libX11-{version}"

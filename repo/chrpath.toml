@@ -1,0 +1,20 @@
+name = "chrpath"
+version = "0.18"
+description = "Tool for changing or deleting ELF RPATH and RUNPATH entries"
+source = "https://deb.debian.org/debian/pool/main/c/chrpath/chrpath_0.18.orig.tar.gz"
+sha256 = "f09c49f0618660ca11fc6d9580ddde904c7224d4c6d0f6f2d1f9bcdc9102c9aa"
+source_dir = "chrpath"
+deps = ["automake"]
+
+build_steps = [
+  "./bootstrap",
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://deb.debian.org/debian/pool/main/c/chrpath/"
+version_pattern = "chrpath_([0-9]+\\.[0-9]+)\\.orig\\.tar\\.gz"
+source_template = "https://deb.debian.org/debian/pool/main/c/chrpath/chrpath_{version}.orig.tar.gz"
+source_dir_template = "chrpath"

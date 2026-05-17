@@ -1,0 +1,19 @@
+name = "libXxf86vm"
+version = "1.1.7"
+description = "X11 XF86VidMode extension library"
+source = "https://www.x.org/releases/individual/lib/libXxf86vm-1.1.7.tar.xz"
+sha256 = "ae50c0f669e0af5a67cc4cd0f54f21d64a64d2660af883e80e95d3fe51b945d8"
+source_dir = "libXxf86vm-1.1.7"
+deps = ["libX11", "libXext", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXxf86vm-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXxf86vm-{version}.tar.xz"
+source_dir_template = "libXxf86vm-{version}"

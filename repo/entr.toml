@@ -1,0 +1,19 @@
+name = "entr"
+version = "5.8"
+description = "Run arbitrary commands when files change"
+source = "https://eradman.com/entrproject/code/entr-5.8.tar.gz"
+sha256 = "dc9a2bdc556b2be900c1d8cdf432de26492de5af3ffade000d4bfd97f3122bfb"
+source_dir = "entr-5.8"
+deps = []
+
+build_steps = [
+  "./configure",
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://eradman.com/entrproject/"
+version_pattern = "entr-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://eradman.com/entrproject/code/entr-{version}.tar.gz"
+source_dir_template = "entr-{version}"

@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://www.nano-editor.org/dist/v9/"
+version_pattern = "nano-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.nano-editor.org/dist/v9/nano-{version}.tar.xz"
+source_dir_template = "nano-{version}"

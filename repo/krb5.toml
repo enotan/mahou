@@ -1,0 +1,19 @@
+name = "krb5"
+version = "1.22.2"
+description = "MIT Kerberos network authentication system"
+source = "https://kerberos.org/dist/krb5/1.22/krb5-1.22.2.tar.gz"
+sha256 = "3243ffbc8ea4d4ac22ddc7dd2a1dc54c57874c40648b60ff97009763554eaf13"
+source_dir = "krb5-1.22.2"
+deps = ["bison", "e2fsprogs", "keyutils", "libedit", "libverto", "openssl", "perl", "zlib"]
+
+build_steps = [
+  "cd src && ./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib --with-system-verto --with-crypto-impl=openssl --with-tls-impl=openssl --with-keyutils --without-ldap",
+  "cd src && make",
+  "cd src && make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://kerberos.org/dist/krb5/1.22/"
+version_pattern = "krb5-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://kerberos.org/dist/krb5/1.22/krb5-{version}.tar.gz"
+source_dir_template = "krb5-{version}"

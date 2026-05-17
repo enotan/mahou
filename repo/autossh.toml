@@ -1,0 +1,19 @@
+name = "autossh"
+version = "1.4g"
+description = "Monitor and restart SSH sessions and tunnels"
+source = "https://www.harding.motd.ca/autossh/autossh-1.4g.tgz"
+sha256 = "5fc3cee3361ca1615af862364c480593171d0c54ec156de79fc421e31ae21277"
+source_dir = "autossh-1.4g"
+deps = ["openssh"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-ssh=/usr/bin/ssh",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.harding.motd.ca/autossh/"
+version_pattern = "autossh-([0-9]+\\.[0-9]+[a-z]?)\\.tgz"
+source_template = "https://www.harding.motd.ca/autossh/autossh-{version}.tgz"
+source_dir_template = "autossh-{version}"

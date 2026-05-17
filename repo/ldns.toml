@@ -1,0 +1,19 @@
+name = "ldns"
+version = "1.9.0"
+description = "DNS library and utilities"
+source = "https://nlnetlabs.nl/downloads/ldns/ldns-1.9.0.tar.gz"
+sha256 = "abaeed2858fbea84a4eb9833e19e7d23380cc0f3d9b6548b962be42276ffdcb3"
+source_dir = "ldns-1.9.0"
+deps = ["openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-static --with-drill --without-pyldns --without-pyldnsx --without-p5-dns-ldns",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://nlnetlabs.nl/downloads/ldns/"
+version_pattern = "ldns-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://nlnetlabs.nl/downloads/ldns/ldns-{version}.tar.gz"
+source_dir_template = "ldns-{version}"

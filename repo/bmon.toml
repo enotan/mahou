@@ -1,0 +1,19 @@
+name = "bmon"
+version = "4.0"
+description = "Bandwidth monitor and rate estimator"
+source = "https://github.com/tgraf/bmon/releases/download/v4.0/bmon-4.0.tar.gz"
+sha256 = "02fdc312b8ceeb5786b28bf905f54328f414040ff42f45c83007f24b76cc9f7a"
+source_dir = "bmon-4.0"
+deps = ["libconfuse", "libnl", "ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-ncurses",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/tgraf/bmon/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/tgraf/bmon/releases/download/v{version}/bmon-{version}.tar.gz"
+source_dir_template = "bmon-{version}"

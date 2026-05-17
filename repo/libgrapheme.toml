@@ -1,0 +1,17 @@
+name = "libgrapheme"
+version = "3.0.0"
+description = "Unicode string library for grapheme, word, line, and sentence boundaries"
+source = "https://dl.suckless.org/libgrapheme/libgrapheme-3.0.0.tar.gz"
+sha256 = "32585af73dda62fbcc0fed14f199aa1bc988ad01dad0bfbd06cf175d9cf3d68c"
+source_dir = "libgrapheme-3.0.0"
+deps = []
+build_steps = [
+    "make PREFIX=/usr LDCONFIG=",
+    "make DESTDIR=${MAHOU_DESTDIR} PREFIX=/usr LDCONFIG= install",
+]
+
+[update]
+check_url = "https://dl.suckless.org/libgrapheme/"
+version_pattern = "libgrapheme-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://dl.suckless.org/libgrapheme/libgrapheme-{version}.tar.gz"
+source_dir_template = "libgrapheme-{version}"

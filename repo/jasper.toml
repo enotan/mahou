@@ -1,0 +1,19 @@
+name = "jasper"
+version = "4.2.9"
+description = "JPEG-2000 codec implementation"
+source = "https://github.com/jasper-software/jasper/archive/refs/tags/version-4.2.9.tar.gz"
+sha256 = "b0e5af6b54c274b9670c7e32ddbf6c802d88c896062d760267695dd0aa7014ff"
+source_dir = "jasper-version-4.2.9"
+deps = ["libjpeg-turbo"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DJAS_ENABLE_DOC=OFF -DJAS_ENABLE_LIBHEIF=OFF -DJAS_ENABLE_OPENGL=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jasper-software/jasper/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"version-([^\"]+)\""
+source_template = "https://github.com/jasper-software/jasper/archive/refs/tags/version-{version}.tar.gz"
+source_dir_template = "jasper-version-{version}"

@@ -1,0 +1,19 @@
+name = "fping"
+version = "5.5"
+description = "Ping-like program for sending ICMP echo requests to multiple hosts"
+source = "https://fping.org/dist/fping-5.5.tar.gz"
+sha256 = "15c4e32b6c55ff105bafe03e8c91c7ca1b2eda31bf9a7127326bb87887ee18fe"
+source_dir = "fping-5.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://fping.org/dist/"
+version_pattern = "fping-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://fping.org/dist/fping-{version}.tar.gz"
+source_dir_template = "fping-{version}"

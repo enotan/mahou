@@ -308,24 +308,44 @@ fn main() {
             }
 
             let name = &args[2];
-            let packages = load_repo_or_exit();
+            let mut packages = load_repo_or_exit();
 
-            match resolve_package_order(&packages, name) {
-                Ok(order) => {
-                    for package_name in order {
-                        let Some(package) = find_package(&packages, &package_name) else {
-                            eprintln!("Error: Package vanished from repo: {}", package_name);
-                            return;
-                        };
-
-                        if let Err(message) = install_package(package) {
-                            eprintln!("Error: {}", message);
-                            return;
-                        }
-                    }
-                }
+            let order = match resolve_package_order(&packages, name) {
+                Ok(order) => order,
                 Err(message) => {
                     eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            match refresh_recipes_for_order(&packages, &order) {
+                Ok(true) => {
+                    packages = load_repo_or_exit();
+                }
+                Ok(false) => {}
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            }
+
+            let order = match resolve_package_order(&packages, name) {
+                Ok(order) => order,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            for package_name in order {
+                let Some(package) = find_package(&packages, &package_name) else {
+                    eprintln!("Error: Package vanished from repo: {}", package_name);
+                    return;
+                };
+
+                if let Err(message) = install_package(package) {
+                    eprintln!("Error: {}", message);
+                    return;
                 }
             }
         }
@@ -1152,4 +1172,44 @@ fn write_recipe_update(package: &Package, plan: &RecipeUpdate) -> Result<(), Str
         .map_err(|error| format!("Failed to write {}: {}", path, error))?;
 
     Ok(())
+}
+
+fn update_recipe_if_needed(package: &Package) -> Result<bool, String> {
+    let Some(_) = &package.update else {
+        return Ok(false);
+    };
+
+    let Some(latest) = check_for_update(package)? else {
+        return Ok(false);
+    };
+
+    if latest == package.version {
+        return Ok(false);
+    }
+
+    let plan = plan_recipe_update(package, &latest)?;
+    write_recipe_update(package, &plan)?;
+
+    println!(
+        "Updated recipe: {} {} -> {}",
+        package.name, package.version, plan.version
+    );
+
+    Ok(true)
+}
+
+fn refresh_recipes_for_order(packages: &[Package], order: &[String]) -> Result<bool, String> {
+    let mut changed = false;
+
+    for package_name in order {
+        let Some(package) = find_package(packages, package_name) else {
+            return Err(format!("Package vanishe from repo: {}", package_name));
+        };
+
+        if update_recipe_if_needed(package)? {
+            changed = true;
+        }
+    }
+
+    Ok(changed)
 }

@@ -1,0 +1,18 @@
+name = "cmark"
+version = "0.31.2"
+description = "CommonMark parsing and rendering library"
+source = "https://github.com/commonmark/cmark/archive/refs/tags/0.31.2.tar.gz"
+sha256 = "f9bc5ca38bcb0b727f0056100fac4d743e768872e3bacec7746de28f5700d697"
+source_dir = "cmark-0.31.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/commonmark/cmark/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/commonmark/cmark/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "cmark-{version}"

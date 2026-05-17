@@ -1,0 +1,18 @@
+name = "libidn"
+version = "1.43"
+description = "Internationalized string handling library"
+source = "https://ftp.gnu.org/gnu/libidn/libidn-1.43.tar.gz"
+sha256 = "bdc662c12d041b2539d0e638f3a6e741130cdb33a644ef3496963a443482d164"
+source_dir = "libidn-1.43"
+deps = []
+build_steps = [
+    "./configure --prefix=/usr --disable-static --disable-nls --disable-java --disable-csharp --disable-doc",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libidn/"
+version_pattern = "libidn-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/libidn/libidn-{version}.tar.gz"
+source_dir_template = "libidn-{version}"

@@ -1,0 +1,18 @@
+name = "lv2"
+version = "1.18.10"
+description = "Extensible audio plugin standard"
+source = "https://lv2plug.in/spec/lv2-1.18.10.tar.xz"
+sha256 = "78c51bcf21b54e58bb6329accbb4dae03b2ed79b520f9a01e734bd9de530953f"
+source_dir = "lv2-1.18.10"
+deps = ["meson"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddocs=disabled -Dtests=disabled -Dplugins=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://lv2plug.in/spec/"
+version_pattern = "lv2-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://lv2plug.in/spec/lv2-{version}.tar.xz"
+source_dir_template = "lv2-{version}"

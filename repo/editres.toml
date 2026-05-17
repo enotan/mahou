@@ -1,0 +1,19 @@
+name = "editres"
+version = "1.1.1"
+description = "X11 dynamic resource editor"
+source = "https://www.x.org/releases/individual/app/editres-1.1.1.tar.xz"
+sha256 = "e0a29b2f5e178362f71950c45ec49b43ccc75cacf44356948377e71cdfee119b"
+source_dir = "editres-1.1.1"
+deps = ["libX11", "libXt", "libXmu", "libXaw", "libxkbfile", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "editres-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/editres-{version}.tar.xz"
+source_dir_template = "editres-{version}"

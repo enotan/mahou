@@ -1,0 +1,18 @@
+name = "helix"
+version = "25.07.1"
+description = "Modal text editor with built-in language server support"
+source = "https://github.com/helix-editor/helix/archive/refs/tags/25.07.1.tar.gz"
+sha256 = "27c8bc3eba46bc7bab1e3629c6b28ff94882eeff17366b3ea69cd8ceffba7541"
+source_dir = "helix-25.07.1"
+deps = []
+
+build_steps = [
+  "cargo install --path helix-term --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/helix-editor/helix/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/helix-editor/helix/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "helix-{version}"

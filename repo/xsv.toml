@@ -1,0 +1,18 @@
+name = "xsv"
+version = "0.13.0"
+description = "Fast CSV command-line toolkit"
+source = "https://github.com/BurntSushi/xsv/archive/refs/tags/0.13.0.tar.gz"
+sha256 = "2b75309b764c9f2f3fdc1dd31eeea5a74498f7da21ae757b3ffd6fd537ec5345"
+source_dir = "xsv-0.13.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/BurntSushi/xsv/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/BurntSushi/xsv/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "xsv-{version}"

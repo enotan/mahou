@@ -1,0 +1,18 @@
+name = "nanomsg"
+version = "1.2.2"
+description = "Simple high-performance messaging library"
+source = "https://github.com/nanomsg/nanomsg/archive/refs/tags/1.2.2.tar.gz"
+sha256 = "3ffeafa9335245a23a99827e8d389bfce5100610f44ebbe4bfaf47e8192d5939"
+source_dir = "nanomsg-1.2.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DNN_STATIC_LIB=OFF -DNN_TESTS=OFF -DNN_TOOLS=ON",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nanomsg/nanomsg/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/nanomsg/nanomsg/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "nanomsg-{version}"

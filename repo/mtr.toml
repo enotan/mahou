@@ -1,0 +1,19 @@
+name = "mtr"
+version = "0.96"
+description = "Network diagnostic tool combining ping and traceroute"
+source = "https://www.bitwizard.nl/mtr/files/mtr-0.96.tar.gz"
+sha256 = "ffd19a9f8d5f616c1ea2f0da9fbf9d1239bcecdf5a68912e831966d20929037a"
+source_dir = "mtr-0.96"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --without-gtk",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.bitwizard.nl/mtr/files/"
+version_pattern = "mtr-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.bitwizard.nl/mtr/files/mtr-{version}.tar.gz"
+source_dir_template = "mtr-{version}"

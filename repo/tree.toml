@@ -1,0 +1,19 @@
+name = "tree"
+version = "2.3.2"
+description = "Recursive directory listing command"
+source = "https://gitlab.com/OldManProgrammer/unix-tree/-/archive/2.3.2/unix-tree-2.3.2.tar.bz2"
+sha256 = "7e6bd141e89b6d951da8ce1757d16b832fb52ef69a7259a23669981f22a49cbb"
+source_dir = "unix-tree-2.3.2"
+deps = []
+
+build_steps = [
+  "make",
+  "install -Dm755 tree ${MAHOU_DESTDIR}/usr/bin/tree",
+  "install -Dm644 doc/tree.1 ${MAHOU_DESTDIR}/usr/share/man/man1/tree.1",
+]
+
+[update]
+check_url = "https://gitlab.com/OldManProgrammer/unix-tree/-/tags"
+version_pattern = "unix-tree/-/tags/([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://gitlab.com/OldManProgrammer/unix-tree/-/archive/{version}/unix-tree-{version}.tar.bz2"
+source_dir_template = "unix-tree-{version}"

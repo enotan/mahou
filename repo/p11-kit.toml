@@ -1,0 +1,19 @@
+name = "p11-kit"
+version = "0.26.2"
+description = "PKCS#11 module loading and trust policy library"
+source = "https://github.com/p11-glue/p11-kit/releases/download/0.26.2/p11-kit-0.26.2.tar.xz"
+sha256 = "09fd9f44da4813a3141e73d5e7cf7008e5660d0405f13d56c15e1da9dcecf828"
+source_dir = "p11-kit-0.26.2"
+deps = ["libffi", "libtasn1"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/p11-glue/p11-kit/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/p11-glue/p11-kit/releases/download/{version}/p11-kit-{version}.tar.xz"
+source_dir_template = "p11-kit-{version}"

@@ -1,0 +1,19 @@
+name = "lzlib"
+version = "1.16"
+description = "Compression library for the lzip format"
+source = "https://download.savannah.gnu.org/releases/lzip/lzlib/lzlib-1.16.tar.gz"
+sha256 = "203228de911780309dad6813e51541d7ea89469784f01cb661edba080ff1b038"
+source_dir = "lzlib-1.16"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --enable-shared --disable-static --disable-ldconfig",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.savannah.gnu.org/releases/lzip/lzlib/"
+version_pattern = "lzlib-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://download.savannah.gnu.org/releases/lzip/lzlib/lzlib-{version}.tar.gz"
+source_dir_template = "lzlib-{version}"

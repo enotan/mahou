@@ -1,0 +1,18 @@
+name = "just"
+version = "1.51.0"
+description = "Command runner"
+source = "https://github.com/casey/just/archive/refs/tags/1.51.0.tar.gz"
+sha256 = "ed424dcf55ec08e22a0c58f6cfb7333573775d69dac3802bf0c1d96f7557089d"
+source_dir = "just-1.51.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/casey/just/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/casey/just/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "just-{version}"

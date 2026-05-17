@@ -1,0 +1,20 @@
+name = "logrotate"
+version = "3.22.0"
+description = "Rotates, compresses, and mails system logs"
+source = "https://github.com/logrotate/logrotate/archive/refs/tags/3.22.0.tar.gz"
+sha256 = "f55b0f105f8ff145ea5b98166247d0c5d107f7fa8e8708130a2213dbde992db9"
+source_dir = "logrotate-3.22.0"
+deps = ["autoconf", "automake", "popt", "acl"]
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --sysconfdir=/etc --with-acl --without-selinux",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/logrotate/logrotate/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/logrotate/logrotate/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "logrotate-{version}"

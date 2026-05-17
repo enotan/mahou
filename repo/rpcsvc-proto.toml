@@ -1,0 +1,19 @@
+name = "rpcsvc-proto"
+version = "1.4.4"
+description = "RPC protocol definition files and rpcgen"
+source = "https://github.com/thkukuk/rpcsvc-proto/releases/download/v1.4.4/rpcsvc-proto-1.4.4.tar.xz"
+sha256 = "81c3aa27edb5d8a18ef027081ebb984234d5b5860c65bd99d4ac8f03145a558b"
+source_dir = "rpcsvc-proto-1.4.4"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/thkukuk/rpcsvc-proto/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/thkukuk/rpcsvc-proto/releases/download/v{version}/rpcsvc-proto-{version}.tar.xz"
+source_dir_template = "rpcsvc-proto-{version}"

@@ -1,0 +1,18 @@
+name = "git-delta"
+version = "0.19.2"
+description = "Syntax-highlighting pager for git and diff output"
+source = "https://github.com/dandavison/delta/archive/refs/tags/0.19.2.tar.gz"
+sha256 = "f59b86f8c8dda4d76a3ba34b8553777a20c3b461646917d8e480fac6531bba9f"
+source_dir = "delta-0.19.2"
+deps = ["libgit2"]
+
+build_steps = [
+  "LIBGIT2_NO_VENDOR=1 cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/dandavison/delta/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dandavison/delta/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "delta-{version}"

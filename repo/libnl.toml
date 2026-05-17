@@ -1,0 +1,19 @@
+name = "libnl"
+version = "3.12.0"
+description = "Library for applications dealing with netlink sockets"
+source = "https://github.com/thom311/libnl/releases/latest/download/libnl-3.12.0.tar.gz"
+sha256 = "fc51ca7196f1a3f5fdf6ffd3864b50f4f9c02333be28be4eeca057e103c0dd18"
+source_dir = "libnl-3.12.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/thom311/libnl/releases/latest"
+version_pattern = "libnl-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://github.com/thom311/libnl/releases/latest/download/libnl-{version}.tar.gz"
+source_dir_template = "libnl-{version}"

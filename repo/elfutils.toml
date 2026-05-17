@@ -1,0 +1,19 @@
+name = "elfutils"
+version = "0.195"
+description = "ELF object file and DWARF debugging information utilities"
+source = "https://sourceware.org/elfutils/ftp/0.195/elfutils-0.195.tar.bz2"
+sha256 = "37629fdf7f1f3dc2818e138fca2b8094177d6c2d0f701d3bb650a561218dc026"
+source_dir = "elfutils-0.195"
+deps = ["bzip2", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-nls --enable-libdebuginfod=dummy --disable-debuginfod --without-libarchive --with-zlib --with-bzlib --with-lzma --with-zstd",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceware.org/elfutils/ftp/"
+version_pattern = ">([0-9]+\\.[0-9]+)/"
+source_template = "https://sourceware.org/elfutils/ftp/{version}/elfutils-{version}.tar.bz2"
+source_dir_template = "elfutils-{version}"

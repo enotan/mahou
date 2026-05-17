@@ -1,0 +1,18 @@
+name = "uni-algo"
+version = "1.2.0"
+description = "Unicode algorithms implementation for C++"
+source = "https://github.com/uni-algo/uni-algo/archive/refs/tags/v1.2.0.tar.gz"
+sha256 = "f2a1539cd8635bc6088d05144a73ecfe7b4d74ee0361fabed6f87f9f19e74ca9"
+source_dir = "uni-algo-1.2.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DUNI_ALGO_HEADER_ONLY=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/uni-algo/uni-algo/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/uni-algo/uni-algo/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "uni-algo-{version}"

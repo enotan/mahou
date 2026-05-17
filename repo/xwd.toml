@@ -1,0 +1,19 @@
+name = "xwd"
+version = "1.0.9"
+description = "X11 window dump utility"
+source = "https://www.x.org/releases/individual/app/xwd-1.0.9.tar.xz"
+sha256 = "dc121b84947eb4a3d1131bff1e9844cfa2124d95b47b35f9932340fa931fbd3f"
+source_dir = "xwd-1.0.9"
+deps = ["libX11", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xwd-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xwd-{version}.tar.xz"
+source_dir_template = "xwd-{version}"

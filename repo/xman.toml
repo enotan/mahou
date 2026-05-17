@@ -1,0 +1,19 @@
+name = "xman"
+version = "1.2.0"
+description = "Manual page browser for X"
+source = "https://www.x.org/releases/individual/app/xman-1.2.0.tar.xz"
+sha256 = "f18db80bd72a0c27cf38b2a7b75485ee48cd22aab10f2ff58de54d83e268b406"
+source_dir = "xman-1.2.0"
+deps = ["libXaw", "libXt", "man-db", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xman-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xman-{version}.tar.xz"
+source_dir_template = "xman-{version}"

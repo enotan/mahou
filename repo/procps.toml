@@ -3,7 +3,7 @@ version = "4.0.6"
 description = "Standard informational utilities and process-handling tools"
 source = "https://downloads.sourceforge.net/procps-ng/procps-ng-4.0.6.tar.xz"
 sha256 = "67bea6fbc3a42a535a0230c9e891e5ddfb4d9d39422d46565a2990d1ace15216"
-source_dir = "${WORKDIR}"
+source_dir = "procps-ng-4.0.6"
 deps = ["ncurses"]
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://sourceforge.net/projects/procps-ng/files/Production/"
+version_pattern = "procps-ng-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://downloads.sourceforge.net/procps-ng/procps-ng-{version}.tar.xz"
+source_dir_template = "procps-ng-{version}"

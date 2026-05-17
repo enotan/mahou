@@ -1,0 +1,19 @@
+name = "rocksdb"
+version = "11.1.1"
+description = "Embeddable persistent key-value store for fast storage"
+source = "https://github.com/facebook/rocksdb/archive/refs/tags/v11.1.1.tar.gz"
+sha256 = "63f11183fe40725a0e89a9e392f2c86c94b90064f1d95f5173a02cfe40de13f7"
+source_dir = "rocksdb-11.1.1"
+deps = ["bzip2", "cmake", "liburing", "lz4", "snappy", "zlib", "zstd"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DROCKSDB_BUILD_SHARED=ON -DWITH_BZ2=ON -DWITH_GFLAGS=OFF -DWITH_JEMALLOC=OFF -DWITH_LIBURING=ON -DWITH_LZ4=ON -DWITH_SNAPPY=ON -DWITH_ZLIB=ON -DWITH_ZSTD=ON -DWITH_ALL_TESTS=OFF -DWITH_BENCHMARK=OFF -DWITH_BENCHMARK_TOOLS=OFF -DWITH_CORE_TOOLS=OFF -DWITH_EXAMPLES=OFF -DWITH_TOOLS=OFF -DFAIL_ON_WARNINGS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/facebook/rocksdb/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/facebook/rocksdb/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "rocksdb-{version}"

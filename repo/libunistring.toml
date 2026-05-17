@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libunistring/"
+version_pattern = "libunistring-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftpmirror.gnu.org/libunistring/libunistring-{version}.tar.xz"
+source_dir_template = "libunistring-{version}"

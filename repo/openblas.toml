@@ -1,0 +1,19 @@
+name = "openblas"
+version = "0.3.33"
+description = "Optimized BLAS library based on GotoBLAS2"
+source = "https://github.com/OpenMathLib/OpenBLAS/archive/refs/tags/v0.3.33.tar.gz"
+sha256 = "6761af1d9f5d353ab4f0b7497be2643313b36c8f31caec0144bfef198e71e6ab"
+source_dir = "OpenBLAS-0.3.33"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF -DBUILD_TESTING=OFF -DNOFORTRAN=1 -DBUILD_WITHOUT_LAPACK=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/OpenMathLib/OpenBLAS/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/OpenMathLib/OpenBLAS/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "OpenBLAS-{version}"

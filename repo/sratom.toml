@@ -1,0 +1,18 @@
+name = "sratom"
+version = "0.6.22"
+description = "Library for serializing LV2 atoms to and from RDF"
+source = "https://download.drobilla.net/sratom-0.6.22.tar.xz"
+sha256 = "0209b7d0f22c96abb416722ed735b0933be47931ecff4aa4b26ded7760b4f252"
+source_dir = "sratom-0.6.22"
+deps = ["lv2", "meson", "serd", "sord"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared -Ddocs=disabled -Dtests=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.drobilla.net/"
+version_pattern = "sratom-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.drobilla.net/sratom-{version}.tar.xz"
+source_dir_template = "sratom-{version}"

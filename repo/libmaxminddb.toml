@@ -1,0 +1,19 @@
+name = "libmaxminddb"
+version = "1.13.3"
+description = "MaxMind DB file reader library"
+source = "https://github.com/maxmind/libmaxminddb/releases/download/1.13.3/libmaxminddb-1.13.3.tar.gz"
+sha256 = "a66502ea76eadbe17f2cd6fd708946777253972d2ae8157dee1b23a2fb528171"
+source_dir = "libmaxminddb-1.13.3"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-tests",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/maxmind/libmaxminddb/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/maxmind/libmaxminddb/releases/download/{version}/libmaxminddb-{version}.tar.gz"
+source_dir_template = "libmaxminddb-{version}"

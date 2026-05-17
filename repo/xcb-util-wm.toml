@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://xorg.freedesktop.org/archive/individual/xcb/"
+version_pattern = "xcb-util-wm-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://xorg.freedesktop.org/archive/individual/xcb/xcb-util-wm-{version}.tar.xz"
+source_dir_template = "xcb-util-wm-{version}"

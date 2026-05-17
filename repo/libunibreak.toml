@@ -1,0 +1,18 @@
+name = "libunibreak"
+version = "7.0"
+description = "Unicode line and word breaking library"
+source = "https://github.com/adah1972/libunibreak/releases/download/libunibreak_7_0/libunibreak-7.0.tar.gz"
+sha256 = "8c9a6e121736cd0d5c890ae3ae96f3f4010a19aa040f1dbded833a62a87717d3"
+source_dir = "libunibreak-7.0"
+deps = []
+build_steps = [
+    "./configure --prefix=/usr --disable-static",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/adah1972/libunibreak/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"libunibreak_([0-9]+_[0-9]+)\""
+source_template = "https://github.com/adah1972/libunibreak/releases/download/libunibreak_{version}/libunibreak-{version}.tar.gz"
+source_dir_template = "libunibreak-{version}"

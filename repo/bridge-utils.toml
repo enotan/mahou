@@ -1,0 +1,21 @@
+name = "bridge-utils"
+version = "1.7.1"
+description = "Linux Ethernet bridge configuration tools"
+source = "https://www.kernel.org/pub/linux/utils/net/bridge-utils/bridge-utils-1.7.1.tar.xz"
+sha256 = "a61d8be4f1a1405c60c8ef38d544f0c18c05b33b9b07e5b4b31033536165e60e"
+source_dir = "bridge-utils-1.7.1"
+deps = ["autoconf"]
+
+build_steps = [
+  "autoheader",
+  "autoconf",
+  "./configure --prefix=/usr --with-linux-headers=/usr/include",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/utils/net/bridge-utils/"
+version_pattern = "bridge-utils-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/utils/net/bridge-utils/bridge-utils-{version}.tar.xz"
+source_dir_template = "bridge-utils-{version}"

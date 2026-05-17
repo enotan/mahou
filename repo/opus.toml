@@ -1,0 +1,19 @@
+name = "opus"
+version = "1.6.1"
+description = "Low-latency audio codec"
+source = "https://downloads.xiph.org/releases/opus/opus-1.6.1.tar.gz"
+sha256 = "6ffcb593207be92584df15b32466ed64bbec99109f007c82205f0194572411a1"
+source_dir = "opus-1.6.1"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://downloads.xiph.org/releases/opus/"
+version_pattern = "opus-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.xiph.org/releases/opus/opus-{version}.tar.gz"
+source_dir_template = "opus-{version}"

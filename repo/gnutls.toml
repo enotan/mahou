@@ -1,0 +1,19 @@
+name = "gnutls"
+version = "3.8.13"
+description = "TLS, SSL and DTLS protocol library"
+source = "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-3.8.13.tar.xz"
+sha256 = "ffed8ec1bf09c2426d4f14aae377de4753b53e537d685e604e99a8b16ca9c97e"
+source_dir = "gnutls-3.8.13"
+deps = ["gmp", "libidn2", "libtasn1", "libunistring", "nettle", "p11-kit", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-guile",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/"
+version_pattern = "gnutls-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.gnupg.org/ftp/gcrypt/gnutls/v3.8/gnutls-{version}.tar.xz"
+source_dir_template = "gnutls-{version}"

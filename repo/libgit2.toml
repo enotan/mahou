@@ -1,0 +1,19 @@
+name = "libgit2"
+version = "1.9.3"
+description = "Portable C implementation of Git core methods"
+source = "https://github.com/libgit2/libgit2/archive/refs/tags/v1.9.3.tar.gz"
+sha256 = "d532172d7ab24d2a25944e2434212d63ee85f3650e97b5f7579e7f201a78ad64"
+source_dir = "libgit2-1.9.3"
+deps = ["libiconv", "libssh2", "openssl", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF -DUSE_HTTPS=OpenSSL -DUSE_SSH=libssh2 -DUSE_BUNDLED_ZLIB=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libgit2/libgit2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libgit2/libgit2/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libgit2-{version}"

@@ -1,0 +1,19 @@
+name = "iputils"
+version = "20250605"
+description = "Network monitoring tools including ping and tracepath"
+source = "https://github.com/iputils/iputils/releases/download/20250605/iputils-20250605.tar.xz"
+sha256 = "6f213700dbf96b5cc4499ca70cb15ecd69c09f405b06785bb4a1a10b572b6276"
+source_dir = "iputils-20250605"
+deps = ["libcap", "openssl"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/iputils/iputils/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/iputils/iputils/releases/download/{version}/iputils-{version}.tar.xz"
+source_dir_template = "iputils-{version}"

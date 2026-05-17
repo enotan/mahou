@@ -1,0 +1,19 @@
+name = "gc"
+version = "8.2.12"
+description = "Boehm-Demers-Weiser conservative garbage collector"
+source = "https://github.com/bdwgc/bdwgc/releases/download/v8.2.12/gc-8.2.12.tar.gz"
+sha256 = "42e5194ad06ab6ffb806c83eb99c03462b495d979cda782f3c72c08af833cd4e"
+source_dir = "gc-8.2.12"
+deps = ["libatomic_ops"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --enable-cplusplus --with-libatomic-ops=yes",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/bdwgc/bdwgc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/bdwgc/bdwgc/releases/download/v{version}/gc-{version}.tar.gz"
+source_dir_template = "gc-{version}"

@@ -1,0 +1,23 @@
+name = "time"
+version = "1.9"
+description = "GNU resource usage measurement utility"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/time/"
+
+source = "https://ftp.gnu.org/gnu/time/time-1.9.tar.gz"
+sha256 = "fbacf0c81e62429df3e33bda4cee38756604f18e01d977338e23306a3e3b521e"
+source_dir = "time-1.9"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/time/"
+version_pattern = "time-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/time/time-{version}.tar.gz"
+source_dir_template = "time-{version}"

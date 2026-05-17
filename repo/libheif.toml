@@ -1,0 +1,19 @@
+name = "libheif"
+version = "1.21.2"
+description = "HEIF and AVIF image file format library"
+source = "https://github.com/strukturag/libheif/archive/refs/tags/v1.21.2.tar.gz"
+sha256 = "79996de959d28ca82ef070c382304683f5cdaf04cbe2953a74587160a3710a36"
+source_dir = "libheif-1.21.2"
+deps = ["cmake", "dav1d", "libde265", "libjpeg-turbo", "openjpeg", "openjph", "pkgconf"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DENABLE_PLUGIN_LOADING=OFF -DWITH_LIBDE265=ON -DWITH_X265=OFF -DWITH_DAV1D=ON -DWITH_AOM_DECODER=OFF -DWITH_AOM_ENCODER=OFF -DWITH_RAV1E=OFF -DWITH_SvtEnc=OFF -DWITH_JPEG_DECODER=ON -DWITH_JPEG_ENCODER=ON -DWITH_OpenJPEG_DECODER=ON -DWITH_OpenJPEG_ENCODER=ON -DWITH_OPENJPH_ENCODER=ON -DWITH_EXAMPLES=OFF -DWITH_GDK_PIXBUF=OFF -DWITH_LIBSHARPYUV=OFF -DBUILD_TESTING=OFF -DBUILD_DOCUMENTATION=OFF -DWITH_FUZZERS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/strukturag/libheif/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/strukturag/libheif/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libheif-{version}"

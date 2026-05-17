@@ -1,0 +1,23 @@
+name = "screen"
+version = "5.0.1"
+description = "Terminal multiplexer with VT100/ANSI terminal emulation"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/screen/"
+
+source = "https://ftp.gnu.org/gnu/screen/screen-5.0.1.tar.gz"
+sha256 = "2dae36f4db379ffcd14b691596ba6ec18ac3a9e22bc47ac239789ab58409869d"
+source_dir = "screen-5.0.1"
+
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/screen/"
+version_pattern = "screen-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/screen/screen-{version}.tar.gz"
+source_dir_template = "screen-{version}"

@@ -1,0 +1,19 @@
+name = "wavpack"
+version = "5.9.0"
+description = "Hybrid lossless audio compression"
+source = "https://github.com/dbry/WavPack/archive/refs/tags/5.9.0.tar.gz"
+sha256 = "2a53e50aefd8c9f04a0828a0e1ef77b6f4c17b0ef6964ad234ab295f313b7d6d"
+source_dir = "WavPack-5.9.0"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/dbry/WavPack/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dbry/WavPack/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "WavPack-{version}"

@@ -1,0 +1,23 @@
+name = "gawk"
+version = "5.3.2"
+description = "GNU implementation of the awk text processing language"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/gawk/"
+
+source = "https://ftp.gnu.org/gnu/gawk/gawk-5.3.2.tar.xz"
+sha256 = "f8c3486509de705192138b00ef2c00bbbdd0e84c30d5c07d23fc73a9dc4cc9cc"
+source_dir = "gawk-5.3.2"
+
+deps = ["readline"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/gawk/"
+version_pattern = "gawk-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/gawk/gawk-{version}.tar.xz"
+source_dir_template = "gawk-{version}"

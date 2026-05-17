@@ -1,0 +1,17 @@
+name = "linux-firmware"
+version = "20260410"
+description = "Firmware files for Linux"
+source = "https://www.kernel.org/pub/linux/kernel/firmware/linux-firmware-20260410.tar.xz"
+sha256 = "b7812ed6d59f6b09ecceddaa0be842a7e82a79cc0e46ca60478a4ebf02f1e178"
+source_dir = "linux-firmware-20260410"
+deps = []
+
+build_steps = [
+  "make DESTDIR=${MAHOU_DESTDIR} FIRMWAREDIR=/usr/lib/firmware install",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/kernel/firmware/"
+version_pattern = "linux-firmware-([0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/kernel/firmware/linux-firmware-{version}.tar.xz"
+source_dir_template = "linux-firmware-{version}"

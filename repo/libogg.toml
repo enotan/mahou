@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://downloads.xiph.org/releases/ogg/"
+version_pattern = "libogg-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://downloads.xiph.org/releases/ogg/libogg-{version}.tar.xz"
+source_dir_template = "libogg-{version}"

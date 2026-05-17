@@ -1,0 +1,19 @@
+name = "sdparm"
+version = "1.12"
+description = "Utility for SCSI disk parameters"
+source = "https://sg.danny.cz/sg/p/sdparm-1.12.tar.xz"
+sha256 = "c4c9efafdbeb662e2f9712707ec490932bd4d010bb1129ae7a99526546eeadbe"
+source_dir = "sdparm-1.12"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sg.danny.cz/sg/p/"
+version_pattern = "sdparm-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://sg.danny.cz/sg/p/sdparm-{version}.tar.xz"
+source_dir_template = "sdparm-{version}"

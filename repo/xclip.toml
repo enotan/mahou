@@ -1,0 +1,20 @@
+name = "xclip"
+version = "0.13"
+description = "Command-line interface to X selections"
+source = "https://github.com/astrand/xclip/archive/refs/tags/0.13.tar.gz"
+sha256 = "ca5b8804e3c910a66423a882d79bf3c9450b875ac8528791fb60ec9de667f758"
+source_dir = "xclip-0.13"
+deps = ["autoconf", "automake", "libX11", "libXmu"]
+
+build_steps = [
+  "./bootstrap",
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/astrand/xclip/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/astrand/xclip/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "xclip-{version}"

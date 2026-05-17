@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/automake/"
+version_pattern = "automake-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftpmirror.gnu.org/automake/automake-{version}.tar.xz"
+source_dir_template = "automake-{version}"

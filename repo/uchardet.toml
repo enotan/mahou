@@ -1,0 +1,18 @@
+name = "uchardet"
+version = "0.0.8"
+description = "Encoding detector library"
+source = "https://www.freedesktop.org/software/uchardet/releases/uchardet-0.0.8.tar.xz"
+sha256 = "e97a60cfc00a1c147a674b097bb1422abd9fa78a2d9ce3f3fdcc2e78a34ac5f0"
+source_dir = "uchardet-0.0.8"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC=OFF -DBUILD_BINARY=ON",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://www.freedesktop.org/software/uchardet/releases/"
+version_pattern = "uchardet-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.freedesktop.org/software/uchardet/releases/uchardet-{version}.tar.xz"
+source_dir_template = "uchardet-{version}"

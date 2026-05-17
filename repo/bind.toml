@@ -1,0 +1,19 @@
+name = "bind"
+version = "9.20.22"
+description = "DNS server and client utilities from ISC BIND"
+source = "https://downloads.isc.org/isc/bind9/9.20.22/bind-9.20.22.tar.xz"
+sha256 = "cba92ff631b949655f475fe4b54290f6860fd0070d399f2279f6437c0d383ec6"
+source_dir = "bind-9.20.22"
+deps = ["jemalloc", "json-c", "libidn2", "libmaxminddb", "libuv", "libxml2", "lmdb", "nghttp2", "openssl", "pkgconf", "python", "readline", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --mandir=/usr/share/man --with-openssl=/usr --with-libxml2=yes --with-json-c=yes --with-libidn2=/usr --with-lmdb=/usr --with-libnghttp2=yes --with-readline=readline --with-jemalloc=detect --with-maxminddb=auto",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://downloads.isc.org/isc/bind9/"
+version_pattern = "(9\\.20\\.[0-9]+)/"
+source_template = "https://downloads.isc.org/isc/bind9/{version}/bind-{version}.tar.xz"
+source_dir_template = "bind-{version}"

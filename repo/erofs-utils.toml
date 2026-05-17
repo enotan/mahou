@@ -1,0 +1,20 @@
+name = "erofs-utils"
+version = "1.9.1"
+description = "Userspace utilities for EROFS filesystems"
+source = "https://github.com/erofs/erofs-utils/archive/refs/tags/v1.9.1.tar.gz"
+sha256 = "a9ef5ab67c4b8d2d3e9ed71f39cd008bda653142a720d8a395a36f1110d0c432"
+source_dir = "erofs-utils-1.9.1"
+deps = ["autoconf", "automake", "libtool", "lz4", "pkgconf", "util-linux", "xxhash", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --disable-static --disable-fuse --enable-lz4 --with-zlib --with-libzstd --with-xxhash --without-libcurl --without-openssl --without-libxml2 --without-json-c --without-libnl3 --without-selinux",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/erofs/erofs-utils/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\""
+source_template = "https://github.com/erofs/erofs-utils/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "erofs-utils-{version}"

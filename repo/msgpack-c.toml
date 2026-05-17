@@ -1,0 +1,18 @@
+name = "msgpack-c"
+version = "7.0.0"
+description = "MessagePack implementation for C++"
+source = "https://github.com/msgpack/msgpack-c/releases/download/cpp-7.0.0/msgpack-cxx-7.0.0.tar.gz"
+sha256 = "7504b7af7e7b9002ce529d4f941e1b7fb1fb435768780ce7da4abaac79bb156f"
+source_dir = "msgpack-cxx-7.0.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DMSGPACK_USE_BOOST=OFF -DMSGPACK_BUILD_TESTS=OFF -DMSGPACK_BUILD_DOCS=OFF -DMSGPACK_BUILD_EXAMPLES=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/msgpack/msgpack-c/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"cpp-([^\"]+)\""
+source_template = "https://github.com/msgpack/msgpack-c/releases/download/cpp-{version}/msgpack-cxx-{version}.tar.gz"
+source_dir_template = "msgpack-cxx-{version}"

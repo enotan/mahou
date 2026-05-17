@@ -1,0 +1,19 @@
+name = "xkill"
+version = "1.0.7"
+description = "Kill a client by its X11 resource"
+source = "https://www.x.org/releases/individual/app/xkill-1.0.7.tar.xz"
+sha256 = "5ff264bc4eebc0459255a92036dc8dc84b6d48caef8509f88a783beaadea750b"
+source_dir = "xkill-1.0.7"
+deps = ["libX11", "libXmu", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xkill-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xkill-{version}.tar.xz"
+source_dir_template = "xkill-{version}"

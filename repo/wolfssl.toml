@@ -1,0 +1,20 @@
+name = "wolfssl"
+version = "5.8.2"
+description = "Small TLS and cryptography library"
+source = "https://github.com/wolfSSL/wolfssl/archive/refs/tags/v5.8.2-stable.tar.gz"
+sha256 = "3ef126e3466e2f8f6ebb62b916a7f8fb26c6709dbdf2b63a167759f2fdb53068"
+source_dir = "wolfssl-5.8.2-stable"
+deps = []
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --disable-static --enable-shared",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/wolfSSL/wolfssl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)-stable\""
+source_template = "https://github.com/wolfSSL/wolfssl/archive/refs/tags/v{version}-stable.tar.gz"
+source_dir_template = "wolfssl-{version}-stable"

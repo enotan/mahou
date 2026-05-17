@@ -1,0 +1,18 @@
+name = "http-parser"
+version = "2.9.4"
+description = "HTTP request and response parser for C"
+source = "https://github.com/nodejs/http-parser/archive/refs/tags/v2.9.4.tar.gz"
+sha256 = "467b9e30fd0979ee301065e70f637d525c28193449e1b13fbcb1b1fab3ad224f"
+source_dir = "http-parser-2.9.4"
+deps = []
+
+build_steps = [
+  "make library",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nodejs/http-parser/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/nodejs/http-parser/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "http-parser-{version}"

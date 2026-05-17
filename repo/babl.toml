@@ -1,0 +1,19 @@
+name = "babl"
+version = "0.1.126"
+description = "Pixel format translation library"
+source = "https://download.gimp.org/pub/babl/0.1/babl-0.1.126.tar.xz"
+sha256 = "3f090f4b2a61fecf7c8dc60a5804bbc77cefd8d778af2ded059f0e367a52930e"
+source_dir = "babl-0.1.126"
+deps = ["lcms2", "meson", "ninja"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dwith-docs=false -Denable-gir=false -Denable-vapi=false -Dgi-docgen=disabled -Dwith-lcms=enabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.gimp.org/pub/babl/0.1/"
+version_pattern = "babl-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gimp.org/pub/babl/0.1/babl-{version}.tar.xz"
+source_dir_template = "babl-{version}"

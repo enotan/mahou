@@ -1,0 +1,19 @@
+name = "lsof"
+version = "4.99.6"
+description = "List open files"
+source = "https://github.com/lsof-org/lsof/releases/download/4.99.6/lsof-4.99.6.tar.gz"
+sha256 = "6081dedf841cd61f8a022ff7cbe04ed78918a47dea3c39528c8571474167aa0f"
+source_dir = "lsof-4.99.6"
+deps = []
+
+build_steps = [
+  "./Configure -n linux",
+  "make",
+  "install -Dm755 lsof ${MAHOU_DESTDIR}/usr/bin/lsof",
+]
+
+[update]
+check_url = "https://api.github.com/repos/lsof-org/lsof/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/lsof-org/lsof/releases/download/{version}/lsof-{version}.tar.gz"
+source_dir_template = "lsof-{version}"

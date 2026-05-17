@@ -1,0 +1,19 @@
+name = "libICE"
+version = "1.1.2"
+description = "X11 Inter-Client Exchange library"
+source = "https://www.x.org/releases/individual/lib/libICE-1.1.2.tar.xz"
+sha256 = "974e4ed414225eb3c716985df9709f4da8d22a67a2890066bc6dfc89ad298625"
+source_dir = "libICE-1.1.2"
+deps = ["xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libICE-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libICE-{version}.tar.xz"
+source_dir_template = "libICE-{version}"

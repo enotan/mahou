@@ -1,0 +1,19 @@
+name = "shared-mime-info"
+version = "2.4"
+description = "Freedesktop MIME type database"
+source = "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/2.4/shared-mime-info-2.4.tar.gz"
+sha256 = "531291d0387eb94e16e775d7e73788d06d2b2fdd8cd2ac6b6b15287593b6a2de"
+source_dir = "shared-mime-info-2.4"
+deps = ["gettext", "glib", "libxml2"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dbuild-tests=false -Dupdate-mimedb=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/tags"
+version_pattern = "shared-mime-info/-/tags/([0-9]+\\.[0-9]+)"
+source_template = "https://gitlab.freedesktop.org/xdg/shared-mime-info/-/archive/{version}/shared-mime-info-{version}.tar.gz"
+source_dir_template = "shared-mime-info-{version}"

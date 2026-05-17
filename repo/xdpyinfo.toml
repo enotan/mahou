@@ -1,0 +1,19 @@
+name = "xdpyinfo"
+version = "1.4.0"
+description = "Display information utility for X11 servers"
+source = "https://www.x.org/releases/individual/app/xdpyinfo-1.4.0.tar.xz"
+sha256 = "dc1de6e6e091ed46c4837b0ae9811e8182f7be0d2af638cab3e530ff081a48b6"
+source_dir = "xdpyinfo-1.4.0"
+deps = ["libX11", "libXext", "libXtst", "libxcb", "libXxf86vm", "libXxf86dga", "libXi", "libXrender", "libXcomposite", "libXinerama", "libdmx", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-dmx",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xdpyinfo-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xdpyinfo-{version}.tar.xz"
+source_dir_template = "xdpyinfo-{version}"

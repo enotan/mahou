@@ -1,0 +1,18 @@
+name = "cli11"
+version = "2.6.2"
+description = "Command line parser for C++11 and beyond"
+source = "https://github.com/CLIUtils/CLI11/archive/refs/tags/v2.6.2.tar.gz"
+sha256 = "c6ea6b2e5608b3ea8617999bd5f47420c71b2ebdb8dc4767c1034d1da5785711"
+source_dir = "CLI11-2.6.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF -DCLI11_BUILD_TESTS=OFF -DCLI11_BUILD_EXAMPLES=OFF -DCLI11_BUILD_DOCS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/CLIUtils/CLI11/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/CLIUtils/CLI11/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "CLI11-{version}"

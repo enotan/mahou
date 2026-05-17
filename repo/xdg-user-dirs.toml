@@ -1,0 +1,19 @@
+name = "xdg-user-dirs"
+version = "0.18"
+description = "Manage XDG user directories"
+source = "https://user-dirs.freedesktop.org/releases/xdg-user-dirs-0.18.tar.gz"
+sha256 = "ec6f06d7495cdba37a732039f9b5e1578bcb296576fde0da40edb2f52220df3c"
+source_dir = "xdg-user-dirs-0.18"
+deps = ["gettext"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://user-dirs.freedesktop.org/releases/"
+version_pattern = "xdg-user-dirs-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://user-dirs.freedesktop.org/releases/xdg-user-dirs-{version}.tar.gz"
+source_dir_template = "xdg-user-dirs-{version}"

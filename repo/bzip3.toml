@@ -1,0 +1,19 @@
+name = "bzip3"
+version = "1.5.3"
+description = "Modern successor to bzip2 with better compression ratios"
+source = "https://github.com/iczelia/bzip3/releases/download/1.5.3/bzip3-1.5.3.tar.xz"
+sha256 = "58a53d002eb80c6f74c292ddf37d4f53604f6e2126cb3ae2bff738971302aa85"
+source_dir = "bzip3-1.5.3"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/iczelia/bzip3/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/iczelia/bzip3/releases/download/{version}/bzip3-{version}.tar.xz"
+source_dir_template = "bzip3-{version}"

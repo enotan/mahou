@@ -1,0 +1,19 @@
+name = "arping"
+version = "2.28"
+description = "ARP ping utility"
+source = "https://www.habets.pp.se/synscan/files/arping-2.28.tar.gz"
+sha256 = "9cb2d9854b30f9b06f0b0e76a896509c9a4ff0e73b4587131e78645a401b17dc"
+source_dir = "arping-2.28"
+deps = ["libcap", "libnet", "libpcap", "libseccomp"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-seccomp",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.habets.pp.se/synscan/files/"
+version_pattern = "arping-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://www.habets.pp.se/synscan/files/arping-{version}.tar.gz"
+source_dir_template = "arping-{version}"

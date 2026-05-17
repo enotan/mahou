@@ -1,0 +1,19 @@
+name = "libmicrohttpd"
+version = "1.0.5"
+description = "Small C library for embedding an HTTP server"
+source = "https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-1.0.5.tar.gz"
+sha256 = "b46d00f58efa6f497b97d2e782c4ee66301d412ddd855dd3068518b3a2cd3ea2"
+source_dir = "libmicrohttpd-1.0.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-doc --disable-examples --disable-curl --disable-https",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libmicrohttpd/"
+version_pattern = "libmicrohttpd-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/libmicrohttpd/libmicrohttpd-{version}.tar.gz"
+source_dir_template = "libmicrohttpd-{version}"

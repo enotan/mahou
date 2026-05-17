@@ -1,0 +1,18 @@
+name = "leveldb"
+version = "1.23"
+description = "Fast key-value storage library"
+source = "https://github.com/google/leveldb/archive/refs/tags/1.23.tar.gz"
+sha256 = "9a37f8a6174f09bd622bc723b55881dc541cd50747cbd08831c2a82d620f6d76"
+source_dir = "leveldb-1.23"
+deps = ["cmake", "snappy"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DLEVELDB_BUILD_TESTS=OFF -DLEVELDB_BUILD_BENCHMARKS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/leveldb/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/google/leveldb/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "leveldb-{version}"

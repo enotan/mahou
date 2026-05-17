@@ -1,0 +1,19 @@
+name = "libssh"
+version = "0.11.3"
+description = "C library implementing the SSH protocol"
+source = "https://www.libssh.org/files/0.11/libssh-0.11.3.tar.xz"
+sha256 = "7d8a1361bb094ec3f511964e78a5a4dba689b5986e112afabe4f4d0d6c6125c3"
+source_dir = "libssh-0.11.3"
+deps = ["cmake", "openssl", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DUNIT_TESTING=OFF -DCLIENT_TESTING=OFF -DSERVER_TESTING=OFF -DGSSAPI_TESTING=OFF -DWITH_BENCHMARKS=OFF -DWITH_EXAMPLES=OFF -DWITH_GSSAPI=OFF -DWITH_PCAP=OFF -DWITH_NACL=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://www.libssh.org/files/0.11/"
+version_pattern = "libssh-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.libssh.org/files/0.11/libssh-{version}.tar.xz"
+source_dir_template = "libssh-{version}"

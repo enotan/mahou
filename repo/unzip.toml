@@ -1,0 +1,20 @@
+name = "unzip"
+version = "6.0"
+description = "Info-ZIP archive extraction utility"
+source = "https://downloads.sourceforge.net/infozip/unzip60.tar.gz"
+sha256 = "036d96991646d0449ed0aa952e4fbe21b476ce994abc276e49d30e686708bd37"
+source_dir = "unzip60"
+deps = []
+
+build_steps = [
+  "make -f unix/Makefile generic",
+  "install -Dm755 unzip ${MAHOU_DESTDIR}/usr/bin/unzip",
+  "install -Dm755 funzip ${MAHOU_DESTDIR}/usr/bin/funzip",
+  "install -Dm755 unzipsfx ${MAHOU_DESTDIR}/usr/bin/unzipsfx",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/infozip/files/UnZip%206.x%20%28latest%29/"
+version_pattern = "unzip60\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/infozip/unzip60.tar.gz"
+source_dir_template = "unzip60"

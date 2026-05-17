@@ -1,0 +1,20 @@
+name = "fdupes"
+version = "2.4.0"
+description = "Find duplicate files"
+source = "https://github.com/adrianlopezroche/fdupes/archive/refs/tags/v2.4.0.tar.gz"
+sha256 = "2a11250ef0e9d82837dcf336853b2891732cc78e2888ccdc6b689ab7b47b0f5b"
+source_dir = "fdupes-2.4.0"
+deps = ["autoconf", "automake", "ncurses", "pcre2"]
+
+build_steps = [
+  "autoreconf -fi",
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/adrianlopezroche/fdupes/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/adrianlopezroche/fdupes/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "fdupes-{version}"

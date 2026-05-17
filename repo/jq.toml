@@ -1,0 +1,20 @@
+name = "jq"
+version = "1.8.1"
+description = "Lightweight and flexible command-line JSON processor"
+source = "https://github.com/jqlang/jq/archive/refs/tags/jq-1.8.1.tar.gz"
+sha256 = "51c4ec0913281d917f22a823d1ddcf17c9bc2be845fac987d5fe1d3ae78dd6a2"
+source_dir = "jq-jq-1.8.1"
+deps = ["autoconf", "automake", "libtool"]
+
+build_steps = [
+  "autoreconf -fi",
+  "./configure --prefix=/usr --disable-docs --without-oniguruma",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jqlang/jq/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"jq-([^\"]+)\""
+source_template = "https://github.com/jqlang/jq/archive/refs/tags/jq-{version}.tar.gz"
+source_dir_template = "jq-jq-{version}"

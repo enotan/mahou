@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://www.freedesktop.org/software/libevdev/"
+version_pattern = "libevdev-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.freedesktop.org/software/libevdev/libevdev-{version}.tar.xz"
+source_dir_template = "libevdev-{version}"

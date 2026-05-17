@@ -1,0 +1,19 @@
+name = "xinit"
+version = "1.4.4"
+description = "X Window System initializer"
+source = "https://www.x.org/releases/individual/app/xinit-1.4.4.tar.xz"
+sha256 = "40a47c7a164c7f981ce3787b4b37f7e411fb43231dcde543d70094075dacfef9"
+source_dir = "xinit-1.4.4"
+deps = ["libX11", "util-linux", "xauth", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --with-xauth=/usr/bin/xauth",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xinit-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xinit-{version}.tar.xz"
+source_dir_template = "xinit-{version}"

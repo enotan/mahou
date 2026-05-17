@@ -1,0 +1,19 @@
+name = "xprop"
+version = "1.2.8"
+description = "Property displayer for X11"
+source = "https://www.x.org/releases/individual/app/xprop-1.2.8.tar.xz"
+sha256 = "d689e2adb7ef7b439f6469b51cda8a7daefc83243854c2a3b8f84d0f029d67ee"
+source_dir = "xprop-1.2.8"
+deps = ["libX11"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xprop-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xprop-{version}.tar.xz"
+source_dir_template = "xprop-{version}"

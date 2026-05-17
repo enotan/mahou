@@ -1,0 +1,23 @@
+name = "flex"
+version = "2.6.4"
+description = "Fast lexical analyser generator"
+license = "BSD-2-Clause"
+homepage = "https://github.com/westes/flex"
+
+source = "https://github.com/westes/flex/releases/download/v2.6.4/flex-2.6.4.tar.gz"
+sha256 = "e87aae032bf07c26f85ac0ed3250998c37621d95f8bd748b31f15b33c45ee995"
+source_dir = "flex-2.6.4"
+
+deps = ["m4"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/westes/flex/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/westes/flex/releases/download/v{version}/flex-{version}.tar.gz"
+source_dir_template = "flex-{version}"

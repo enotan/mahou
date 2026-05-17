@@ -1,0 +1,19 @@
+name = "openvpn"
+version = "2.7.4"
+description = "Secure VPN daemon using SSL/TLS"
+source = "https://build.openvpn.net/downloads/releases/openvpn-2.7.4.tar.gz"
+sha256 = "18db05f3d5eee3663db1914590044e5f96ff5cd47b6e7846c6a350806c23dbce"
+source_dir = "openvpn-2.7.4"
+deps = ["libcap-ng", "lz4", "lzo", "openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --disable-dco --disable-plugin-auth-pam --disable-systemd --with-crypto-library=openssl",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://build.openvpn.net/downloads/releases/"
+version_pattern = "openvpn-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://build.openvpn.net/downloads/releases/openvpn-{version}.tar.gz"
+source_dir_template = "openvpn-{version}"

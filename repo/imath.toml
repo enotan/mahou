@@ -1,0 +1,19 @@
+name = "imath"
+version = "3.2.2"
+description = "C++ math library used by OpenEXR"
+source = "https://github.com/AcademySoftwareFoundation/Imath/archive/refs/tags/v3.2.2.tar.gz"
+sha256 = "b4275d83fb95521510e389b8d13af10298ed5bed1c8e13efd961d91b1105e462"
+source_dir = "Imath-3.2.2"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF -DPYTHON=OFF -DPYBIND11=OFF -DBUILD_WEBSITE=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/AcademySoftwareFoundation/Imath/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/AcademySoftwareFoundation/Imath/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "Imath-{version}"

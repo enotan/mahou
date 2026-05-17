@@ -1,0 +1,18 @@
+name = "libtommath"
+version = "1.3.0"
+description = "Multiple-precision integer library"
+source = "https://github.com/libtom/libtommath/releases/download/v1.3.0/ltm-1.3.0.tar.xz"
+sha256 = "296272d93435991308eb73607600c034b558807a07e829e751142e65ccfa9d08"
+source_dir = "libtommath-1.3.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libtom/libtommath/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libtom/libtommath/releases/download/v{version}/ltm-{version}.tar.xz"
+source_dir_template = "libtommath-{version}"

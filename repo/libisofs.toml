@@ -1,0 +1,19 @@
+name = "libisofs"
+version = "1.5.6"
+description = "Library for creating ISO-9660 filesystems"
+source = "https://files.libburnia-project.org/releases/libisofs-1.5.6.tar.gz"
+sha256 = "0152d66a9d340b659fe9c880eb9190f3570fb477ac07cf52e8bcd134a1d30d70"
+source_dir = "libisofs-1.5.6"
+deps = ["acl", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-static --enable-libacl --enable-zlib --disable-libjte --disable-ldconfig-at-install",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://files.libburnia-project.org/releases/"
+version_pattern = "libisofs-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://files.libburnia-project.org/releases/libisofs-{version}.tar.gz"
+source_dir_template = "libisofs-{version}"

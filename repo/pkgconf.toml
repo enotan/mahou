@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://distfiles.ariadne.space/pkgconf/"
+version_pattern = "pkgconf-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://distfiles.ariadne.space/pkgconf/pkgconf-{version}.tar.xz"
+source_dir_template = "pkgconf-{version}"

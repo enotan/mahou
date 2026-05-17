@@ -1,0 +1,19 @@
+name = "libXfixes"
+version = "6.0.2"
+description = "X11 XFIXES extension library"
+source = "https://www.x.org/releases/individual/lib/libXfixes-6.0.2.tar.xz"
+sha256 = "39f115d72d9c5f8111e4684164d3d68cc1fd21f9b27ff2401b08fddfc0f409ba"
+source_dir = "libXfixes-6.0.2"
+deps = ["libX11", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXfixes-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXfixes-{version}.tar.xz"
+source_dir_template = "libXfixes-{version}"

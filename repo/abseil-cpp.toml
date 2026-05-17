@@ -1,0 +1,19 @@
+name = "abseil-cpp"
+version = "20260107.1"
+description = "Abseil C++ common libraries"
+source = "https://github.com/abseil/abseil-cpp/archive/refs/tags/20260107.1.tar.gz"
+sha256 = "4314e2a7cbac89cac25a2f2322870f343d81579756ceff7f431803c2c9090195"
+source_dir = "abseil-cpp-20260107.1"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DABSL_ENABLE_INSTALL=ON -DABSL_PROPAGATE_CXX_STD=ON -DABSL_BUILD_TESTING=OFF -DABSL_BUILD_TEST_HELPERS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/abseil/abseil-cpp/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/abseil/abseil-cpp/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "abseil-cpp-{version}"

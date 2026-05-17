@@ -1,0 +1,20 @@
+name = "openldap"
+version = "2.6.13"
+description = "OpenLDAP client libraries and tools"
+source = "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-2.6.13.tgz"
+sha256 = "d693b49517a42efb85a1a364a310aed16a53d428d1b46c0d31ef3fba78fcb656"
+source_dir = "openldap-2.6.13"
+deps = ["cyrus-sasl", "openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var/lib/openldap --disable-static --disable-slapd --with-tls=openssl --with-cyrus-sasl",
+  "make depend",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.openldap.org/software/download/OpenLDAP/openldap-release/"
+version_pattern = "openldap-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tgz"
+source_template = "https://www.openldap.org/software/download/OpenLDAP/openldap-release/openldap-{version}.tgz"
+source_dir_template = "openldap-{version}"

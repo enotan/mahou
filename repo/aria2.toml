@@ -1,0 +1,19 @@
+name = "aria2"
+version = "1.37.0"
+description = "Lightweight multi-protocol command-line download utility"
+source = "https://github.com/aria2/aria2/releases/download/release-1.37.0/aria2-1.37.0.tar.gz"
+sha256 = "8e7021c6d5e8f8240c9cc19482e0c8589540836747744724d86bf8af5a21f0e8"
+source_dir = "aria2-1.37.0"
+deps = ["c-ares", "libssh2", "libxml2", "openssl", "sqlite", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-openssl --without-gnutls --with-libcares --with-libssh2 --with-sqlite3 --with-libxml2",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/aria2/aria2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"release-([^\"]+)\""
+source_template = "https://github.com/aria2/aria2/releases/download/release-{version}/aria2-{version}.tar.gz"
+source_dir_template = "aria2-{version}"

@@ -1,0 +1,19 @@
+name = "alsa-utils"
+version = "1.2.15"
+description = "Command-line utilities for ALSA"
+source = "https://www.alsa-project.org/files/pub/utils/alsa-utils-1.2.15.tar.bz2"
+sha256 = "d3183d2ed2d69e9143c5beb97036267c3fdabfe8bfbea8bc6863f17b1f0b568e"
+source_dir = "alsa-utils-1.2.15"
+deps = ["alsa-lib", "ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.alsa-project.org/files/pub/utils/"
+version_pattern = "alsa-utils-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://www.alsa-project.org/files/pub/utils/alsa-utils-{version}.tar.bz2"
+source_dir_template = "alsa-utils-{version}"

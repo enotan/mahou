@@ -11,3 +11,9 @@ build_steps = [
   "cmake --build build",
   "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/jbeder/yaml-cpp/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"yaml-cpp-([^\"]+)\""
+source_template = "https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-{version}.tar.gz"
+source_dir_template = "yaml-cpp-yaml-cpp-{version}"

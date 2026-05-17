@@ -1,0 +1,19 @@
+name = "leptonica"
+version = "1.87.0"
+description = "Image processing and analysis library"
+source = "http://www.leptonica.org/source/leptonica-1.87.0.tar.gz"
+sha256 = "c73363397f96eb1295602bf44d708a994ad42046c791bf03ea0505d829bdb6a7"
+source_dir = "leptonica-1.87.0"
+deps = ["giflib", "libjpeg-turbo", "libpng", "libwebp", "openjpeg", "tiff", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://www.leptonica.org/download.html"
+version_pattern = "leptonica-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://www.leptonica.org/source/leptonica-{version}.tar.gz"
+source_dir_template = "leptonica-{version}"

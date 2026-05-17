@@ -1,0 +1,19 @@
+name = "libgpg-error"
+version = "1.61"
+description = "Common error values for GnuPG components"
+source = "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-1.61.tar.gz"
+sha256 = "7980d7d43178b06a74bfba3d4606c13955bf2370344e12938d56ae4a9da6d36f"
+source_dir = "libgpg-error-1.61"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.gnupg.org/ftp/gcrypt/libgpg-error/"
+version_pattern = "libgpg-error-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.gnupg.org/ftp/gcrypt/libgpg-error/libgpg-error-{version}.tar.gz"
+source_dir_template = "libgpg-error-{version}"

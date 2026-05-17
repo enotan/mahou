@@ -1,0 +1,19 @@
+name = "xrefresh"
+version = "1.1.0"
+description = "Refresh all or part of an X11 screen"
+source = "https://www.x.org/releases/individual/app/xrefresh-1.1.0.tar.xz"
+sha256 = "29ed592d5ece35a3029004d8c46f3002f92970870a96c11e38baf7f1122b8b5f"
+source_dir = "xrefresh-1.1.0"
+deps = ["libX11", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xrefresh-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xrefresh-{version}.tar.xz"
+source_dir_template = "xrefresh-{version}"

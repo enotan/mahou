@@ -1,0 +1,19 @@
+name = "xedit"
+version = "1.2.4"
+description = "Simple text editor for X"
+source = "https://www.x.org/releases/individual/app/xedit-1.2.4.tar.xz"
+sha256 = "b00d488b29cd007fadf9a4e44193cbdd72b48c94080be5ebc02565f21f9a2a71"
+source_dir = "xedit-1.2.4"
+deps = ["libX11", "libXaw", "libXmu", "libXt"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xedit-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xedit-{version}.tar.xz"
+source_dir_template = "xedit-{version}"

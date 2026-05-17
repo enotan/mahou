@@ -1,0 +1,19 @@
+name = "tesseract"
+version = "5.5.2"
+description = "Open source OCR engine"
+source = "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/5.5.2.tar.gz"
+sha256 = "6235ea0dae45ea137f59c09320406f5888383741924d98855bd2ce0d16b54f21"
+source_dir = "tesseract-5.5.2"
+deps = ["cmake", "icu", "leptonica", "pkgconf", "tiff"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_MANDIR=/usr/share/man -DCMAKE_BUILD_TYPE=Release -DBUILD_TRAINING_TOOLS=OFF -DBUILD_TESTS=OFF -DDISABLE_ARCHIVE=ON -DDISABLE_CURL=ON -DGRAPHICS_DISABLED=ON -DUSE_SYSTEM_ICU=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/tesseract-ocr/tesseract/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/tesseract-ocr/tesseract/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "tesseract-{version}"

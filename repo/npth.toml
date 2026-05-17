@@ -1,0 +1,19 @@
+name = "npth"
+version = "1.8"
+description = "New GNU Portable Threads library"
+source = "https://www.gnupg.org/ftp/gcrypt/npth/npth-1.8.tar.bz2"
+sha256 = "8bd24b4f23a3065d6e5b26e98aba9ce783ea4fd781069c1b35d149694e90ca3e"
+source_dir = "npth-1.8"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.gnupg.org/ftp/gcrypt/npth/"
+version_pattern = "npth-([0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://www.gnupg.org/ftp/gcrypt/npth/npth-{version}.tar.bz2"
+source_dir_template = "npth-{version}"

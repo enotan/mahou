@@ -1,0 +1,19 @@
+name = "unibilium"
+version = "2.1.2"
+description = "Terminfo parsing library"
+source = "https://github.com/neovim/unibilium/archive/refs/tags/v2.1.2.tar.gz"
+sha256 = "370ecb07fbbc20d91d1b350c55f1c806b06bf86797e164081ccc977fc9b3af7a"
+source_dir = "unibilium-2.1.2"
+deps = ["ncurses"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/neovim/unibilium/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/neovim/unibilium/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "unibilium-{version}"

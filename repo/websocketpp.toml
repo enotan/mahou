@@ -1,0 +1,18 @@
+name = "websocketpp"
+version = "0.8.2"
+description = "Header-only C++ websocket client and server library"
+source = "https://github.com/zaphoyd/websocketpp/archive/refs/tags/0.8.2.tar.gz"
+sha256 = "6ce889d85ecdc2d8fa07408d6787e7352510750daa66b5ad44aacb47bea76755"
+source_dir = "websocketpp-0.8.2"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/zaphoyd/websocketpp/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/zaphoyd/websocketpp/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "websocketpp-{version}"

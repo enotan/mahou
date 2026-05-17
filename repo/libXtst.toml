@@ -1,0 +1,19 @@
+name = "libXtst"
+version = "1.2.5"
+description = "X11 Testing extension library"
+source = "https://www.x.org/releases/individual/lib/libXtst-1.2.5.tar.xz"
+sha256 = "b50d4c25b97009a744706c1039c598f4d8e64910c9fde381994e1cae235d9242"
+source_dir = "libXtst-1.2.5"
+deps = ["libX11", "libXext", "libXi", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXtst-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXtst-{version}.tar.xz"
+source_dir_template = "libXtst-{version}"

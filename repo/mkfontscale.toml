@@ -1,0 +1,19 @@
+name = "mkfontscale"
+version = "1.2.4"
+description = "Create X11 font scale and directory files"
+source = "https://www.x.org/releases/individual/app/mkfontscale-1.2.4.tar.xz"
+sha256 = "a01492a17a9b6c0ee3f92ee578850e305315b9f298da5f006a1cd4b51db01a5e"
+source_dir = "mkfontscale-1.2.4"
+deps = ["freetype", "libfontenc", "zlib", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "mkfontscale-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/mkfontscale-{version}.tar.xz"
+source_dir_template = "mkfontscale-{version}"

@@ -1,0 +1,19 @@
+name = "snappy"
+version = "1.2.2"
+description = "Fast compressor and decompressor from Google"
+source = "https://github.com/google/snappy/archive/refs/tags/1.2.2.tar.gz"
+sha256 = "90f74bc1fbf78a6c56b3c4a082a05103b3a56bb17bca1a27e052ea11723292dc"
+source_dir = "snappy-1.2.2"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DSNAPPY_BUILD_TESTS=OFF -DSNAPPY_BUILD_BENCHMARKS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/snappy/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/google/snappy/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "snappy-{version}"

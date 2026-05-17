@@ -11,3 +11,9 @@ build_steps = [
   "cmake --build build",
   "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/fish-shell/fish-shell/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/fish-shell/fish-shell/releases/download/{version}/fish-{version}.tar.xz"
+source_dir_template = "fish-{version}"

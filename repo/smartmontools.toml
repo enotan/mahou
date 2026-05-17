@@ -1,0 +1,19 @@
+name = "smartmontools"
+version = "7.5"
+description = "Control and monitor storage devices using S.M.A.R.T."
+source = "https://downloads.sourceforge.net/project/smartmontools/smartmontools/7.5/smartmontools-7.5.tar.gz"
+sha256 = "690b83ca331378da9ea0d9d61008c4b22dde391387b9bbad7f29387f2595f76e"
+source_dir = "smartmontools-7.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --with-initscriptdir=no --with-libcap-ng=no --with-libsystemd=no --with-systemdsystemunitdir=no --with-update-smart-drivedb=no --with-selinux=no",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/smartmontools/files/smartmontools/"
+version_pattern = "smartmontools-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/project/smartmontools/smartmontools/{version}/smartmontools-{version}.tar.gz"
+source_dir_template = "smartmontools-{version}"

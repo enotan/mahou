@@ -10,3 +10,9 @@ build_steps = [
   "make",
   "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://dl.suckless.org/st/"
+version_pattern = "st-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://dl.suckless.org/st/st-{version}.tar.gz"
+source_dir_template = "st-{version}"

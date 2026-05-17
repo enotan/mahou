@@ -1,0 +1,19 @@
+name = "libmnl"
+version = "1.0.5"
+description = "Minimalistic Netlink communication library"
+source = "https://netfilter.org/projects/libmnl/files/libmnl-1.0.5.tar.bz2"
+sha256 = "274b9b919ef3152bfb3da3a13c950dd60d6e2bcd54230ffeca298d03b40d0525"
+source_dir = "libmnl-1.0.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://netfilter.org/projects/libmnl/files/"
+version_pattern = "libmnl-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://netfilter.org/projects/libmnl/files/libmnl-{version}.tar.bz2"
+source_dir_template = "libmnl-{version}"

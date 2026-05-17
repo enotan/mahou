@@ -1,0 +1,19 @@
+name = "indent"
+version = "2.2.13"
+description = "GNU source code formatter for C"
+source = "https://ftp.gnu.org/gnu/indent/indent-2.2.13.tar.xz"
+sha256 = "1b81ba4e9a006ca8e6eb5cbbe4cf4f75dfc1fc9301b459aa0d40393e85590a0b"
+source_dir = "indent-2.2.13"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/indent/"
+version_pattern = "indent-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/indent/indent-{version}.tar.xz"
+source_dir_template = "indent-{version}"

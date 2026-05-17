@@ -1,0 +1,18 @@
+name = "utf8proc"
+version = "2.11.3"
+description = "Clean C library for processing UTF-8 Unicode data"
+source = "https://github.com/JuliaStrings/utf8proc/archive/refs/tags/v2.11.3.tar.gz"
+sha256 = "abfed50b6d4da51345713661370290f4f4747263ee73dc90356299dfc7990c78"
+source_dir = "utf8proc-2.11.3"
+deps = []
+
+build_steps = [
+  "make prefix=/usr",
+  "make prefix=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/JuliaStrings/utf8proc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/JuliaStrings/utf8proc/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "utf8proc-{version}"

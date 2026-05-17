@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/cpio/"
+version_pattern = "cpio-([0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://ftpmirror.gnu.org/cpio/cpio-{version}.tar.bz2"
+source_dir_template = "cpio-{version}"

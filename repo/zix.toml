@@ -1,0 +1,18 @@
+name = "zix"
+version = "0.8.0"
+description = "Lightweight C utility library"
+source = "https://download.drobilla.net/zix-0.8.0.tar.xz"
+sha256 = "e9b6fe3ede984fa53f2edcebdabb35fb99ace807722772156aea49c079cad191"
+source_dir = "zix-0.8.0"
+deps = ["meson"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared -Ddocs=disabled -Dtests=disabled -Dtests_cpp=disabled -Dbenchmarks=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.drobilla.net/"
+version_pattern = "zix-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.drobilla.net/zix-{version}.tar.xz"
+source_dir_template = "zix-{version}"

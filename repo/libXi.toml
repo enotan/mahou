@@ -1,0 +1,19 @@
+name = "libXi"
+version = "1.8.2"
+description = "X11 Input extension library"
+source = "https://www.x.org/releases/individual/lib/libXi-1.8.2.tar.xz"
+sha256 = "d0e0555e53d6e2114eabfa44226ba162d2708501a25e18d99cfb35c094c6c104"
+source_dir = "libXi-1.8.2"
+deps = ["libX11", "libXext", "libXfixes", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXi-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXi-{version}.tar.xz"
+source_dir_template = "libXi-{version}"

@@ -1,0 +1,18 @@
+name = "xdotool"
+version = "4.20260303.1"
+description = "Command-line X11 automation tool"
+source = "https://github.com/jordansissel/xdotool/archive/refs/tags/v4.20260303.1.tar.gz"
+sha256 = "c1f971a384da588eb99ca0755fc4300316d49c1e612537e3f1de52215e104fa3"
+source_dir = "xdotool-4.20260303.1"
+deps = ["perl", "libX11", "libXtst", "libXinerama", "libxkbcommon"]
+
+build_steps = [
+  "make PREFIX=/usr INSTALLMAN=/usr/share/man WITHOUT_RPATH_FIX=1",
+  "make DESTDIR=${MAHOU_DESTDIR} PREFIX=/usr INSTALLMAN=/usr/share/man WITHOUT_RPATH_FIX=1 LDCONFIG=true install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jordansissel/xdotool/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jordansissel/xdotool/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "xdotool-{version}"

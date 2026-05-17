@@ -1,0 +1,18 @@
+name = "czmq"
+version = "4.2.1"
+description = "High-level C binding for ZeroMQ"
+source = "https://github.com/zeromq/czmq/releases/download/v4.2.1/czmq-4.2.1.tar.gz"
+sha256 = "5d720a204c2a58645d6f7643af15d563a712dad98c9d32c1ed913377daa6ac39"
+source_dir = "czmq-4.2.1"
+deps = ["cmake", "zeromq"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCZMQ_BUILD_SHARED=ON -DCZMQ_BUILD_STATIC=OFF -DENABLE_DRAFTS=OFF -DCZMQ_WITH_UUID=OFF -DCZMQ_WITH_SYSTEMD=OFF -DCZMQ_WITH_LZ4=OFF -DCZMQ_WITH_LIBCURL=OFF -DCZMQ_WITH_NSS=OFF -DCZMQ_WITH_LIBMICROHTTPD=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/zeromq/czmq/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/zeromq/czmq/releases/download/v{version}/czmq-{version}.tar.gz"
+source_dir_template = "czmq-{version}"

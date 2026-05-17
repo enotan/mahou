@@ -1,0 +1,19 @@
+name = "libfastjson"
+version = "1.2304.0"
+description = "Fast JSON library for C"
+source = "https://download.rsyslog.com/libfastjson/libfastjson-1.2304.0.tar.gz"
+sha256 = "ef30d1e57a18ec770f90056aaac77300270c6203bbe476f4181cc83a2d5dc80c"
+source_dir = "libfastjson-1.2304.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-Werror",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.rsyslog.com/libfastjson/"
+version_pattern = "libfastjson-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://download.rsyslog.com/libfastjson/libfastjson-{version}.tar.gz"
+source_dir_template = "libfastjson-{version}"

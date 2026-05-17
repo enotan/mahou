@@ -1,0 +1,19 @@
+name = "tcsh"
+version = "6_24_16"
+description = "Enhanced C shell with command-line editing and completion"
+source = "https://github.com/tcsh-org/tcsh/archive/refs/tags/TCSH6_24_16.tar.gz"
+sha256 = "aa8b6eeca8b93db659a7ebf421a7089b3f7f8457deba34170cd146b92fe60546"
+source_dir = "tcsh-TCSH6_24_16"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/tcsh-org/tcsh/tags"
+version_pattern = "\"name\"\\s*:\\s*\"TCSH([0-9]+_[0-9]+_[0-9]+)\""
+source_template = "https://github.com/tcsh-org/tcsh/archive/refs/tags/TCSH{version}.tar.gz"
+source_dir_template = "tcsh-TCSH{version}"

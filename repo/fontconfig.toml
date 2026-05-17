@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/"
+version_pattern = "fontconfig/([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://gitlab.freedesktop.org/api/v4/projects/890/packages/generic/fontconfig/{version}/fontconfig-{version}.tar.xz"
+source_dir_template = "fontconfig-{version}"

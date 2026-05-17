@@ -1,0 +1,18 @@
+name = "libtermkey"
+version = "0.22"
+description = "Terminal key input handling library"
+source = "https://github.com/neovim/libtermkey/archive/refs/tags/v0.22.tar.gz"
+sha256 = "81cac2b685c9ada4ead4ea788fb69ff74fc1947ad188ed0264c646fe12b496ba"
+source_dir = "libtermkey-0.22"
+deps = ["libtool", "unibilium"]
+
+build_steps = [
+  "make PREFIX=/usr",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/neovim/libtermkey/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/neovim/libtermkey/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libtermkey-{version}"

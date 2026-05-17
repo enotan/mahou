@@ -1,0 +1,19 @@
+name = "minizip"
+version = "4.2.1"
+description = "Zip manipulation library from minizip-ng"
+source = "https://github.com/zlib-ng/minizip-ng/archive/refs/tags/4.2.1.tar.gz"
+sha256 = "3cc35c2cb925dbe67cc801e3234b31b0f30197812a99377352fa1b551ab3d011"
+source_dir = "minizip-ng-4.2.1"
+deps = ["bzip2", "cmake", "openssl", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_MANDIR=/usr/share/man -DCMAKE_BUILD_TYPE=Release -DMZ_FETCH_LIBS=OFF -DMZ_FORCE_FETCH_LIBS=OFF -DMZ_BUILD_TESTS=OFF -DMZ_BUILD_UNIT_TESTS=OFF -DMZ_BUILD_FUZZ_TESTS=OFF -DMZ_ZLIB_FLAVOR=zlib",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/zlib-ng/minizip-ng/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/zlib-ng/minizip-ng/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "minizip-ng-{version}"

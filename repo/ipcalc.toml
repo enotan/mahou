@@ -1,0 +1,18 @@
+name = "ipcalc"
+version = "0.51"
+description = "IPv4 network calculator"
+source = "https://github.com/kjokjo/ipcalc/archive/refs/tags/0.51.tar.gz"
+sha256 = "a4dbfaeb7511b81830793ab9936bae9d7b1b561ad33e29106faaaf97ba1c117e"
+source_dir = "ipcalc-0.51"
+deps = ["perl"]
+
+build_steps = [
+  "install -Dm755 ipcalc ${MAHOU_DESTDIR}/usr/bin/ipcalc",
+  "install -Dm644 ipcalc.1 ${MAHOU_DESTDIR}/usr/share/man/man1/ipcalc.1",
+]
+
+[update]
+check_url = "https://api.github.com/repos/kjokjo/ipcalc/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/kjokjo/ipcalc/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "ipcalc-{version}"

@@ -1,0 +1,19 @@
+name = "xmessage"
+version = "1.0.7"
+description = "Display a message or query in an X11 window"
+source = "https://www.x.org/releases/individual/app/xmessage-1.0.7.tar.xz"
+sha256 = "703fccb7a0b772d61d7e603c189b9739866aa97ba985c727275420f829a30356"
+source_dir = "xmessage-1.0.7"
+deps = ["libXaw", "libXt"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xmessage-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xmessage-{version}.tar.xz"
+source_dir_template = "xmessage-{version}"

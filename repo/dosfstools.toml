@@ -1,0 +1,19 @@
+name = "dosfstools"
+version = "4.2"
+description = "Utilities for creating and checking FAT filesystems"
+source = "https://github.com/dosfstools/dosfstools/releases/download/v4.2/dosfstools-4.2.tar.gz"
+sha256 = "64926eebf90092dca21b14259a5301b7b98e7b1943e8a201c7d726084809b527"
+source_dir = "dosfstools-4.2"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --without-iconv",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/dosfstools/dosfstools/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dosfstools/dosfstools/releases/download/v{version}/dosfstools-{version}.tar.gz"
+source_dir_template = "dosfstools-{version}"

@@ -1,0 +1,19 @@
+name = "shadow"
+version = "4.19.4"
+description = "User and group account management tools"
+source = "https://github.com/shadow-maint/shadow/releases/download/4.19.4/shadow-4.19.4.tar.xz"
+sha256 = "ce57a313e315a0a7cb04a8f50cc20753e994e487bbe9b78a2a824ca75cb486c0"
+source_dir = "shadow-4.19.4"
+deps = ["acl", "attr", "libxcrypt", "pam"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/shadow-maint/shadow/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/shadow-maint/shadow/releases/download/{version}/shadow-{version}.tar.xz"
+source_dir_template = "shadow-{version}"

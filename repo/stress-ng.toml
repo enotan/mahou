@@ -1,0 +1,18 @@
+name = "stress-ng"
+version = "0.21.01"
+description = "Stress test a computer system in multiple selectable ways"
+source = "https://github.com/ColinIanKing/stress-ng/archive/refs/tags/V0.21.01.tar.gz"
+sha256 = "4c898d9b1911124f43f1fb6a18a725badbe795f5b628531afd4b631127ad8073"
+source_dir = "stress-ng-0.21.01"
+deps = []
+
+build_steps = [
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ColinIanKing/stress-ng/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"V?([^\"]+)\""
+source_template = "https://github.com/ColinIanKing/stress-ng/archive/refs/tags/V{version}.tar.gz"
+source_dir_template = "stress-ng-{version}"

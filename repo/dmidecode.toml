@@ -1,0 +1,18 @@
+name = "dmidecode"
+version = "3.7"
+description = "DMI table decoder"
+source = "https://download.savannah.gnu.org/releases/dmidecode/dmidecode-3.7.tar.xz"
+sha256 = "2c3aed12c85a1e6a9410d406d5e417c455466dc1bc7c89278bb32cf7cad91e8a"
+source_dir = "dmidecode-3.7"
+deps = []
+
+build_steps = [
+  "make prefix=/usr",
+  "make prefix=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.savannah.gnu.org/releases/dmidecode/"
+version_pattern = "dmidecode-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.savannah.gnu.org/releases/dmidecode/dmidecode-{version}.tar.xz"
+source_dir_template = "dmidecode-{version}"

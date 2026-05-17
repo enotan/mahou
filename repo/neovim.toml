@@ -1,0 +1,19 @@
+name = "neovim"
+version = "0.12.2"
+description = "Vim-fork focused on extensibility and usability"
+source = "https://github.com/neovim/neovim/archive/refs/tags/v0.12.2.tar.gz"
+sha256 = "ef9f58da7d687ed4d1dad9715542bf0dabdeedbfe8089e2ce17fff21b920a268"
+source_dir = "neovim-0.12.2"
+deps = ["gettext", "libiconv", "libuv", "lpeg", "luajit", "luv", "tree-sitter", "unibilium", "utf8proc"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DUSE_BUNDLED=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/neovim/neovim/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/neovim/neovim/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "neovim-{version}"

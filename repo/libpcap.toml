@@ -1,0 +1,19 @@
+name = "libpcap"
+version = "1.10.6"
+description = "Packet capture library"
+source = "https://www.tcpdump.org/release/libpcap-1.10.6.tar.xz"
+sha256 = "ec97d1206bdd19cb6bdd043eaa9f0037aa732262ec68e070fd7c7b5f834d5dfc"
+source_dir = "libpcap-1.10.6"
+deps = ["openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.tcpdump.org/release/"
+version_pattern = "libpcap-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.tcpdump.org/release/libpcap-{version}.tar.xz"
+source_dir_template = "libpcap-{version}"

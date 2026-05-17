@@ -1,0 +1,23 @@
+name = "libsigsegv"
+version = "2.14"
+description = "Library for handling page faults in user mode"
+license = "GPL-2.0-or-later"
+homepage = "https://www.gnu.org/software/libsigsegv/"
+
+source = "https://ftp.gnu.org/gnu/libsigsegv/libsigsegv-2.14.tar.gz"
+sha256 = "cdac3941803364cf81a908499beb79c200ead60b6b5b40cad124fd1e06caa295"
+source_dir = "libsigsegv-2.14"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/libsigsegv/"
+version_pattern = "libsigsegv-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/libsigsegv/libsigsegv-{version}.tar.gz"
+source_dir_template = "libsigsegv-{version}"

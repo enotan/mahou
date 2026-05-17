@@ -1,0 +1,19 @@
+name = "cyrus-sasl"
+version = "2.1.28"
+description = "Cyrus Simple Authentication and Security Layer library"
+source = "https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-2.1.28/cyrus-sasl-2.1.28.tar.gz"
+sha256 = "7ccfc6abd01ed67c1a0924b353e526f1b766b21f42d4562ee635a8ebfc5bb38c"
+source_dir = "cyrus-sasl-2.1.28"
+deps = ["krb5", "openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --disable-static --enable-shared --with-openssl=/usr --without-pam --without-ldap --disable-sql --disable-sample",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/cyrusimap/cyrus-sasl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"cyrus-sasl-([^\"]+)\""
+source_template = "https://github.com/cyrusimap/cyrus-sasl/releases/download/cyrus-sasl-{version}/cyrus-sasl-{version}.tar.gz"
+source_dir_template = "cyrus-sasl-{version}"

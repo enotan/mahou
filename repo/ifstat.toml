@@ -1,0 +1,19 @@
+name = "ifstat"
+version = "1.1"
+description = "Report network interface bandwidth"
+source = "http://gael.roualland.free.fr/ifstat/ifstat-1.1.tar.gz"
+sha256 = "8599063b7c398f9cfef7a9ec699659b25b1c14d2bc0f535aed05ce32b7d9f507"
+source_dir = "ifstat-1.1"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --without-snmp",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://gael.roualland.free.fr/ifstat/"
+version_pattern = "ifstat-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://gael.roualland.free.fr/ifstat/ifstat-{version}.tar.gz"
+source_dir_template = "ifstat-{version}"

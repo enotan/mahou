@@ -1,0 +1,19 @@
+name = "xlsclients"
+version = "1.1.5"
+description = "List client applications running on an X11 display"
+source = "https://www.x.org/releases/individual/app/xlsclients-1.1.5.tar.xz"
+sha256 = "68baee57e70250ac4a7759fb78221831f97d88bc8e51dcc2e64eb3f8ca56bae3"
+source_dir = "xlsclients-1.1.5"
+deps = ["libxcb"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xlsclients-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xlsclients-{version}.tar.xz"
+source_dir_template = "xlsclients-{version}"

@@ -1,0 +1,18 @@
+name = "nng"
+version = "1.11"
+description = "Lightweight messaging library with nanomsg protocols"
+source = "https://github.com/nanomsg/nng/archive/refs/tags/v1.11.tar.gz"
+sha256 = "12aaff6f8f183ba0fec378af8620c47cf4be6da975d016ec6cdec2fbac0d3534"
+source_dir = "nng-1.11"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DNNG_TESTS=OFF -DNNG_TOOLS=OFF -DNNG_ENABLE_NNGCAT=OFF -DNNG_ENABLE_TLS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nanomsg/nng/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/nanomsg/nng/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "nng-{version}"

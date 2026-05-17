@@ -1,0 +1,19 @@
+name = "xset"
+version = "1.2.5"
+description = "User preference utility for X11"
+source = "https://www.x.org/releases/individual/app/xset-1.2.5.tar.xz"
+sha256 = "9f692d55635b3862cd63633b1222a87680ec283c7a8e8ed6dd698a3147f75e2f"
+source_dir = "xset-1.2.5"
+deps = ["libX11", "libXext", "libXmu", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xset-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xset-{version}.tar.xz"
+source_dir_template = "xset-{version}"

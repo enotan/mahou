@@ -1,0 +1,19 @@
+name = "dav1d"
+version = "1.5.3"
+description = "Small and fast AV1 decoder"
+source = "https://code.videolan.org/videolan/dav1d/-/archive/1.5.3/dav1d-1.5.3.tar.bz2"
+sha256 = "e099f53253f6c247580c554d53a13f1040638f2066edc3c740e4c2f15174ce22"
+source_dir = "dav1d-1.5.3"
+deps = ["meson", "nasm", "ninja"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Denable_tools=false -Denable_examples=false -Denable_tests=false -Denable_docs=false",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/videolan/dav1d/tags"
+version_pattern = "\"name\"\\s*:\\s*\"([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://code.videolan.org/videolan/dav1d/-/archive/{version}/dav1d-{version}.tar.bz2"
+source_dir_template = "dav1d-{version}"

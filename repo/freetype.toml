@@ -10,3 +10,9 @@ build_steps = [
     "make",
     "make DESTDIR=${MAHOU_DESTDIR} install"
 ]
+
+[update]
+check_url = "https://download.savannah.gnu.org/releases/freetype/"
+version_pattern = "freetype-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.savannah.gnu.org/releases/freetype/freetype-{version}.tar.xz"
+source_dir_template = "freetype-{version}"

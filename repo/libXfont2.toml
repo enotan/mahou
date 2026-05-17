@@ -1,0 +1,19 @@
+name = "libXfont2"
+version = "2.0.7"
+description = "X11 font rasterisation library"
+source = "https://www.x.org/releases/individual/lib/libXfont2-2.0.7.tar.xz"
+sha256 = "8b7b82fdeba48769b69433e8e3fbb984a5f6bf368b0d5f47abeec49de3e58efb"
+source_dir = "libXfont2-2.0.7"
+deps = ["freetype", "zlib", "libfontenc", "xtrans", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXfont2-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXfont2-{version}.tar.xz"
+source_dir_template = "libXfont2-{version}"

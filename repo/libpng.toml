@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://sourceforge.net/projects/libpng/files/libpng16/"
+version_pattern = "libpng-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://downloads.sourceforge.net/libpng/libpng-{version}.tar.xz"
+source_dir_template = "libpng-{version}"

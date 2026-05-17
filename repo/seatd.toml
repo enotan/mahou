@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://git.sr.ht/~kennylevinsen/seatd/refs"
+version_pattern = "seatd/archive/([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://git.sr.ht/~kennylevinsen/seatd/archive/{version}.tar.gz"
+source_dir_template = "seatd-{version}"

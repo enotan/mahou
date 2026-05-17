@@ -1,0 +1,18 @@
+name = "procs"
+version = "0.14.11"
+description = "Modern replacement for ps"
+source = "https://github.com/dalance/procs/archive/refs/tags/v0.14.11.tar.gz"
+sha256 = "3d6b3561ce05362a092ea8488458f552d6636d3a280290e21f841c432cadf91a"
+source_dir = "procs-0.14.11"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/dalance/procs/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dalance/procs/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "procs-{version}"

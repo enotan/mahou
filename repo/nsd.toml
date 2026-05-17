@@ -1,0 +1,19 @@
+name = "nsd"
+version = "4.14.2"
+description = "Authoritative DNS name server"
+source = "https://nlnetlabs.nl/downloads/nsd/nsd-4.14.2.tar.gz"
+sha256 = "2bff57349841844d7560e76d7bd70b6bd6f4c462cdaa6d57b8e83d1e14dd22d6"
+source_dir = "nsd-4.14.2"
+deps = ["bison", "flex", "libevent", "openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --with-ssl=/usr --with-libevent=/usr --disable-root-server",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://nlnetlabs.nl/downloads/nsd/"
+version_pattern = "nsd-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://nlnetlabs.nl/downloads/nsd/nsd-{version}.tar.gz"
+source_dir_template = "nsd-{version}"

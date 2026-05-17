@@ -1,0 +1,19 @@
+name = "libXt"
+version = "1.3.1"
+description = "X11 Toolkit Intrinsics library"
+source = "https://www.x.org/releases/individual/lib/libXt-1.3.1.tar.xz"
+sha256 = "e0a774b33324f4d4c05b199ea45050f87206586d81655f8bef4dba434d931288"
+source_dir = "libXt-1.3.1"
+deps = ["libX11", "libSM", "libICE", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXt-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXt-{version}.tar.xz"
+source_dir_template = "libXt-{version}"

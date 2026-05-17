@@ -1,0 +1,19 @@
+name = "libXcursor"
+version = "1.2.3"
+description = "X11 cursor management library"
+source = "https://www.x.org/releases/individual/lib/libXcursor-1.2.3.tar.xz"
+sha256 = "fde9402dd4cfe79da71e2d96bb980afc5e6ff4f8a7d74c159e1966afb2b2c2c0"
+source_dir = "libXcursor-1.2.3"
+deps = ["libX11", "libXfixes", "libXrender", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXcursor-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXcursor-{version}.tar.xz"
+source_dir_template = "libXcursor-{version}"

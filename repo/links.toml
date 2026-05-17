@@ -1,0 +1,19 @@
+name = "links"
+version = "2.30"
+description = "Text and graphics web browser"
+source = "http://links.twibright.com/download/links-2.30.tar.bz2"
+sha256 = "c4631c6b5a11527cdc3cb7872fc23b7f2b25c2b021d596be410dadb40315f166"
+source_dir = "links-2.30"
+deps = ["brotli", "bzip2", "openssl", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-graphics --without-libevent --without-gpm --with-ssl --without-x --without-fb --without-svgalib --without-directfb --without-librsvg --without-libwebp --without-libavif --without-lzip",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://links.twibright.com/download/"
+version_pattern = "links-([0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "http://links.twibright.com/download/links-{version}.tar.bz2"
+source_dir_template = "links-{version}"

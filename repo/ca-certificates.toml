@@ -1,0 +1,19 @@
+name = "ca-certificates"
+version = "20260223"
+description = "Common CA certificates from Mozilla"
+source = "https://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_20260223.tar.xz"
+sha256 = "2fa2b00d4360f0d14ec51640ae8aea9e563956b95ea786e3c3c01c4eead42b56"
+source_dir = "ca-certificates"
+deps = ["python"]
+
+build_steps = [
+  "make",
+  "mkdir -p ${MAHOU_DESTDIR}/usr/share/ca-certificates",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://deb.debian.org/debian/pool/main/c/ca-certificates/"
+version_pattern = "ca-certificates_([0-9]+)\\.tar\\.xz"
+source_template = "https://deb.debian.org/debian/pool/main/c/ca-certificates/ca-certificates_{version}.tar.xz"
+source_dir_template = "ca-certificates"

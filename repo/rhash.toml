@@ -1,0 +1,19 @@
+name = "rhash"
+version = "1.4.6"
+description = "Utility for computing and verifying file hashes"
+source = "https://github.com/rhash/RHash/archive/refs/tags/v1.4.6.tar.gz"
+sha256 = "9f6019cfeeae8ace7067ad22da4e4f857bb2cfa6c2deaa2258f55b2227ec937a"
+source_dir = "RHash-1.4.6"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-openssl --disable-gettext",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/rhash/RHash/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/rhash/RHash/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "RHash-{version}"

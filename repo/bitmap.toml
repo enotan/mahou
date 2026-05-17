@@ -1,0 +1,19 @@
+name = "bitmap"
+version = "1.1.2"
+description = "Bitmap editor and converter utilities for X11"
+source = "https://www.x.org/releases/individual/app/bitmap-1.1.2.tar.xz"
+sha256 = "5c6d2637244c575a9cc65a6b1ee15ced480ef0184821aceeab29650daf323c12"
+source_dir = "bitmap-1.1.2"
+deps = ["libX11", "libXmu", "libXaw", "xbitmaps", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "bitmap-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/bitmap-{version}.tar.xz"
+source_dir_template = "bitmap-{version}"

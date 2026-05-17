@@ -1,0 +1,18 @@
+name = "eigen"
+version = "5.0.1"
+description = "C++ template library for linear algebra"
+source = "https://gitlab.com/libeigen/eigen/-/archive/5.0.1/eigen-5.0.1.tar.gz"
+sha256 = "e9c326dc8c05cd1e044c71f30f1b2e34a6161a3b6ecf445d56b53ff1669e3dec"
+source_dir = "eigen-5.0.1"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DEIGEN_BUILD_TESTING=OFF -DEIGEN_BUILD_BLAS=OFF -DEIGEN_BUILD_LAPACK=OFF -DEIGEN_BUILD_DOC=OFF -DEIGEN_BUILD_DEMOS=OFF",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://gitlab.com/api/v4/projects/libeigen%2Feigen/releases?per_page=1"
+version_pattern = "\"tag_name\"\\s*:\\s*\"([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://gitlab.com/libeigen/eigen/-/archive/{version}/eigen-{version}.tar.gz"
+source_dir_template = "eigen-{version}"

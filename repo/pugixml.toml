@@ -1,0 +1,18 @@
+name = "pugixml"
+version = "1.15"
+description = "Light-weight C++ XML processing library"
+source = "https://github.com/zeux/pugixml/releases/download/v1.15/pugixml-1.15.tar.gz"
+sha256 = "655ade57fa703fb421c2eb9a0113b5064bddb145d415dd1f88c79353d90d511a"
+source_dir = "pugixml-1.15"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DPUGIXML_BUILD_TESTS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/zeux/pugixml/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/zeux/pugixml/releases/download/v{version}/pugixml-{version}.tar.gz"
+source_dir_template = "pugixml-{version}"

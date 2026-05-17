@@ -1,0 +1,19 @@
+name = "pamixer"
+version = "1.6"
+description = "Command-line PulseAudio mixer"
+source = "https://github.com/cdemoulins/pamixer/archive/refs/tags/1.6.tar.gz"
+sha256 = "8b7199e495dc19b190f8f02ace8782f533266a4bd7c7d3cf6f4cf09b2de13e71"
+source_dir = "pamixer-1.6"
+deps = ["cxxopts", "pulseaudio"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/cdemoulins/pamixer/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/cdemoulins/pamixer/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "pamixer-{version}"

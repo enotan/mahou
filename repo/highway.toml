@@ -1,0 +1,18 @@
+name = "highway"
+version = "1.4.0"
+description = "Performance-portable SIMD vector library"
+source = "https://github.com/google/highway/releases/download/1.4.0/highway-1.4.0.tar.gz"
+sha256 = "36f672ab48ddb3c8555e9e89e16fe400cd7d16c6eb455a1a3d0c146a63ababdc"
+source_dir = "highway-1.4.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DHWY_ENABLE_TESTS=OFF -DHWY_ENABLE_EXAMPLES=OFF -DHWY_ENABLE_CONTRIB=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/highway/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/google/highway/releases/download/{version}/highway-{version}.tar.gz"
+source_dir_template = "highway-{version}"

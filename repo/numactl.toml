@@ -1,0 +1,19 @@
+name = "numactl"
+version = "2.0.19"
+description = "Utilities and library for controlling NUMA policy"
+source = "https://github.com/numactl/numactl/archive/refs/tags/v2.0.19.tar.gz"
+sha256 = "8b84ffdebfa0d730fb2fc71bb7ec96bb2d38bf76fb67246fde416a68e04125e4"
+source_dir = "numactl-2.0.19"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/numactl/numactl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/numactl/numactl/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "numactl-{version}"

@@ -1,0 +1,19 @@
+name = "xdg-desktop-portal-wlr"
+version = "0.8.2"
+description = "xdg-desktop-portal backend for wlroots compositors"
+source = "https://github.com/emersion/xdg-desktop-portal-wlr/releases/download/v0.8.2/xdg-desktop-portal-wlr-0.8.2.tar.gz"
+sha256 = "5e6840d3326a4afb440c353ee19cf68d4e4fba40a5648224904b3a06612aae87"
+source_dir = "xdg-desktop-portal-wlr-0.8.2"
+deps = ["basu", "inih", "libdrm", "mesa", "pipewire", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dsd-bus-provider=basu -Dsystemd=disabled -Dman-pages=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/emersion/xdg-desktop-portal-wlr/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/emersion/xdg-desktop-portal-wlr/releases/download/v{version}/xdg-desktop-portal-wlr-{version}.tar.gz"
+source_dir_template = "xdg-desktop-portal-wlr-{version}"

@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/emersion/mako/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/emersion/mako/releases/download/v{version}/mako-{version}.tar.gz"
+source_dir_template = "mako-{version}"

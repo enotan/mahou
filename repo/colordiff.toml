@@ -1,0 +1,17 @@
+name = "colordiff"
+version = "1.0.22"
+description = "Colorized wrapper for diff output"
+source = "https://www.colordiff.org/colordiff-1.0.22.tar.gz"
+sha256 = "f96f73c54521c53f14dc164d5a3920c9ca21a0e5f8e9613f43812a98af3e22af"
+source_dir = "colordiff-1.0.22"
+deps = ["diffutils", "perl"]
+
+build_steps = [
+  "make DESTDIR=${MAHOU_DESTDIR} INSTALL_DIR=/usr/bin MAN_DIR=/usr/share/man/man1 ETC_DIR=/etc install",
+]
+
+[update]
+check_url = "https://www.colordiff.org/"
+version_pattern = "colordiff-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.colordiff.org/colordiff-{version}.tar.gz"
+source_dir_template = "colordiff-{version}"

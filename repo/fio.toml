@@ -1,0 +1,19 @@
+name = "fio"
+version = "3.42"
+description = "Flexible I/O tester and benchmark"
+source = "https://github.com/axboe/fio/archive/refs/tags/fio-3.42.tar.gz"
+sha256 = "56b03497a918d07692257890fd759bf73168ad79df5be78a2bcbbdc8ce67895b"
+source_dir = "fio-fio-3.42"
+deps = ["zlib", "libaio", "liburing", "numactl"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-native --disable-rdma --disable-rados --disable-rbd --disable-http --disable-libnfs --disable-pmem --disable-cuda --disable-libcufile --disable-xnvme --disable-isal --disable-libblkio --disable-libzbc --disable-tcmalloc --disable-dfs",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/axboe/fio/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"fio-([^\"]+)\""
+source_template = "https://github.com/axboe/fio/archive/refs/tags/fio-{version}.tar.gz"
+source_dir_template = "fio-fio-{version}"

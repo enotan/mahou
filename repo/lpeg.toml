@@ -1,0 +1,19 @@
+name = "lpeg"
+version = "1.1.0"
+description = "Parsing expression grammar library for Lua"
+source = "https://www.inf.puc-rio.br/~roberto/lpeg/lpeg-1.1.0.tar.gz"
+sha256 = "4b155d67d2246c1ffa7ad7bc466c1ea899bbc40fef0257cc9c03cecbaed4352a"
+source_dir = "lpeg-1.1.0"
+deps = ["luajit"]
+
+build_steps = [
+  "make linux LUADIR=/usr/include/luajit-2.1",
+  "install -Dm755 lpeg.so ${MAHOU_DESTDIR}/usr/lib/lua/5.1/lpeg.so",
+  "install -Dm644 re.lua ${MAHOU_DESTDIR}/usr/share/lua/5.1/re.lua",
+]
+
+[update]
+check_url = "https://www.inf.puc-rio.br/~roberto/lpeg/"
+version_pattern = "lpeg-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.inf.puc-rio.br/~roberto/lpeg/lpeg-{version}.tar.gz"
+source_dir_template = "lpeg-{version}"

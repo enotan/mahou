@@ -1,0 +1,19 @@
+name = "ncdu"
+version = "1.22"
+description = "NCurses disk usage analyzer"
+source = "https://dev.yorhel.nl/download/ncdu-1.22.tar.gz"
+sha256 = "0ad6c096dc04d5120581104760c01b8f4e97d4191d6c9ef79654fa3c691a176b"
+source_dir = "ncdu-1.22"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-ncursesw",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://dev.yorhel.nl/ncdu"
+version_pattern = "ncdu-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://dev.yorhel.nl/download/ncdu-{version}.tar.gz"
+source_dir_template = "ncdu-{version}"

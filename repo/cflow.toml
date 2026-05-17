@@ -1,0 +1,19 @@
+name = "cflow"
+version = "1.8"
+description = "GNU C source code flow analyzer"
+source = "https://ftp.gnu.org/gnu/cflow/cflow-1.8.tar.xz"
+sha256 = "a5830a708a587ebbf3b475b585935f89c33fc8fbd057af7d817d517aceaa7afa"
+source_dir = "cflow-1.8"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/cflow/"
+version_pattern = "cflow-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/cflow/cflow-{version}.tar.xz"
+source_dir_template = "cflow-{version}"

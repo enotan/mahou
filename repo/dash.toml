@@ -1,0 +1,19 @@
+name = "dash"
+version = "0.5.13.3"
+description = "Small POSIX-compliant shell"
+source = "http://gondor.apana.org.au/~herbert/dash/files/dash-0.5.13.3.tar.gz"
+sha256 = "a83727c1299ac4c3d9d43979393b3a4eb00275d5636ae02526e7979d51d6fbd1"
+source_dir = "dash-0.5.13.3"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://gondor.apana.org.au/~herbert/dash/files/"
+version_pattern = "dash-([0-9]+\\.[0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.gz"
+source_template = "http://gondor.apana.org.au/~herbert/dash/files/dash-{version}.tar.gz"
+source_dir_template = "dash-{version}"

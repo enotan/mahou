@@ -1,0 +1,21 @@
+name = "jbigkit"
+version = "2.1"
+description = "JBIG1 lossless image compression library and tools"
+source = "https://www.cl.cam.ac.uk/~mgk25/jbigkit/download/jbigkit-2.1.tar.gz"
+sha256 = "de7106b6bfaf495d6865c7dd7ac6ca1381bd12e0d81405ea81e7f2167263d932"
+source_dir = "jbigkit-2.1"
+deps = []
+
+build_steps = [
+  "make CFLAGS='-O2 -fPIC -W -Wno-unused-result'",
+  "install -dm755 ${MAHOU_DESTDIR}/usr/bin ${MAHOU_DESTDIR}/usr/include ${MAHOU_DESTDIR}/usr/lib",
+  "install -m755 pbmtools/pbmtojbg pbmtools/jbgtopbm pbmtools/pbmtojbg85 pbmtools/jbgtopbm85 ${MAHOU_DESTDIR}/usr/bin",
+  "install -m644 libjbig/jbig.h libjbig/jbig85.h libjbig/jbig_ar.h ${MAHOU_DESTDIR}/usr/include",
+  "install -m644 libjbig/libjbig.a libjbig/libjbig85.a ${MAHOU_DESTDIR}/usr/lib",
+]
+
+[update]
+check_url = "https://www.cl.cam.ac.uk/~mgk25/jbigkit/download/"
+version_pattern = "jbigkit-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.cl.cam.ac.uk/~mgk25/jbigkit/download/jbigkit-{version}.tar.gz"
+source_dir_template = "jbigkit-{version}"

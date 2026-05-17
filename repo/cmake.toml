@@ -1,0 +1,19 @@
+name = "cmake"
+version = "4.3.2"
+description = "Cross-platform build system generator"
+source = "https://github.com/Kitware/CMake/releases/download/v4.3.2/cmake-4.3.2.tar.gz"
+sha256 = "b0231eb39b3c3cabdc568c619df78208a7bd95ea10c9b2236d61218bac1b367d"
+source_dir = "cmake-4.3.2"
+deps = ["bzip2", "curl", "expat", "libarchive", "ncurses", "openssl", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "./bootstrap --prefix=/usr --system-curl --system-expat --system-zlib --system-bzip2 --system-liblzma --system-zstd --parallel=$(nproc)",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Kitware/CMake/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Kitware/CMake/releases/download/v{version}/cmake-{version}.tar.gz"
+source_dir_template = "cmake-{version}"

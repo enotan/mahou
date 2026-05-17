@@ -1,0 +1,18 @@
+name = "cloc"
+version = "2.08"
+description = "Count lines of source code"
+source = "https://github.com/AlDanial/cloc/releases/download/v2.08/cloc-2.08.tar.gz"
+sha256 = "ce3c86d1edb448728278079eff6d99687477b3c1fe84b2f1a4dc14cfb2f811dc"
+source_dir = "cloc-2.08"
+deps = ["perl"]
+
+build_steps = [
+  "install -Dm755 cloc ${MAHOU_DESTDIR}/usr/bin/cloc",
+  "install -Dm755 sqlite_formatter ${MAHOU_DESTDIR}/usr/bin/sqlite_formatter",
+]
+
+[update]
+check_url = "https://api.github.com/repos/AlDanial/cloc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/AlDanial/cloc/releases/download/v{version}/cloc-{version}.tar.gz"
+source_dir_template = "cloc-{version}"

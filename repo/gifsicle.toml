@@ -1,0 +1,19 @@
+name = "gifsicle"
+version = "1.96"
+description = "Command-line tool for creating and editing GIF images"
+source = "https://www.lcdf.org/gifsicle/gifsicle-1.96.tar.gz"
+sha256 = "fd23d279681a6dfe3c15264e33f344045b3ba473da4d19f49e67a50994b077fb"
+source_dir = "gifsicle-1.96"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --without-x",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.lcdf.org/gifsicle/"
+version_pattern = "gifsicle-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.lcdf.org/gifsicle/gifsicle-{version}.tar.gz"
+source_dir_template = "gifsicle-{version}"

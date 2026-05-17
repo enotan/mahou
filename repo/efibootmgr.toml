@@ -1,0 +1,18 @@
+name = "efibootmgr"
+version = "18"
+description = "Linux userspace application to modify UEFI boot entries"
+source = "https://github.com/rhboot/efibootmgr/archive/refs/tags/18.tar.gz"
+sha256 = "442867d12f8525034a404fc8af3036dba8e1fc970998af2486c3b940dfad0874"
+source_dir = "efibootmgr-18"
+deps = ["efivar", "pkgconf", "popt"]
+
+build_steps = [
+  "make EFIDIR=BOOT libdir=/usr/lib",
+  "make DESTDIR=${MAHOU_DESTDIR} EFIDIR=BOOT prefix=/usr libdir=/usr/lib install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/rhboot/efibootmgr/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"([0-9]+)\""
+source_template = "https://github.com/rhboot/efibootmgr/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "efibootmgr-{version}"

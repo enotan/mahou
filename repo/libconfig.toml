@@ -1,0 +1,18 @@
+name = "libconfig"
+version = "1.8.2"
+description = "Library for processing structured configuration files"
+source = "https://github.com/hyperrealm/libconfig/archive/refs/tags/v1.8.2.tar.gz"
+sha256 = "8e71983761b08c65b15b769b3ec1d980036c461fdfd415c7183378a4b3eac8f4"
+source_dir = "libconfig-1.8.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_TESTS=OFF -DBUILD_EXAMPLES=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/hyperrealm/libconfig/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/hyperrealm/libconfig/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libconfig-{version}"

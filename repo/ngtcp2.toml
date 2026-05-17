@@ -1,0 +1,19 @@
+name = "ngtcp2"
+version = "1.14.0"
+description = "IETF QUIC protocol implementation"
+source = "https://github.com/ngtcp2/ngtcp2/releases/download/v1.14.0/ngtcp2-1.14.0.tar.xz"
+sha256 = "d1fbf9eae92921bfd33154dab2574bc4b7d7936f486396d6c78bfff90ed5b35d"
+source_dir = "ngtcp2-1.14.0"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DENABLE_SHARED_LIB=ON -DENABLE_STATIC_LIB=OFF -DENABLE_LIB_ONLY=ON -DENABLE_OPENSSL=OFF -DENABLE_GNUTLS=OFF -DENABLE_WOLFSSL=OFF -DENABLE_BORINGSSL=OFF -DENABLE_PICOTLS=OFF -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ngtcp2/ngtcp2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ngtcp2/ngtcp2/releases/download/v{version}/ngtcp2-{version}.tar.xz"
+source_dir_template = "ngtcp2-{version}"

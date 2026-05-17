@@ -3,7 +3,7 @@ version = "1.7.2"
 description = "Linux-PAM (Pluggable Authentication Modules)"
 source = "https://github.com/linux-pam/linux-pam/archive/e634a3a9be9484ada6e93970dfaf0f055ca17332.tar.gz"
 sha256 = "91fb6bf9a52e16a859181ae9be5dc989d8dfdb45d2d4e6816648709342ccff57"
-source_dir = "Linux-${PN^^}-1.7.2"
+source_dir = "linux-pam-e634a3a9be9484ada6e93970dfaf0f055ca17332"
 deps = ["libxcrypt"]
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/linux-pam/linux-pam/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/linux-pam/linux-pam/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "linux-pam-{version}"

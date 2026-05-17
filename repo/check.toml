@@ -1,0 +1,19 @@
+name = "check"
+version = "0.15.2"
+description = "Unit testing framework for C"
+source = "https://github.com/libcheck/check/archive/refs/tags/0.15.2.tar.gz"
+sha256 = "998d355294bb94072f40584272cf4424571c396c631620ce463f6ea97aa67d2e"
+source_dir = "check-0.15.2"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libcheck/check/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libcheck/check/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "check-{version}"

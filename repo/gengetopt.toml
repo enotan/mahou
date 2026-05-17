@@ -1,0 +1,18 @@
+name = "gengetopt"
+version = "2.23"
+description = "Command-line option parser generator"
+source = "https://ftp.gnu.org/gnu/gengetopt/gengetopt-2.23.tar.xz"
+sha256 = "b941aec9011864978dd7fdeb052b1943535824169d2aa2b0e7eae9ab807584ac"
+source_dir = "gengetopt-2.23"
+deps = []
+build_steps = [
+    "./configure --prefix=/usr --disable-static",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/gengetopt/"
+version_pattern = "gengetopt-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/gengetopt/gengetopt-{version}.tar.xz"
+source_dir_template = "gengetopt-{version}"

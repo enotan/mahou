@@ -1,0 +1,19 @@
+name = "perl"
+version = "5.42.2"
+description = "Practical Extraction and Report Language"
+source = "https://www.cpan.org/src/5.0/perl-5.42.2.tar.xz"
+sha256 = "0a585eeb9e363c0f80482ddb3571625250c2c86aeb408853e8ea50805cfb14bb"
+source_dir = "perl-5.42.2"
+deps = ["bzip2", "gdbm", "zlib"]
+
+build_steps = [
+  "sh Configure -des -Dprefix=/usr -Dvendorprefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.cpan.org/src/5.0/"
+version_pattern = "perl-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.cpan.org/src/5.0/perl-{version}.tar.xz"
+source_dir_template = "perl-{version}"

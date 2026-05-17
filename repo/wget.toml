@@ -1,0 +1,19 @@
+name = "wget"
+version = "1.25.0"
+description = "Non-interactive network downloader"
+source = "https://ftp.gnu.org/gnu/wget/wget-1.25.0.tar.gz"
+sha256 = "766e48423e79359ea31e41db9e5c289675947a7fcf2efdcedb726ac9d0da3784"
+source_dir = "wget-1.25.0"
+deps = ["libidn2", "libpsl", "openssl", "pcre2", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-ssl=openssl",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/wget/"
+version_pattern = "wget-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://ftp.gnu.org/gnu/wget/wget-{version}.tar.gz"
+source_dir_template = "wget-{version}"

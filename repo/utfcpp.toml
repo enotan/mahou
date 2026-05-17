@@ -1,0 +1,18 @@
+name = "utfcpp"
+version = "4.1.0"
+description = "Portable C++ UTF-8 library"
+source = "https://github.com/nemtrif/utfcpp/archive/refs/tags/v4.1.0.tar.gz"
+sha256 = "9a45cbeefacf512879971eaf57fe52133b73a0152d5354f3adeaf8d103cff0f3"
+source_dir = "utfcpp-4.1.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DUTF8CPP_ENABLE_TESTS=OFF -DUTF8CPP_ENABLE_BENCHMARKS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nemtrif/utfcpp/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/nemtrif/utfcpp/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "utfcpp-{version}"

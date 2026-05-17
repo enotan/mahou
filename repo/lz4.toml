@@ -10,3 +10,9 @@ build_steps = [
   "make",
   "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/lz4/lz4/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/lz4/lz4/archive/v{version}.tar.gz"
+source_dir_template = "lz4-{version}"

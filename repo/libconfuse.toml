@@ -1,0 +1,19 @@
+name = "libconfuse"
+version = "3.3"
+description = "Small configuration file parser library"
+source = "https://github.com/libconfuse/libconfuse/releases/download/v3.3/confuse-3.3.tar.gz"
+sha256 = "3a59ded20bc652eaa8e6261ab46f7e483bc13dad79263c15af42ecbb329707b8"
+source_dir = "confuse-3.3"
+deps = ["gettext"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libconfuse/libconfuse/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libconfuse/libconfuse/releases/download/v{version}/confuse-{version}.tar.gz"
+source_dir_template = "confuse-{version}"

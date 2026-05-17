@@ -1,0 +1,19 @@
+name = "alsa-lib"
+version = "1.2.15"
+description = "Advanced Linux Sound Architecture library"
+source = "https://www.alsa-project.org/files/pub/lib/alsa-lib-1.2.15.tar.bz2"
+sha256 = "83770841585e766a60c99fd23f8c574c22643ae0cb1f2d20b793c3d84eb95a8d"
+source_dir = "alsa-lib-1.2.15"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.alsa-project.org/files/pub/lib/"
+version_pattern = "alsa-lib-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://www.alsa-project.org/files/pub/lib/alsa-lib-{version}.tar.bz2"
+source_dir_template = "alsa-lib-{version}"

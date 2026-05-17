@@ -1,0 +1,18 @@
+name = "cpp-httplib"
+version = "0.45.0"
+description = "Single-header C++ HTTP and HTTPS library"
+source = "https://github.com/yhirose/cpp-httplib/archive/refs/tags/v0.45.0.tar.gz"
+sha256 = "03121ca28d210ac8014021c2f2deda4a181f215b1638c493c40a4c7e6056495f"
+source_dir = "cpp-httplib-0.45.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DHTTPLIB_TEST=OFF -DHTTPLIB_USE_OPENSSL_IF_AVAILABLE=OFF -DHTTPLIB_USE_ZLIB_IF_AVAILABLE=OFF -DHTTPLIB_USE_BROTLI_IF_AVAILABLE=OFF -DHTTPLIB_USE_ZSTD_IF_AVAILABLE=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/yhirose/cpp-httplib/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/yhirose/cpp-httplib/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "cpp-httplib-{version}"

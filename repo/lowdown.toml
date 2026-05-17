@@ -1,0 +1,18 @@
+name = "lowdown"
+version = "3.0.1"
+description = "Markdown translator and library"
+source = "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-3.0.1.tar.gz"
+sha256 = "ac9ea2b51c8bd59350c7bf8db5e2067e9d961b1f48d362cd8a56b022850e965c"
+source_dir = "lowdown-3.0.1"
+deps = []
+build_steps = [
+    "./configure PREFIX=/usr MANDIR=/usr/share/man",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://kristaps.bsd.lv/lowdown/snapshots/"
+version_pattern = "lowdown-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://kristaps.bsd.lv/lowdown/snapshots/lowdown-{version}.tar.gz"
+source_dir_template = "lowdown-{version}"

@@ -1,0 +1,18 @@
+name = "xh"
+version = "0.25.3"
+description = "Friendly and fast tool for sending HTTP requests"
+source = "https://github.com/ducaale/xh/archive/refs/tags/v0.25.3.tar.gz"
+sha256 = "ba331c33dc5d222f43cc6ad9f602002817772fd52ae28541976db49f34935ae3"
+source_dir = "xh-0.25.3"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ducaale/xh/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ducaale/xh/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "xh-{version}"

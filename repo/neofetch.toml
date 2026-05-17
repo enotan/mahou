@@ -10,3 +10,9 @@ build_steps = [
   "make",
   "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/dylanaraps/neofetch/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/dylanaraps/neofetch/archive/{version}/neofetch-{version}.tar.gz"
+source_dir_template = "neofetch-{version}"

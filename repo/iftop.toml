@@ -1,0 +1,19 @@
+name = "iftop"
+version = "1.0pre4"
+description = "Display bandwidth usage on an interface"
+source = "http://www.ex-parrot.com/pdw/iftop/download/iftop-1.0pre4.tar.gz"
+sha256 = "f733eeea371a7577f8fe353d86dd88d16f5b2a2e702bd96f5ffb2c197d9b4f97"
+source_dir = "iftop-1.0pre4"
+deps = ["libpcap", "ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://www.ex-parrot.com/pdw/iftop/download/"
+version_pattern = "iftop-([0-9]+\\.[0-9]+pre[0-9]+)\\.tar\\.gz"
+source_template = "http://www.ex-parrot.com/pdw/iftop/download/iftop-{version}.tar.gz"
+source_dir_template = "iftop-{version}"

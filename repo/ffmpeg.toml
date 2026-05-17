@@ -1,0 +1,19 @@
+name = "ffmpeg"
+version = "8.1.1"
+description = "Audio and video conversion, streaming and playback tools"
+source = "https://ffmpeg.org/releases/ffmpeg-8.1.1.tar.xz"
+sha256 = "b6863adde98898f42602017462871b5f6333e65aec803fdd7a6308639c52edf3"
+source_dir = "ffmpeg-8.1.1"
+deps = ["bzip2", "libass", "libogg", "libvorbis", "openssl", "opus", "xz", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --enable-gpl --enable-openssl --enable-libass --enable-libopus --enable-libvorbis",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ffmpeg.org/releases/"
+version_pattern = "ffmpeg-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ffmpeg.org/releases/ffmpeg-{version}.tar.xz"
+source_dir_template = "ffmpeg-{version}"

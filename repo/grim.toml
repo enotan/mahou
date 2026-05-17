@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://gitlab.freedesktop.org/emersion/grim/-/releases"
+version_pattern = "grim-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://gitlab.freedesktop.org/emersion/grim/-/releases/v{version}/downloads/grim-{version}.tar.gz"
+source_dir_template = "grim-{version}"

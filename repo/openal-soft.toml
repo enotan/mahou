@@ -1,0 +1,19 @@
+name = "openal-soft"
+version = "1.25.2"
+description = "Software implementation of the OpenAL 3D audio API"
+source = "https://github.com/kcat/openal-soft/archive/refs/tags/1.25.2.tar.gz"
+sha256 = "fb27e5839aa11f0e5b9d33756965291fad5d6909ab928ea1f796f4a1a6877894"
+source_dir = "openal-soft-1.25.2"
+deps = ["alsa-lib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DALSOFT_EXAMPLES=OFF -DALSOFT_TESTS=OFF -DALSOFT_BACKEND_ALSA=ON -DALSOFT_REQUIRE_ALSA=ON -DALSOFT_BACKEND_PIPEWIRE=OFF -DALSOFT_BACKEND_PULSEAUDIO=OFF -DALSOFT_BACKEND_JACK=OFF -DALSOFT_BACKEND_SNDIO=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/kcat/openal-soft/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/kcat/openal-soft/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "openal-soft-{version}"

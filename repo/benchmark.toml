@@ -1,0 +1,19 @@
+name = "benchmark"
+version = "1.9.5"
+description = "Microbenchmark support library"
+source = "https://github.com/google/benchmark/archive/refs/tags/v1.9.5.tar.gz"
+sha256 = "9631341c82bac4a288bef951f8b26b41f69021794184ece969f8473977eaa340"
+source_dir = "benchmark-1.9.5"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBENCHMARK_ENABLE_TESTING=OFF -DBENCHMARK_ENABLE_GTEST_TESTS=OFF -DBENCHMARK_USE_BUNDLED_GTEST=OFF -DBENCHMARK_ENABLE_WERROR=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/google/benchmark/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/google/benchmark/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "benchmark-{version}"

@@ -1,0 +1,19 @@
+name = "yyjson"
+version = "0.12.0"
+description = "Fast JSON library written in ANSI C"
+source = "https://github.com/ibireme/yyjson/archive/refs/tags/0.12.0.tar.gz"
+sha256 = "b16246f617b2a136c78d73e5e2647c6f1de1313e46678062985bdcf1f40bb75d"
+source_dir = "yyjson-0.12.0"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DYYJSON_BUILD_TESTS=OFF -DYYJSON_BUILD_FUZZER=OFF -DYYJSON_BUILD_MISC=OFF -DYYJSON_BUILD_DOC=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ibireme/yyjson/tags"
+version_pattern = "\"name\"\\s*:\\s*\"v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/ibireme/yyjson/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "yyjson-{version}"

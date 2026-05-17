@@ -1,0 +1,19 @@
+name = "libdaemon"
+version = "0.14"
+description = "Lightweight C library for writing UNIX daemons"
+source = "https://0pointer.de/lennart/projects/libdaemon/libdaemon-0.14.tar.gz"
+sha256 = "fd23eb5f6f986dcc7e708307355ba3289abe03cc381fc47a80bca4a50aa6b834"
+source_dir = "libdaemon-0.14"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-lynx --disable-examples",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://0pointer.de/lennart/projects/libdaemon/"
+version_pattern = "libdaemon-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://0pointer.de/lennart/projects/libdaemon/libdaemon-{version}.tar.gz"
+source_dir_template = "libdaemon-{version}"

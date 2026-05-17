@@ -1,0 +1,18 @@
+name = "fast_float"
+version = "8.2.5"
+description = "Fast floating-point number parsing library"
+source = "https://github.com/fastfloat/fast_float/archive/refs/tags/v8.2.5.tar.gz"
+sha256 = "17c7fb14499fcf42c3f5d143df0fbe22172e92749ec5f75ef13224005421a654"
+source_dir = "fast_float-8.2.5"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DFASTFLOAT_TEST=OFF -DFASTFLOAT_BENCHMARKS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/fastfloat/fast_float/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/fastfloat/fast_float/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "fast_float-{version}"

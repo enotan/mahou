@@ -1,0 +1,19 @@
+name = "libdvdnav"
+version = "7.0.0"
+description = "DVD navigation library"
+source = "https://download.videolan.org/pub/videolan/libdvdnav/7.0.0/libdvdnav-7.0.0.tar.xz"
+sha256 = "a2a18f5ad36d133c74bf9106b6445806fa253b09141a46392550394b647b221e"
+source_dir = "libdvdnav-7.0.0"
+deps = ["libdvdread", "meson", "ninja", "pkgconf"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.videolan.org/pub/videolan/libdvdnav/"
+version_pattern = "([0-9]+\\.[0-9]+\\.[0-9]+)/"
+source_template = "https://download.videolan.org/pub/videolan/libdvdnav/{version}/libdvdnav-{version}.tar.xz"
+source_dir_template = "libdvdnav-{version}"

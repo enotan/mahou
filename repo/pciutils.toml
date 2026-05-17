@@ -1,0 +1,18 @@
+name = "pciutils"
+version = "3.15.0"
+description = "PCI bus utilities"
+source = "https://www.kernel.org/pub/software/utils/pciutils/pciutils-3.15.0.tar.xz"
+sha256 = "c02940f430841ecf158d5d9a50007afc4d5353c8678a2455003ca0b2c4e9f5ff"
+source_dir = "pciutils-3.15.0"
+deps = ["kmod", "zlib"]
+
+build_steps = [
+  "make PREFIX=/usr SHARED=yes",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} SHARED=yes install install-lib",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/software/utils/pciutils/"
+version_pattern = "pciutils-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/software/utils/pciutils/pciutils-{version}.tar.xz"
+source_dir_template = "pciutils-{version}"

@@ -1,0 +1,18 @@
+name = "trurl"
+version = "0.16.1"
+description = "Command-line URL parser and manipulator"
+source = "https://github.com/curl/trurl/releases/download/trurl-0.16.1/trurl-0.16.1.tar.gz"
+sha256 = "aac947d4fb421a58abc19a3771e87942cd4721b8f855c433478c94c11a8203ba"
+source_dir = "trurl-0.16.1"
+deps = ["curl"]
+
+build_steps = [
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} prefix=/usr install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/curl/trurl/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"trurl-([^\"]+)\""
+source_template = "https://github.com/curl/trurl/releases/download/trurl-{version}/trurl-{version}.tar.gz"
+source_dir_template = "trurl-{version}"

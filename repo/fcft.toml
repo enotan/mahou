@@ -1,0 +1,19 @@
+name = "fcft"
+version = "3.3.3"
+description = "Font loading and glyph rasterization library"
+source = "https://codeberg.org/dnkl/fcft/archive/3.3.3.tar.gz"
+sha256 = "c0d8d485b45b1af829f73101d6588f404a32bf3c7543236b1a4707d44be81b60"
+source_dir = "fcft"
+deps = ["fontconfig", "freetype", "harfbuzz", "pixman", "tllist"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Drun-shaping=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://codeberg.org/dnkl/fcft/releases"
+version_pattern = "releases/tag/([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://codeberg.org/dnkl/fcft/archive/{version}.tar.gz"
+source_dir_template = "fcft"

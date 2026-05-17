@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://download.gnome.org/sources/pango/1.57/"
+version_pattern = "pango-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/pango/1.57/pango-{version}.tar.xz"
+source_dir_template = "pango-{version}"

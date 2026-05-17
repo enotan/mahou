@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/utils/util-linux/v2.41/"
+version_pattern = "util-linux-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/utils/util-linux/v2.41/util-linux-{version}.tar.xz"
+source_dir_template = "util-linux-{version}"

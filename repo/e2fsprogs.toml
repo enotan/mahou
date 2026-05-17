@@ -1,0 +1,19 @@
+name = "e2fsprogs"
+version = "1.47.3"
+description = "Utilities for the ext2, ext3, and ext4 filesystems"
+source = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.47.3/e2fsprogs-1.47.3.tar.xz"
+sha256 = "857e6ef800feaa2bb4578fbc810214be5d3c88b072ea53c5384733a965737329"
+source_dir = "e2fsprogs-1.47.3"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --enable-elf-shlibs --enable-libuuid --enable-libblkid --disable-nls --disable-fuse2fs --disable-uuidd --disable-tdb --without-libarchive",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/"
+version_pattern = "v([0-9]+\\.[0-9]+\\.[0-9]+)/"
+source_template = "https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v{version}/e2fsprogs-{version}.tar.xz"
+source_dir_template = "e2fsprogs-{version}"

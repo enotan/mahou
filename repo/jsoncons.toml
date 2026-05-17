@@ -1,0 +1,18 @@
+name = "jsoncons"
+version = "1.7.0"
+description = "C++ header-only JSON and binary data serialization library"
+source = "https://github.com/danielaparker/jsoncons/archive/refs/tags/v1.7.0.tar.gz"
+sha256 = "5a2aad4e791a1c93b0b0b326973459753a96a4c48d06d3035cd0ea0d262198d4"
+source_dir = "jsoncons-1.7.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DJSONCONS_BUILD_TESTS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/danielaparker/jsoncons/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/danielaparker/jsoncons/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "jsoncons-{version}"

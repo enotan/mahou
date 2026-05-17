@@ -1,0 +1,19 @@
+name = "help2man"
+version = "1.49.3"
+description = "Generate simple manual pages from program output"
+source = "https://ftp.gnu.org/gnu/help2man/help2man-1.49.3.tar.xz"
+sha256 = "4d7e4fdef2eca6afe07a2682151cea78781e0a4e8f9622142d9f70c083a2fd4f"
+source_dir = "help2man-1.49.3"
+deps = ["perl"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/help2man/"
+version_pattern = "help2man-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/help2man/help2man-{version}.tar.xz"
+source_dir_template = "help2man-{version}"

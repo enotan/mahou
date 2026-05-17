@@ -1,0 +1,20 @@
+name = "hwloc"
+version = "2.12.2"
+description = "Portable hardware locality library"
+source = "https://github.com/open-mpi/hwloc/archive/refs/tags/hwloc-2.12.2.tar.gz"
+sha256 = "06df40b3ad178864c3a1ba99538e9efe3e9b510e105da930dc6e02277fa5bd11"
+source_dir = "hwloc-hwloc-2.12.2"
+deps = ["autoconf", "automake", "libpciaccess", "libtool", "libxml2", "numactl", "pkgconf"]
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --mandir=/usr/share/man --enable-libxml2 --enable-pci --disable-cairo",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/open-mpi/hwloc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"hwloc-([^\"]+)\""
+source_template = "https://github.com/open-mpi/hwloc/archive/refs/tags/hwloc-{version}.tar.gz"
+source_dir_template = "hwloc-hwloc-{version}"

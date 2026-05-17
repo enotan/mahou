@@ -1,0 +1,19 @@
+name = "xstdcmap"
+version = "1.0.5"
+description = "X standard colormap utility"
+source = "https://www.x.org/releases/individual/app/xstdcmap-1.0.5.tar.xz"
+sha256 = "365847e379398499ec9ad9a299cc47a0d6e7feba9546dfd4e5b422204b5ac180"
+source_dir = "xstdcmap-1.0.5"
+deps = ["libX11", "libXmu", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xstdcmap-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xstdcmap-{version}.tar.xz"
+source_dir_template = "xstdcmap-{version}"

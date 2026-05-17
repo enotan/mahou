@@ -1,0 +1,19 @@
+name = "iceauth"
+version = "1.0.11"
+description = "ICE authority file utility"
+source = "https://www.x.org/releases/individual/app/iceauth-1.0.11.tar.xz"
+sha256 = "9d633cf0d4d1d98e3ef02d18660372958b60a67016e8a72cd04093a8d8f8d4e9"
+source_dir = "iceauth-1.0.11"
+deps = ["libICE", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "iceauth-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/iceauth-{version}.tar.xz"
+source_dir_template = "iceauth-{version}"

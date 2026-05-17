@@ -1,0 +1,20 @@
+name = "mandoc"
+version = "1.14.6"
+description = "UNIX manpage compiler toolset"
+source = "https://mandoc.bsd.lv/snapshots/mandoc-1.14.6.tar.gz"
+sha256 = "8bf0d570f01e70a6e124884088870cbed7537f36328d512909eb10cd53179d9c"
+source_dir = "mandoc-1.14.6"
+deps = ["zlib"]
+
+build_steps = [
+  "printf 'PREFIX=/usr\\nMANDIR=/usr/share/man\\n' > configure.local",
+  "./configure",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://mandoc.bsd.lv/snapshots/"
+version_pattern = "mandoc-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://mandoc.bsd.lv/snapshots/mandoc-{version}.tar.gz"
+source_dir_template = "mandoc-{version}"

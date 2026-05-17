@@ -1,0 +1,19 @@
+name = "llhttp"
+version = "9.3.0"
+description = "Port of http_parser to llparse"
+source = "https://github.com/nodejs/llhttp/archive/refs/tags/release/v9.3.0.tar.gz"
+sha256 = "1a2b45cb8dda7082b307d336607023aa65549d6f060da1d246b1313da22b685a"
+source_dir = "llhttp-release-v9.3.0"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DBUILD_STATIC_LIBS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nodejs/llhttp/tags"
+version_pattern = "\"name\"\\s*:\\s*\"release/v?([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/nodejs/llhttp/archive/refs/tags/release/v{version}.tar.gz"
+source_dir_template = "llhttp-release-v{version}"

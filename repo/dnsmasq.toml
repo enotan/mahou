@@ -1,0 +1,18 @@
+name = "dnsmasq"
+version = "2.92"
+description = "Lightweight DNS, DHCP, router advertisement, and TFTP server"
+source = "https://thekelleys.org.uk/dnsmasq/dnsmasq-2.92.tar.xz"
+sha256 = "4bf50c2c1018f9fbc26037df51b90ecea0cb73d46162846763b92df0d6c3a458"
+source_dir = "dnsmasq-2.92"
+deps = []
+
+build_steps = [
+  "make PREFIX=/usr COPTS='-DNO_ID -DNO_SCRIPT'",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://thekelleys.org.uk/dnsmasq/"
+version_pattern = "dnsmasq-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://thekelleys.org.uk/dnsmasq/dnsmasq-{version}.tar.xz"
+source_dir_template = "dnsmasq-{version}"

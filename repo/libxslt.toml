@@ -1,0 +1,19 @@
+name = "libxslt"
+version = "1.1.45"
+description = "XSLT C library for GNOME"
+source = "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.45.tar.xz"
+sha256 = "9acfe68419c4d06a45c550321b3212762d92f41465062ca4ea19e632ee5d216e"
+source_dir = "libxslt-1.1.45"
+deps = ["libxml2"]
+
+build_steps = [
+  "./configure --prefix=/usr --without-python --without-crypto --without-debug --without-debugger --without-profiler",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://download.gnome.org/sources/libxslt/1.1/"
+version_pattern = "libxslt-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/libxslt/1.1/libxslt-{version}.tar.xz"
+source_dir_template = "libxslt-{version}"

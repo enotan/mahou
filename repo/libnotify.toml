@@ -1,0 +1,19 @@
+name = "libnotify"
+version = "0.8.8"
+description = "Desktop notification library"
+source = "https://download.gnome.org/sources/libnotify/0.8/libnotify-0.8.8.tar.xz"
+sha256 = "23420ef619dc2cb5aebad613f4823a2fa41c07e5a1d05628d40f6ec4b35bfddd"
+source_dir = "libnotify-0.8.8"
+deps = ["gdk-pixbuf", "glib"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dtests=false -Dintrospection=disabled -Dman=false -Dgtk_doc=false -Ddocbook_docs=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.gnome.org/sources/libnotify/0.8/"
+version_pattern = "libnotify-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/libnotify/0.8/libnotify-{version}.tar.xz"
+source_dir_template = "libnotify-{version}"

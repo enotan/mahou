@@ -1,0 +1,19 @@
+name = "openjph"
+version = "0.27.3"
+description = "Open implementation of the JPEG 2000 Part 15 HTJ2K codec"
+source = "https://github.com/aous72/OpenJPH/archive/refs/tags/0.27.3.tar.gz"
+sha256 = "f96808ef72cf3acca73a52123bda3e680f6550dfb4774ad7de57eb3ce26de57a"
+source_dir = "OpenJPH-0.27.3"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DOJPH_ENABLE_TIFF_SUPPORT=OFF -DOJPH_BUILD_TESTS=OFF -DOJPH_BUILD_EXECUTABLES=OFF -DOJPH_BUILD_STREAM_EXPAND=OFF -DOJPH_BUILD_FUZZER=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/aous72/OpenJPH/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/aous72/OpenJPH/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "OpenJPH-{version}"

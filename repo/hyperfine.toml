@@ -1,0 +1,18 @@
+name = "hyperfine"
+version = "1.20.0"
+description = "Command-line benchmarking tool"
+source = "https://github.com/sharkdp/hyperfine/archive/refs/tags/v1.20.0.tar.gz"
+sha256 = "f90c3b096af568438be7da52336784635a962c9822f10f98e5ad11ae8c7f5c64"
+source_dir = "hyperfine-1.20.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/sharkdp/hyperfine/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sharkdp/hyperfine/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "hyperfine-{version}"

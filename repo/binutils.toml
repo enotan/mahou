@@ -1,0 +1,23 @@
+name = "binutils"
+version = "2.45"
+description = "GNU binary utilities"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/binutils/"
+
+source = "https://ftp.gnu.org/gnu/binutils/binutils-2.45.tar.xz"
+sha256 = "c50c0e7f9cb188980e2cc97e4537626b1672441815587f1eab69d2a1bfbef5d2"
+source_dir = "binutils-2.45"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-werror --enable-shared",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/binutils/"
+version_pattern = "binutils-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/binutils/binutils-{version}.tar.xz"
+source_dir_template = "binutils-{version}"

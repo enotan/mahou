@@ -1,0 +1,19 @@
+name = "potrace"
+version = "1.16"
+description = "Utility for tracing bitmaps and converting them into vector graphics"
+source = "https://potrace.sourceforge.net/download/1.16/potrace-1.16.tar.gz"
+sha256 = "be8248a17dedd6ccbaab2fcc45835bb0502d062e40fbded3bc56028ce5eb7acc"
+source_dir = "potrace-1.16"
+deps = ["zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-libpotrace --disable-static",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://deb.debian.org/debian/pool/main/p/potrace/"
+version_pattern = "potrace_([0-9]+\\.[0-9]+)\\.orig\\.tar\\.gz"
+source_template = "https://potrace.sourceforge.net/download/{version}/potrace-{version}.tar.gz"
+source_dir_template = "potrace-{version}"

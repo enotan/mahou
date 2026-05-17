@@ -10,3 +10,9 @@ build_steps = [
   "make",
   "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/"
+version_pattern = "libcap-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-{version}.tar.xz"
+source_dir_template = "libcap-{version}"

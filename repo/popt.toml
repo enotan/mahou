@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "http://ftp.rpm.org/popt/releases/popt-1.x/"
+version_pattern = "popt-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://ftp.rpm.org/popt/releases/popt-1.x/popt-{version}.tar.gz"
+source_dir_template = "popt-{version}"

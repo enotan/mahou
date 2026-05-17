@@ -1,0 +1,19 @@
+name = "appres"
+version = "1.0.7"
+description = "List X application resource database"
+source = "https://www.x.org/releases/individual/app/appres-1.0.7.tar.xz"
+sha256 = "1114b189239fd87a8d1db433edcb4486346d29912132b91eaeee5667f13b819f"
+source_dir = "appres-1.0.7"
+deps = ["libX11", "libXt", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "appres-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/appres-{version}.tar.xz"
+source_dir_template = "appres-{version}"

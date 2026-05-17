@@ -1,0 +1,19 @@
+name = "socat"
+version = "1.8.1.1"
+description = "Multipurpose relay for bidirectional data transfer"
+source = "http://www.dest-unreach.org/socat/download/socat-1.8.1.1.tar.gz"
+sha256 = "f68b602c80e94b4b7498d74ec408785536fe33534b39467977a82ab2f7f01ddb"
+source_dir = "socat-1.8.1.1"
+deps = ["openssl", "readline"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-libwrap",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "http://www.dest-unreach.org/socat/download/"
+version_pattern = "socat-([0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "http://www.dest-unreach.org/socat/download/socat-{version}.tar.gz"
+source_dir_template = "socat-{version}"

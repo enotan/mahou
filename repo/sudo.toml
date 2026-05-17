@@ -1,0 +1,19 @@
+name = "sudo"
+version = "1.9.17p2"
+description = "Execute commands as another user"
+source = "https://www.sudo.ws/dist/sudo-1.9.17p2.tar.gz"
+sha256 = "4a38a1ab3adb1199257edc2a7c4a2bd714665eb605b04368843b06dada2cfcfb"
+source_dir = "sudo-1.9.17p2"
+deps = ["pam", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --with-pam",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.sudo.ws/dist/"
+version_pattern = "sudo-([0-9]+\\.[0-9]+\\.[0-9]+p?[0-9]*)\\.tar\\.gz"
+source_template = "https://www.sudo.ws/dist/sudo-{version}.tar.gz"
+source_dir_template = "sudo-{version}"

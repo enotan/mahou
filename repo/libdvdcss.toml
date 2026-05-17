@@ -1,0 +1,19 @@
+name = "libdvdcss"
+version = "1.5.0"
+description = "DVD CSS decryption library"
+source = "https://download.videolan.org/pub/libdvdcss/1.5.0/libdvdcss-1.5.0.tar.xz"
+sha256 = "529463e4d1befef82e5c6e470db7661a2db0343e092a2fb0d6c037cab8a5c399"
+source_dir = "libdvdcss-1.5.0"
+deps = ["meson", "ninja"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.videolan.org/pub/libdvdcss/"
+version_pattern = "([0-9]+\\.[0-9]+\\.[0-9]+)/"
+source_template = "https://download.videolan.org/pub/libdvdcss/{version}/libdvdcss-{version}.tar.xz"
+source_dir_template = "libdvdcss-{version}"

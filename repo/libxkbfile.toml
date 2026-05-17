@@ -1,0 +1,19 @@
+name = "libxkbfile"
+version = "1.2.0"
+description = "XKB file handling library"
+source = "https://www.x.org/releases/individual/lib/libxkbfile-1.2.0.tar.xz"
+sha256 = "7f71884e5faf56fb0e823f3848599cf9b5a9afce51c90982baeb64f635233ebf"
+source_dir = "libxkbfile-1.2.0"
+deps = ["libX11", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libxkbfile-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libxkbfile-{version}.tar.xz"
+source_dir_template = "libxkbfile-{version}"

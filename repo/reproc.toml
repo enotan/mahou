@@ -1,0 +1,18 @@
+name = "reproc"
+version = "14.2.7"
+description = "Cross-platform process library"
+source = "https://github.com/DaanDeMeyer/reproc/archive/refs/tags/v14.2.7.tar.gz"
+sha256 = "77914ba566356d86986db240ecdb1762dfdd55bb1e8e127d016d9c5c4c9300e8"
+source_dir = "reproc-14.2.7"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DREPROC_TEST=OFF -DREPROC_EXAMPLES=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/DaanDeMeyer/reproc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/DaanDeMeyer/reproc/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "reproc-{version}"

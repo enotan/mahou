@@ -3,7 +3,7 @@ version = "3.5.1"
 description = "Interactive process viewer"
 source = "https://github.com/htop-dev/htop/releases/download/3.5.1/htop-3.5.1.tar.xz"
 sha256 = "526cecd62870aa8d14d2a79a35ea197e4e2b5317d275b567cee0574b2ddb2e9a"
-source_dir = "_}"
+source_dir = "htop-3.5.1"
 deps = ["ncurses"]
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/htop-dev/htop/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/htop-dev/htop/releases/download/{version}/htop-{version}.tar.xz"
+source_dir_template = "htop-{version}"

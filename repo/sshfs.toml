@@ -1,0 +1,19 @@
+name = "sshfs"
+version = "3.7.5"
+description = "FUSE filesystem client based on SSH"
+source = "https://github.com/libfuse/sshfs/releases/download/sshfs-3.7.5/sshfs-3.7.5.tar.xz"
+sha256 = "0e45db63c2d00919db3174134fa234c6e0682d6fe573c46312d1d53d1d61a8bb"
+source_dir = "sshfs-3.7.5"
+deps = ["fuse3", "glib", "meson", "ninja", "pkgconf"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/libfuse/sshfs/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"sshfs-([^\"]+)\""
+source_template = "https://github.com/libfuse/sshfs/releases/download/sshfs-{version}/sshfs-{version}.tar.xz"
+source_dir_template = "sshfs-{version}"

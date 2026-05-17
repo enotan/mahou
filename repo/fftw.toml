@@ -1,0 +1,19 @@
+name = "fftw"
+version = "3.3.11"
+description = "Fast C routines for computing discrete Fourier transforms"
+source = "https://www.fftw.org/fftw-3.3.11.tar.gz"
+sha256 = "5630c24cdeb33b131612f7eb4b1a9934234754f9f388ff8617458d0be6f239a1"
+source_dir = "fftw-3.3.11"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --enable-shared --enable-threads --disable-fortran",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.fftw.org/download.html"
+version_pattern = "fftw-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://www.fftw.org/fftw-{version}.tar.gz"
+source_dir_template = "fftw-{version}"

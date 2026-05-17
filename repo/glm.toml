@@ -1,0 +1,18 @@
+name = "glm"
+version = "1.0.3"
+description = "Header-only C++ mathematics library for graphics software"
+source = "https://github.com/g-truc/glm/archive/refs/tags/1.0.3.tar.gz"
+sha256 = "6775e47231a446fd086d660ecc18bcd076531cfedd912fbd66e576b118607001"
+source_dir = "glm-1.0.3"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DGLM_BUILD_TESTS=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/g-truc/glm/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/g-truc/glm/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "glm-{version}"

@@ -1,0 +1,19 @@
+name = "strace"
+version = "7.0"
+description = "Diagnostic system call tracer"
+source = "https://github.com/strace/strace/releases/download/v7.0/strace-7.0.tar.xz"
+sha256 = "6c92419be3f2ec560b31728a4652217c59864c8642ba7b1b3771b1b013ad074b"
+source_dir = "strace-7.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/strace/strace/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/strace/strace/releases/download/v{version}/strace-{version}.tar.xz"
+source_dir_template = "strace-{version}"

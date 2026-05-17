@@ -1,0 +1,18 @@
+name = "scdoc"
+version = "1.11.3"
+description = "Small man page generator for POSIX systems"
+source = "https://git.sr.ht/~sircmpwn/scdoc/archive/1.11.3.tar.gz"
+sha256 = "4c5c6136540384e5455b250f768e7ca11b03fdba1a8efc2341ee0f1111e57612"
+source_dir = "scdoc-1.11.3"
+deps = []
+
+build_steps = [
+  "make PREFIX=/usr LDFLAGS=",
+  "make PREFIX=/usr LDFLAGS= DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://git.sr.ht/~sircmpwn/scdoc/refs"
+version_pattern = "refs/([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://git.sr.ht/~sircmpwn/scdoc/archive/{version}.tar.gz"
+source_dir_template = "scdoc-{version}"

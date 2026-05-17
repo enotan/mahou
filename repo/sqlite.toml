@@ -1,0 +1,19 @@
+name = "sqlite"
+version = "3.53.1"
+description = "Self-contained SQL database engine"
+source = "https://www.sqlite.org/2026/sqlite-autoconf-3530100.tar.gz"
+sha256 = "83e6b2020a034e9a7ad4a72feea59e1ad52f162e09cbd26735a3ffb98359fc4f"
+source_dir = "sqlite-autoconf-3530100"
+deps = ["readline", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.sqlite.org/download.html"
+version_pattern = "PRODUCT,([0-9]+\\.[0-9]+\\.[0-9]+),[0-9]+/sqlite-autoconf-[0-9]+\\.tar\\.gz"
+source_template = "https://www.sqlite.org/2026/sqlite-autoconf-3530100.tar.gz"
+source_dir_template = "sqlite-autoconf-3530100"

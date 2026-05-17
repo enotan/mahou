@@ -1,0 +1,20 @@
+name = "f2fs-tools"
+version = "1.16.0"
+description = "Tools for Flash-Friendly File System"
+source = "https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git/snapshot/f2fs-tools-1.16.0.tar.gz"
+sha256 = "208c7a07e95383fbd7b466b5681590789dcb41f41bf197369c41a95383b57c5e"
+source_dir = "f2fs-tools-1.16.0"
+deps = ["autoconf", "automake", "libtool", "lz4", "lzo", "util-linux"]
+
+build_steps = [
+  "./autogen.sh",
+  "./configure --prefix=/usr --without-selinux --with-blkid --with-lzo2 --with-lz4",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git/refs/tags"
+version_pattern = "v([0-9]+\\.[0-9]+\\.[0-9]+)"
+source_template = "https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs-tools.git/snapshot/f2fs-tools-{version}.tar.gz"
+source_dir_template = "f2fs-tools-{version}"

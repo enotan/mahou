@@ -1,0 +1,18 @@
+name = "c-blosc2"
+version = "3.0.3"
+description = "Fast compressed data container and compression library"
+source = "https://github.com/Blosc/c-blosc2/archive/refs/tags/v3.0.3.tar.gz"
+sha256 = "535f2165906d59cba0783ca8cd286b358a0c23493e2d9c4c2840569498a163d0"
+source_dir = "c-blosc2-3.0.3"
+deps = ["cmake", "lz4", "zlib", "zstd"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED=ON -DBUILD_STATIC=OFF -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF -DBUILD_EXAMPLES=OFF -DBUILD_PLUGINS=OFF -DBLOSC_DEPENDENCY_MODE=EXTERNAL -DBLOSC_ENABLE_ZFP=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Blosc/c-blosc2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Blosc/c-blosc2/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "c-blosc2-{version}"

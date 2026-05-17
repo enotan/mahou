@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/Airblader/xcb-util-xrm/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Airblader/xcb-util-xrm/releases/download/v{version}/xcb-util-xrm-{version}.tar.bz2"
+source_dir_template = "xcb-util-xrm-{version}"

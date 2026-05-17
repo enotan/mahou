@@ -1,0 +1,19 @@
+name = "exiv2"
+version = "0.28.8"
+description = "Image metadata manipulation library and tools"
+source = "https://github.com/Exiv2/exiv2/archive/refs/tags/v0.28.8.tar.gz"
+sha256 = "ea51b0609f58a9afa063b60daa1539948b62247721e154f4fff0ad3aec9f9756"
+source_dir = "exiv2-0.28.8"
+deps = ["brotli", "expat", "inih", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DEXIV2_BUILD_UNIT_TESTS=OFF -DEXIV2_BUILD_FUZZ_TESTS=OFF -DEXIV2_BUILD_DOC=OFF -DEXIV2_ENABLE_CURL=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/Exiv2/exiv2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/Exiv2/exiv2/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "exiv2-{version}"

@@ -1,0 +1,18 @@
+name = "tinyxml2"
+version = "11.0.0"
+description = "Simple, small XML parser for C++"
+source = "https://github.com/leethomason/tinyxml2/archive/refs/tags/11.0.0.tar.gz"
+sha256 = "5556deb5081fb246ee92afae73efd943c889cef0cafea92b0b82422d6a18f289"
+source_dir = "tinyxml2-11.0.0"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -Dtinyxml2_BUILD_TESTING=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/leethomason/tinyxml2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/leethomason/tinyxml2/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "tinyxml2-{version}"

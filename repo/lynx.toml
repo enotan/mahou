@@ -1,0 +1,19 @@
+name = "lynx"
+version = "2.9.2"
+description = "Text-mode web browser"
+source = "https://invisible-mirror.net/archives/lynx/tarballs/lynx2.9.2.tar.bz2"
+sha256 = "7374b89936d991669e101f4e97f2c9592036e1e8cdaa7bafc259a77ab6fb07ce"
+source_dir = "lynx2.9.2"
+deps = ["brotli", "bzip2", "ncurses", "openssl", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-screen=ncursesw --with-ssl --with-zlib --with-bzlib --with-brotli",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://invisible-mirror.net/archives/lynx/tarballs/"
+version_pattern = "lynx([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://invisible-mirror.net/archives/lynx/tarballs/lynx{version}.tar.bz2"
+source_dir_template = "lynx{version}"

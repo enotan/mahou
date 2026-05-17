@@ -1,0 +1,19 @@
+name = "xload"
+version = "1.2.0"
+description = "System load average display for X"
+source = "https://www.x.org/releases/individual/app/xload-1.2.0.tar.xz"
+sha256 = "2c0fe6d624e1a25c1707e2d56407b979d6a78d64271df9ea0a89d99b81b59a80"
+source_dir = "xload-1.2.0"
+deps = ["libX11", "libXaw", "libXmu", "libXt", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xload-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xload-{version}.tar.xz"
+source_dir_template = "xload-{version}"

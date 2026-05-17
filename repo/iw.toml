@@ -1,0 +1,18 @@
+name = "iw"
+version = "6.17"
+description = "nl80211-based wireless configuration tool"
+source = "https://www.kernel.org/pub/software/network/iw/iw-6.17.tar.xz"
+sha256 = "7d182e498289ab39b257da6780d562e415377107f50358ee5b55b8cfe40b1e33"
+source_dir = "iw-6.17"
+deps = ["libnl"]
+
+build_steps = [
+  "make PREFIX=/usr",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/software/network/iw/"
+version_pattern = "iw-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/software/network/iw/iw-{version}.tar.xz"
+source_dir_template = "iw-{version}"

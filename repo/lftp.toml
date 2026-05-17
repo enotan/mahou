@@ -1,0 +1,19 @@
+name = "lftp"
+version = "4.9.3"
+description = "Sophisticated command-line file transfer program"
+source = "https://lftp.yar.ru/ftp/lftp-4.9.3.tar.xz"
+sha256 = "96e7199d7935be33cf6b1161e955b2aab40ab77ecdf2a19cea4fc1193f457edc"
+source_dir = "lftp-4.9.3"
+deps = ["expat", "openssl", "readline", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --with-openssl --without-gnutls --with-readline --with-zlib=/usr --with-expat=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://lftp.yar.ru/ftp/"
+version_pattern = "lftp-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://lftp.yar.ru/ftp/lftp-{version}.tar.xz"
+source_dir_template = "lftp-{version}"

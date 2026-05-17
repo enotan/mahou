@@ -1,5 +1,5 @@
 name = "libedit"
-version = "20240808.3.1"
+version = "20240808-3.1"
 description = "BSD replacement for libreadline"
 source = "https://thrysoee.dk/editline/libedit-20240808-3.1.tar.gz"
 sha256 = "5f0573349d77c4a48967191cdd6634dd7aa5f6398c6a57fe037cc02696d6099f"
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://thrysoee.dk/editline/"
+version_pattern = "libedit-([0-9]+-[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://thrysoee.dk/editline/libedit-{version}.tar.gz"
+source_dir_template = "libedit-{version}"

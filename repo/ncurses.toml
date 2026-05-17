@@ -1,5 +1,5 @@
 name = "ncurses"
-version = "6.6_p20260411"
+version = "6.6"
 description = "Console display library"
 source = "https://ftpmirror.gnu.org/ncurses/ncurses-6.6.tar.gz"
 sha256 = "355b4cbbed880b0381a04c46617b7656e362585d52e9cf84a67e2009b749ff11"
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/ncurses/"
+version_pattern = "ncurses-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://ftpmirror.gnu.org/ncurses/ncurses-{version}.tar.gz"
+source_dir_template = "ncurses-{version}"

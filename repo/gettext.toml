@@ -1,0 +1,23 @@
+name = "gettext"
+version = "0.25.1"
+description = "GNU internationalization and localization tools"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/gettext/"
+
+source = "https://ftp.gnu.org/gnu/gettext/gettext-0.25.1.tar.xz"
+sha256 = "2c8294be238f03fb3fa65b8051057e5b68167f3e21f08008070cf40a7051ba22"
+source_dir = "gettext-0.25.1"
+
+deps = ["libxml2", "ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/gettext/"
+version_pattern = "gettext-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/gettext/gettext-{version}.tar.xz"
+source_dir_template = "gettext-{version}"

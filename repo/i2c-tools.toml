@@ -1,0 +1,18 @@
+name = "i2c-tools"
+version = "4.4"
+description = "Heterogeneous set of I2C tools for Linux"
+source = "https://www.kernel.org/pub/software/utils/i2c-tools/i2c-tools-4.4.tar.xz"
+sha256 = "8b15f0a880ab87280c40cfd7235cfff28134bf14d5646c07518b1ff6642a2473"
+source_dir = "i2c-tools-4.4"
+deps = []
+
+build_steps = [
+  "make PREFIX=/usr",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/software/utils/i2c-tools/"
+version_pattern = "i2c-tools-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/software/utils/i2c-tools/i2c-tools-{version}.tar.xz"
+source_dir_template = "i2c-tools-{version}"

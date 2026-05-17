@@ -1,0 +1,19 @@
+name = "unity"
+version = "2.6.1"
+description = "Simple unit testing framework for C"
+source = "https://github.com/ThrowTheSwitch/Unity/archive/refs/tags/v2.6.1.tar.gz"
+sha256 = "b41a66d45a6b99758fb3202ace6178177014d52fc524bf1f72687d93e9867292"
+source_dir = "Unity-2.6.1"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ThrowTheSwitch/Unity/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ThrowTheSwitch/Unity/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "Unity-{version}"

@@ -1,0 +1,19 @@
+name = "libavif"
+version = "1.4.1"
+description = "Library for encoding and decoding AVIF files"
+source = "https://github.com/AOMediaCodec/libavif/archive/refs/tags/v1.4.1.tar.gz"
+sha256 = "d4aea31a4becb3273ba7968221be2e48148ba05eb8a68d14e671963e17785648"
+source_dir = "libavif-1.4.1"
+deps = ["cmake", "dav1d", "libjpeg-turbo", "libpng", "pkgconf", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DAVIF_CODEC_DAV1D=SYSTEM -DAVIF_CODEC_AOM=OFF -DAVIF_CODEC_LIBGAV1=OFF -DAVIF_CODEC_RAV1E=OFF -DAVIF_CODEC_SVT=OFF -DAVIF_CODEC_AVM=OFF -DAVIF_ZLIBPNG=SYSTEM -DAVIF_JPEG=SYSTEM -DAVIF_LIBYUV=OFF -DAVIF_BUILD_APPS=OFF -DAVIF_BUILD_TESTS=OFF -DAVIF_BUILD_EXAMPLES=OFF -DAVIF_BUILD_MAN_PAGES=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/AOMediaCodec/libavif/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/AOMediaCodec/libavif/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libavif-{version}"

@@ -1,0 +1,18 @@
+name = "libatomic_ops"
+version = "7.8.4"
+description = "Semi-portable access to hardware-provided atomic memory operations"
+source = "https://github.com/ivmai/libatomic_ops/releases/download/v7.8.4/libatomic_ops-7.8.4.tar.gz"
+sha256 = "2356e002e80ef695875e971d6a4fd8c61ca5c6fa4fd1bf31cce54a269c8bfcd5"
+source_dir = "libatomic_ops-7.8.4"
+deps = []
+build_steps = [
+    "./configure --prefix=/usr --enable-shared --disable-static --disable-docs",
+    "make",
+    "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ivmai/libatomic_ops/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ivmai/libatomic_ops/releases/download/v{version}/libatomic_ops-{version}.tar.gz"
+source_dir_template = "libatomic_ops-{version}"

@@ -1,0 +1,19 @@
+name = "byacc"
+version = "20260126"
+description = "Berkeley Yacc parser generator"
+source = "https://invisible-island.net/archives/byacc/byacc-20260126.tgz"
+sha256 = "b618c5fb44c2f5f048843db90f7d1b24f78f47b07913c8c7ba8c942d3eb24b00"
+source_dir = "byacc-20260126"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://invisible-island.net/archives/byacc/"
+version_pattern = "byacc-([0-9]+)\\.tgz"
+source_template = "https://invisible-island.net/archives/byacc/byacc-{version}.tgz"
+source_dir_template = "byacc-{version}"

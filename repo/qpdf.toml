@@ -1,0 +1,19 @@
+name = "qpdf"
+version = "12.3.2"
+description = "Command-line tools and library for transforming PDF files"
+source = "https://github.com/qpdf/qpdf/archive/refs/tags/v12.3.2.tar.gz"
+sha256 = "11ac1800f0d7334863fa1fce6a8b87b105897610bb6a25b9b883ba3f9f1aa4d7"
+source_dir = "qpdf-12.3.2"
+deps = ["libjpeg-turbo", "openssl", "zlib"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_DOC=OFF -DINSTALL_MANUAL=OFF -DREQUIRE_CRYPTO_OPENSSL=ON -DDEFAULT_CRYPTO=openssl",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/qpdf/qpdf/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/qpdf/qpdf/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "qpdf-{version}"

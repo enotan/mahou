@@ -1,0 +1,19 @@
+name = "xfsprogs"
+version = "7.0.0"
+description = "Utilities for managing XFS filesystems"
+source = "https://mirrors.edge.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-7.0.0.tar.xz"
+sha256 = "c05930b04e7a0e6c9115cf891cd4e973231d7066b2d6b2993d23705089678988"
+source_dir = "xfsprogs-7.0.0"
+deps = ["inih", "userspace-rcu", "util-linux"]
+
+build_steps = [
+  "./configure --prefix=/usr --enable-gettext=no --enable-editline=no --enable-termcap=no --enable-libicu=no --with-systemd-unit-dir=no --with-crond-dir=no --with-udev-rule-dir=no",
+  "make",
+  "make DIST_ROOT=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://mirrors.edge.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/"
+version_pattern = "xfsprogs-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://mirrors.edge.kernel.org/pub/linux/utils/fs/xfs/xfsprogs/xfsprogs-{version}.tar.xz"
+source_dir_template = "xfsprogs-{version}"

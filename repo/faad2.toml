@@ -1,0 +1,19 @@
+name = "faad2"
+version = "2.11.2"
+description = "Freeware Advanced Audio Decoder"
+source = "https://github.com/knik0/faad2/archive/refs/tags/2.11.2.tar.gz"
+sha256 = "3fcbd305e4abd34768c62050e18ca0986f7d9c5eca343fb98275418013065c0e"
+source_dir = "faad2-2.11.2"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_MANDIR=/usr/share/man -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DFAAD_BUILD_CLI=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/knik0/faad2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/knik0/faad2/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "faad2-{version}"

@@ -1,0 +1,19 @@
+name = "guile"
+version = "3.0.11"
+description = "GNU extension language and Scheme interpreter"
+source = "https://ftp.gnu.org/gnu/guile/guile-3.0.11.tar.xz"
+sha256 = "818c79d236657a7fa96fb364137cc7b41b3bdee0d65c6174ca03769559579460"
+source_dir = "guile-3.0.11"
+deps = ["gc", "gettext", "gmp", "libffi", "libunistring", "pkgconf", "readline"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-bdw-gc=bdw-gc --with-threads=pthreads --with-libreadline-prefix=/usr --with-libgmp-prefix=/usr --with-libunistring-prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/guile/"
+version_pattern = "guile-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/guile/guile-{version}.tar.xz"
+source_dir_template = "guile-{version}"

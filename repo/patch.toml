@@ -1,0 +1,23 @@
+name = "patch"
+version = "2.8"
+description = "Apply a diff file to an original"
+license = "GPL-3.0-or-later"
+homepage = "https://www.gnu.org/software/patch/"
+
+source = "https://ftp.gnu.org/gnu/patch/patch-2.8.tar.xz"
+sha256 = "f87cee69eec2b4fcbf60a396b030ad6aa3415f192aa5f7ee84cad5e11f7f5ae3"
+source_dir = "patch-2.8"
+
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/patch/"
+version_pattern = "patch-([0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/patch/patch-{version}.tar.xz"
+source_dir_template = "patch-{version}"

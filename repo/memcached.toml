@@ -1,0 +1,19 @@
+name = "memcached"
+version = "1.6.41"
+description = "High-performance distributed memory object caching system"
+source = "https://memcached.org/files/memcached-1.6.41.tar.gz"
+sha256 = "e097073c156eeff9e12655b054f446d57374cfba5c132dcdbe7fac64e728286a"
+source_dir = "memcached-1.6.41"
+deps = ["libevent", "pkgconf"]
+
+build_steps = [
+  "./configure --prefix=/usr --sysconfdir=/etc --localstatedir=/var --disable-docs --disable-extstore --disable-dependency-tracking",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/memcached/memcached/tags?per_page=10"
+version_pattern = "\"name\"\\s*:\\s*\"([0-9]+\\.[0-9]+\\.[0-9]+)\""
+source_template = "https://memcached.org/files/memcached-{version}.tar.gz"
+source_dir_template = "memcached-{version}"

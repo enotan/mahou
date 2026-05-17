@@ -1,0 +1,19 @@
+name = "xmodmap"
+version = "1.0.11"
+description = "Keyboard modifier and keymap utility for X11"
+source = "https://www.x.org/releases/individual/app/xmodmap-1.0.11.tar.xz"
+sha256 = "9a2f8168f7b0bc382828847403902cb6bf175e17658b36189eac87edda877e81"
+source_dir = "xmodmap-1.0.11"
+deps = ["libX11", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xmodmap-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xmodmap-{version}.tar.xz"
+source_dir_template = "xmodmap-{version}"

@@ -1,0 +1,18 @@
+name = "bottom"
+version = "0.12.3"
+description = "Cross-platform graphical process and system monitor"
+source = "https://github.com/ClementTsang/bottom/archive/refs/tags/0.12.3.tar.gz"
+sha256 = "1c70894f0eceb7034075959ff3080cf4706c11d7c012912c24e777abe4e62b70"
+source_dir = "bottom-0.12.3"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/ClementTsang/bottom/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/ClementTsang/bottom/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "bottom-{version}"

@@ -1,0 +1,19 @@
+name = "qrencode"
+version = "4.1.1"
+description = "QR Code encoding library"
+source = "https://github.com/fukuchi/libqrencode/archive/refs/tags/v4.1.1.tar.gz"
+sha256 = "5385bc1b8c2f20f3b91d258bf8ccc8cf62023935df2d2676b5b67049f31a049c"
+source_dir = "libqrencode-4.1.1"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DWITH_TOOLS=OFF -DWITH_TESTS=OFF -DWITHOUT_PNG=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/fukuchi/libqrencode/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/fukuchi/libqrencode/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libqrencode-{version}"

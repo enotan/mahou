@@ -1,0 +1,19 @@
+name = "xbitmaps"
+version = "1.1.4"
+description = "X11 bitmap data files"
+source = "https://www.x.org/releases/individual/data/xbitmaps-1.1.4.tar.xz"
+sha256 = "895722f136e21e728c52f2d99fd2dae95018b9ddad1bac1f29d61bcd6593721d"
+source_dir = "xbitmaps-1.1.4"
+deps = ["xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/data/"
+version_pattern = "xbitmaps-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/data/xbitmaps-{version}.tar.xz"
+source_dir_template = "xbitmaps-{version}"

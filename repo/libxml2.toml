@@ -11,3 +11,9 @@ build_steps = [
   "cmake --build build",
   "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
 ]
+
+[update]
+check_url = "https://download.gnome.org/sources/libxml2/2.15/"
+version_pattern = "libxml2-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/libxml2/2.15/libxml2-{version}.tar.xz"
+source_dir_template = "libxml2-{version}"

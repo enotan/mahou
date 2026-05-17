@@ -1,0 +1,19 @@
+name = "valgrind"
+version = "3.27.0"
+description = "Instrumentation framework for building dynamic analysis tools"
+source = "https://sourceware.org/pub/valgrind/valgrind-3.27.0.tar.bz2"
+sha256 = "5b5937de8257ee8f51698ea71b9711adce98061aa07daa4a685efc3af9215bef"
+source_dir = "valgrind-3.27.0"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr --disable-mpi",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceware.org/pub/valgrind/"
+version_pattern = "valgrind-([0-9]+\\.[0-9]+(?:\\.[0-9]+)?)\\.tar\\.bz2"
+source_template = "https://sourceware.org/pub/valgrind/valgrind-{version}.tar.bz2"
+source_dir_template = "valgrind-{version}"

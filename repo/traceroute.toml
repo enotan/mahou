@@ -1,0 +1,18 @@
+name = "traceroute"
+version = "2.1.6"
+description = "Network route tracing utility"
+source = "https://downloads.sourceforge.net/project/traceroute/traceroute/traceroute-2.1.6/traceroute-2.1.6.tar.gz"
+sha256 = "9ccef9cdb9d7a98ff7fbf93f79ebd0e48881664b525c4b232a0fcec7dcb9db5e"
+source_dir = "traceroute-2.1.6"
+deps = []
+
+build_steps = [
+  "make prefix=/usr",
+  "make prefix=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/traceroute/files/traceroute/"
+version_pattern = "traceroute-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/project/traceroute/traceroute/traceroute-{version}/traceroute-{version}.tar.gz"
+source_dir_template = "traceroute-{version}"

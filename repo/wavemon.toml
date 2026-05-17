@@ -1,0 +1,19 @@
+name = "wavemon"
+version = "0.9.7"
+description = "Ncurses monitor for wireless network devices"
+source = "https://github.com/uoaerg/wavemon/archive/refs/tags/v0.9.7.tar.gz"
+sha256 = "768d7c580fcc592efcacac924dcfd2ebe131608f5c8ac67d36e35731e1ac683a"
+source_dir = "wavemon-0.9.7"
+deps = ["libcap", "libnl", "ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/uoaerg/wavemon/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/uoaerg/wavemon/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "wavemon-{version}"

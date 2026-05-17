@@ -1,0 +1,19 @@
+name = "libebur128"
+version = "1.2.6"
+description = "EBU R 128 loudness measurement library"
+source = "https://github.com/jiixyj/libebur128/archive/refs/tags/v1.2.6.tar.gz"
+sha256 = "baa7fc293a3d4651e244d8022ad03ab797ca3c2ad8442c43199afe8059faa613"
+source_dir = "libebur128-1.2.6"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jiixyj/libebur128/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jiixyj/libebur128/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libebur128-{version}"

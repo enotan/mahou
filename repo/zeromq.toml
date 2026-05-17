@@ -1,0 +1,18 @@
+name = "zeromq"
+version = "4.3.5"
+description = "High-performance asynchronous messaging library"
+source = "https://github.com/zeromq/libzmq/releases/download/v4.3.5/zeromq-4.3.5.tar.gz"
+sha256 = "6653ef5910f17954861fe72332e68b03ca6e4d9c7160eb3a8de5a5a913bfab43"
+source_dir = "zeromq-4.3.5"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED=ON -DBUILD_STATIC=OFF -DBUILD_TESTS=OFF -DWITH_DOC=OFF -DWITH_DOCS=OFF -DWITH_PERF_TOOL=OFF -DENABLE_DRAFTS=OFF -DWITH_LIBSODIUM=OFF -DENABLE_CURVE=OFF -DWITH_LIBBSD=OFF -DWITH_OPENPGM=OFF -DWITH_NORM=OFF",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/zeromq/libzmq/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/zeromq/libzmq/releases/download/v{version}/zeromq-{version}.tar.gz"
+source_dir_template = "zeromq-{version}"

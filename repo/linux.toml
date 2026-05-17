@@ -1,0 +1,18 @@
+name = "linux"
+version = "6.19.14"
+description = "Linux kernel source and headers"
+source = "https://www.kernel.org/pub/linux/kernel/v6.x/linux-6.19.14.tar.xz"
+sha256 = "cde8bf6739be4a0777fedbbba5330b8188c55680c45a922a4dfa289cbec6f185"
+source_dir = "linux-6.19.14"
+deps = ["bc", "bison", "flex", "openssl"]
+
+build_steps = [
+  "make mrproper",
+  "make headers_install INSTALL_HDR_PATH=${MAHOU_DESTDIR}/usr",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/kernel/v6.x/"
+version_pattern = "linux-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/kernel/v6.x/linux-{version}.tar.xz"
+source_dir_template = "linux-{version}"

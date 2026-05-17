@@ -1,0 +1,18 @@
+name = "argon2"
+version = "20190702"
+description = "Argon2 password-hashing utility and library"
+source = "https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/20190702.tar.gz"
+sha256 = "daf972a89577f8772602bf2eb38b6a3dd3d922bf5724d45e7f9589b5e830442c"
+source_dir = "phc-winner-argon2-20190702"
+deps = []
+
+build_steps = [
+  "make OPTTARGET=generic",
+  "make DESTDIR=${MAHOU_DESTDIR} PREFIX=/usr OPTTARGET=generic install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/P-H-C/phc-winner-argon2/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/P-H-C/phc-winner-argon2/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "phc-winner-argon2-{version}"

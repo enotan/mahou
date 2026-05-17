@@ -1,0 +1,18 @@
+name = "hdparm"
+version = "9.65"
+description = "Utility for displaying and setting ATA disk parameters"
+source = "https://downloads.sourceforge.net/project/hdparm/hdparm/hdparm-9.65.tar.gz"
+sha256 = "d14929f910d060932e717e9382425d47c2e7144235a53713d55a94f7de535a4b"
+source_dir = "hdparm-9.65"
+deps = []
+
+build_steps = [
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} binprefix=/usr exec_prefix=/usr install",
+]
+
+[update]
+check_url = "https://sourceforge.net/projects/hdparm/files/hdparm/"
+version_pattern = "hdparm-([0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://downloads.sourceforge.net/project/hdparm/hdparm/hdparm-{version}.tar.gz"
+source_dir_template = "hdparm-{version}"

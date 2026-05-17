@@ -1,0 +1,19 @@
+name = "simdjson"
+version = "4.6.4"
+description = "High-performance JSON parser"
+source = "https://github.com/simdjson/simdjson/archive/refs/tags/v4.6.4.tar.gz"
+sha256 = "b091107844fe928158c5c2265c20360fff312889ddf7ebc4528a0f0f8f2ff9cd"
+source_dir = "simdjson-4.6.4"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DSIMDJSON_DEVELOPER_MODE=OFF -DSIMDJSON_BUILD_STATIC_LIB=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/simdjson/simdjson/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/simdjson/simdjson/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "simdjson-{version}"

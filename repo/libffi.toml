@@ -3,7 +3,7 @@ version = "3.5.2"
 description = "Portable, high level programming interface to various calling conventions"
 source = "https://github.com/libffi/libffi/releases/download/v3.5.2/libffi-3.5.2.tar.gz"
 sha256 = "f3a3082a23b37c293a4fcd1053147b371f2ff91fa7ea1b2a52e335676bac82dc"
-source_dir = "${WORKDIR}"
+source_dir = "libffi-3.5.2"
 deps = []
 
 build_steps = [
@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/libffi/libffi/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/libffi/libffi/releases/download/v{version}/libffi-{version}.tar.gz"
+source_dir_template = "libffi-{version}"

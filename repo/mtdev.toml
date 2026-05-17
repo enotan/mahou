@@ -11,3 +11,9 @@ build_steps = [
   "make",
   "make DESTDIR=${MAHOU_DESTDIR} install",
 ]
+
+[update]
+check_url = "https://bitmath.org/code/mtdev/"
+version_pattern = "mtdev-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.bz2"
+source_template = "https://bitmath.org/code/mtdev/mtdev-{version}.tar.bz2"
+source_dir_template = "mtdev-{version}"

@@ -1,0 +1,18 @@
+name = "meson"
+version = "1.11.1"
+description = "Fast and user friendly build system"
+source = "https://github.com/mesonbuild/meson/releases/download/1.11.1/meson-1.11.1.tar.gz"
+sha256 = "6788ae299979643f8d841bcaf64352558436cae45a0355148a3aeeccf7913866"
+source_dir = "meson-1.11.1"
+deps = ["ninja"]
+
+build_steps = [
+  "python3 setup.py build",
+  "python3 setup.py install --root=${MAHOU_DESTDIR} --prefix=/usr --optimize=1",
+]
+
+[update]
+check_url = "https://api.github.com/repos/mesonbuild/meson/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/mesonbuild/meson/releases/download/{version}/meson-{version}.tar.gz"
+source_dir_template = "meson-{version}"

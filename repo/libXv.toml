@@ -1,0 +1,19 @@
+name = "libXv"
+version = "1.0.13"
+description = "X11 Video extension library"
+source = "https://www.x.org/releases/individual/lib/libXv-1.0.13.tar.xz"
+sha256 = "7d34910958e1c1f8d193d828fea1b7da192297280a35437af0692f003ba03755"
+source_dir = "libXv-1.0.13"
+deps = ["libX11", "libXext", "xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/lib/"
+version_pattern = "libXv-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/lib/libXv-{version}.tar.xz"
+source_dir_template = "libXv-{version}"

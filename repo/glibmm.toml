@@ -11,3 +11,9 @@ build_steps = [
   "ninja -C build",
   "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
 ]
+
+[update]
+check_url = "https://download.gnome.org/sources/glibmm/2.88/"
+version_pattern = "glibmm-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.gnome.org/sources/glibmm/2.88/glibmm-{version}.tar.xz"
+source_dir_template = "glibmm-{version}"

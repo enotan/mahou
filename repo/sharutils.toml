@@ -1,0 +1,19 @@
+name = "sharutils"
+version = "4.15.2"
+description = "GNU shell archive utilities"
+source = "https://ftp.gnu.org/gnu/sharutils/sharutils-4.15.2.tar.xz"
+sha256 = "2b05cff7de5d7b646dc1669bc36c35fdac02ac6ae4b6c19cb3340d87ec553a9a"
+source_dir = "sharutils-4.15.2"
+deps = ["gettext", "openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-openssl=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/sharutils/"
+version_pattern = "sharutils-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://ftp.gnu.org/gnu/sharutils/sharutils-{version}.tar.xz"
+source_dir_template = "sharutils-{version}"

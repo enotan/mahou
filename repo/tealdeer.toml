@@ -1,0 +1,18 @@
+name = "tealdeer"
+version = "1.8.1"
+description = "Fast tldr client"
+source = "https://github.com/tealdeer-rs/tealdeer/archive/refs/tags/v1.8.1.tar.gz"
+sha256 = "8b9ea7ef8dd594d6fb8b452733b0c883a68153cec266b23564ce185bdf22fcfa"
+source_dir = "tealdeer-1.8.1"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/tealdeer-rs/tealdeer/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/tealdeer-rs/tealdeer/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "tealdeer-{version}"

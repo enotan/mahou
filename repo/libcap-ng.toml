@@ -1,0 +1,19 @@
+name = "libcap-ng"
+version = "0.8.5"
+description = "Library for Linux capability handling"
+source = "https://people.redhat.com/sgrubb/libcap-ng/libcap-ng-0.8.5.tar.gz"
+sha256 = "3ba5294d1cbdfa98afaacfbc00b6af9ed2b83e8a21817185dfd844cc8c7ac6ff"
+source_dir = "libcap-ng-0.8.5"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://people.redhat.com/sgrubb/libcap-ng/"
+version_pattern = "libcap-ng-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://people.redhat.com/sgrubb/libcap-ng/libcap-ng-{version}.tar.gz"
+source_dir_template = "libcap-ng-{version}"

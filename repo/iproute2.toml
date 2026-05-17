@@ -1,0 +1,18 @@
+name = "iproute2"
+version = "7.0.0"
+description = "Linux networking and traffic control utilities"
+source = "https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-7.0.0.tar.xz"
+sha256 = "e62890f7b5de63c05a3bf331dc8deb4c015c336013f341a4edf46969797f2f4e"
+source_dir = "iproute2-7.0.0"
+deps = ["dbus", "libcap", "libmnl", "zlib"]
+
+build_steps = [
+  "make PREFIX=/usr",
+  "make DESTDIR=${MAHOU_DESTDIR} PREFIX=/usr install",
+]
+
+[update]
+check_url = "https://www.kernel.org/pub/linux/utils/net/iproute2/"
+version_pattern = "iproute2-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.kernel.org/pub/linux/utils/net/iproute2/iproute2-{version}.tar.xz"
+source_dir_template = "iproute2-{version}"

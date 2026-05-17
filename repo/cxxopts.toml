@@ -1,0 +1,19 @@
+name = "cxxopts"
+version = "3.3.1"
+description = "Lightweight C++ command line option parser"
+source = "https://github.com/jarro2783/cxxopts/archive/refs/tags/v3.3.1.tar.gz"
+sha256 = "3bfc70542c521d4b55a46429d808178916a579b28d048bd8c727ee76c39e2072"
+source_dir = "cxxopts-3.3.1"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DCXXOPTS_BUILD_EXAMPLES=OFF -DCXXOPTS_BUILD_TESTS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/jarro2783/cxxopts/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/jarro2783/cxxopts/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "cxxopts-{version}"

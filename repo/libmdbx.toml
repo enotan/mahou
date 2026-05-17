@@ -1,0 +1,19 @@
+name = "libmdbx"
+version = "0.14.2"
+description = "Fast embeddable key-value database engine"
+source = "https://github.com/erthink/libmdbx/archive/refs/tags/v0.14.2.tar.gz"
+sha256 = "e7246cc363d1e23eb373112b9957190beef22bb7ab202cb1430dd90b08bbeea4"
+source_dir = "libmdbx-0.14.2"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DMDBX_ENABLE_TESTS=OFF -DMDBX_BUILD_TOOLS=ON -DMDBX_INSTALL_STATIC=OFF -DMDBX_INSTALL_MANPAGES=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/erthink/libmdbx/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/erthink/libmdbx/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "libmdbx-{version}"

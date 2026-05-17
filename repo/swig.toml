@@ -1,0 +1,19 @@
+name = "swig"
+version = "4.4.1"
+description = "Simplified Wrapper and Interface Generator"
+source = "https://github.com/swig/swig/archive/refs/tags/v4.4.1.tar.gz"
+sha256 = "8bf32042beb7ee1eeb5c71aa15a62513d964893f84234f2cd77e4a8e2ed41e87"
+source_dir = "swig-4.4.1"
+deps = ["cmake", "pcre2"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DWITH_PCRE=ON",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/swig/swig/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/swig/swig/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "swig-{version}"

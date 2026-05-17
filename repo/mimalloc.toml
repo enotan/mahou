@@ -1,0 +1,18 @@
+name = "mimalloc"
+version = "3.3.2"
+description = "Compact general purpose allocator"
+source = "https://github.com/microsoft/mimalloc/archive/refs/tags/v3.3.2.tar.gz"
+sha256 = "ca02384e007f46950598500dfaebde5ff9948c1d231f5a81b058799afa64bbbb"
+source_dir = "mimalloc-3.3.2"
+deps = ["cmake"]
+build_steps = [
+    "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DMI_BUILD_TESTS=OFF -DMI_BUILD_STATIC=OFF -DMI_BUILD_OBJECT=OFF -DMI_INSTALL_TOPLEVEL=ON",
+    "cmake --build build",
+    "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/microsoft/mimalloc/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/microsoft/mimalloc/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "mimalloc-{version}"

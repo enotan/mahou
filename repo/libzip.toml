@@ -1,0 +1,19 @@
+name = "libzip"
+version = "1.11.4"
+description = "C library for reading, creating, and modifying zip archives"
+source = "https://github.com/nih-at/libzip/releases/download/v1.11.4/libzip-1.11.4.tar.xz"
+sha256 = "8a247f57d1e3e6f6d11413b12a6f28a9d388de110adc0ec608d893180ed7097b"
+source_dir = "libzip-1.11.4"
+deps = ["bzip2", "cmake", "openssl", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_REGRESS=OFF -DBUILD_OSSFUZZ=OFF -DBUILD_EXAMPLES=OFF -DBUILD_DOC=OFF -DENABLE_GNUTLS=OFF -DENABLE_MBEDTLS=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/nih-at/libzip/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/nih-at/libzip/releases/download/v{version}/libzip-{version}.tar.xz"
+source_dir_template = "libzip-{version}"

@@ -1,0 +1,18 @@
+name = "sord"
+version = "0.16.22"
+description = "Lightweight RDF storage library"
+source = "https://download.drobilla.net/sord-0.16.22.tar.xz"
+sha256 = "bb23b34b216579136795d518cffa73d91cf205594ce9accebfd408afb839173f"
+source_dir = "sord-0.16.22"
+deps = ["meson", "serd", "zix"]
+build_steps = [
+    "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared -Ddocs=disabled -Dtests=disabled -Dman=disabled -Dbindings_cpp=disabled",
+    "ninja -C build",
+    "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://download.drobilla.net/"
+version_pattern = "sord-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://download.drobilla.net/sord-{version}.tar.xz"
+source_dir_template = "sord-{version}"

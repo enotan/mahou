@@ -1,0 +1,18 @@
+name = "squashfs-tools"
+version = "4.7.5"
+description = "Tools for creating and extracting Squashfs filesystems"
+source = "https://github.com/plougher/squashfs-tools/archive/refs/tags/4.7.5.tar.gz"
+sha256 = "547b7b7f4d2e44bf91b6fc554664850c69563701deab9fd9cd7e21f694c88ea6"
+source_dir = "squashfs-tools-4.7.5"
+deps = ["lz4", "lzo", "xz", "zlib", "zstd"]
+
+build_steps = [
+  "make -C squashfs-tools CONFIG=1 USE_PREBUILT_MANPAGES=y",
+  "make -C squashfs-tools CONFIG=1 USE_PREBUILT_MANPAGES=y INSTALL_PREFIX=${MAHOU_DESTDIR}/usr INSTALL_MANPAGES_DIR=${MAHOU_DESTDIR}/usr/share/man/man1 install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/plougher/squashfs-tools/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/plougher/squashfs-tools/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "squashfs-tools-{version}"

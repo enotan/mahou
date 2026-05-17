@@ -1,0 +1,19 @@
+name = "mpv"
+version = "0.41.0"
+description = "Media player based on FFmpeg"
+source = "https://github.com/mpv-player/mpv/archive/refs/tags/v0.41.0.tar.gz"
+sha256 = "ee21092a5ee427353392360929dc64645c54479aefdb5babc5cfbb5fad626209"
+source_dir = "mpv-0.41.0"
+deps = ["alsa-lib", "ffmpeg", "libarchive", "libass", "libdrm", "libplacebo", "libxkbcommon", "luajit", "pipewire", "pulseaudio", "wayland", "wayland-protocols", "zlib"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dlua=luajit -Djavascript=disabled -Dcdda=disabled -Ddvdnav=disabled -Dlibarchive=enabled -Dlibbluray=disabled -Drubberband=disabled -Duchardet=disabled -Dzimg=disabled -Dalsa=enabled -Dpulse=enabled -Dpipewire=enabled -Ddrm=enabled -Dwayland=enabled -Dx11=disabled -Dvulkan=disabled -Dgl=disabled -Degl=disabled -Dvaapi=disabled -Dvdpau=disabled -Dmanpage-build=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/mpv-player/mpv/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/mpv-player/mpv/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "mpv-{version}"

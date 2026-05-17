@@ -1,0 +1,19 @@
+name = "parallel"
+version = "20260422"
+description = "GNU shell tool for executing jobs in parallel"
+source = "https://ftp.gnu.org/gnu/parallel/parallel-20260422.tar.bz2"
+sha256 = "664cf165d66ea217b2f49cd96a7865ecf90c9d0616599cc2aba8cad481d907bb"
+source_dir = "parallel-20260422"
+deps = ["perl"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://ftp.gnu.org/gnu/parallel/"
+version_pattern = "parallel-([0-9]+)\\.tar\\.bz2"
+source_template = "https://ftp.gnu.org/gnu/parallel/parallel-{version}.tar.bz2"
+source_dir_template = "parallel-{version}"

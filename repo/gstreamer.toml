@@ -1,0 +1,19 @@
+name = "gstreamer"
+version = "1.28.3"
+description = "Streaming media framework core"
+source = "https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-1.28.3.tar.xz"
+sha256 = "5e84ecb942e136944eb9812f19cff7bcf05a85637482a32da55b892914c397d1"
+source_dir = "gstreamer-1.28.3"
+deps = ["glib"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dexamples=disabled -Dtests=disabled -Dbenchmarks=disabled -Dintrospection=disabled -Ddoc=disabled -Dcheck=disabled -Dlibunwind=disabled -Dlibdw=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://gstreamer.freedesktop.org/src/gstreamer/"
+version_pattern = "gstreamer-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://gstreamer.freedesktop.org/src/gstreamer/gstreamer-{version}.tar.xz"
+source_dir_template = "gstreamer-{version}"

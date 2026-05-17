@@ -1,0 +1,19 @@
+name = "enchant"
+version = "2.8.12"
+description = "Generic spell checking library"
+source = "https://github.com/rrthomas/enchant/releases/download/v2.8.12/enchant-2.8.12.tar.gz"
+sha256 = "20e5fab2ca0f95ba9d1ef5052fe5b028e3e1d66d4cdea6b9adfcbd3e524c2a09"
+source_dir = "enchant-2.8.12"
+deps = ["aspell", "glib", "hunspell", "pkgconf"]
+
+build_steps = [
+  "./configure --prefix=/usr --mandir=/usr/share/man --with-hunspell --with-aspell --with-nuspell=no --with-hspell=no --with-voikko=no --with-applespell=no --with-zemberek=no",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/rrthomas/enchant/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/rrthomas/enchant/releases/download/v{version}/enchant-{version}.tar.gz"
+source_dir_template = "enchant-{version}"

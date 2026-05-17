@@ -1,0 +1,19 @@
+name = "lcms2"
+version = "2.17"
+description = "Small-footprint color management engine"
+source = "https://github.com/mm2/Little-CMS/releases/download/lcms2.17/lcms2-2.17.tar.gz"
+sha256 = "d11af569e42a1baa1650d20ad61d12e41af4fead4aa7964a01f93b08b53ab074"
+source_dir = "lcms2-2.17"
+deps = ["libjpeg-turbo", "tiff", "zlib"]
+
+build_steps = [
+  "./configure --prefix=/usr --disable-static --with-jpeg --with-tiff --with-zlib --without-threaded",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/mm2/Little-CMS/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"lcms([0-9]+\\.[0-9]+)\""
+source_template = "https://github.com/mm2/Little-CMS/releases/download/lcms{version}/lcms2-{version}.tar.gz"
+source_dir_template = "lcms2-{version}"

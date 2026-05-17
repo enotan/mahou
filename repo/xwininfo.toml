@@ -1,0 +1,19 @@
+name = "xwininfo"
+version = "1.1.6"
+description = "Window information utility for X11"
+source = "https://www.x.org/releases/individual/app/xwininfo-1.1.6.tar.xz"
+sha256 = "3518897c17448df9ba99ad6d9bb1ca0f17bc0ed7c0fd61281b34ceed29a9253f"
+source_dir = "xwininfo-1.1.6"
+deps = ["libX11"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://www.x.org/releases/individual/app/"
+version_pattern = "xwininfo-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.xz"
+source_template = "https://www.x.org/releases/individual/app/xwininfo-{version}.tar.xz"
+source_dir_template = "xwininfo-{version}"

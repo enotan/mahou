@@ -1,0 +1,20 @@
+name = "hunspell"
+version = "1.7.3"
+description = "Spell checker and morphological analyzer"
+source = "https://github.com/hunspell/hunspell/archive/refs/tags/v1.7.3.tar.gz"
+sha256 = "933be3dac6fd55f6e752331a170efb7e33800e40fae1156d8434cc8c85379a1b"
+source_dir = "hunspell-1.7.3"
+deps = ["autoconf", "automake", "gettext", "libtool", "pkgconf"]
+
+build_steps = [
+  "autoreconf -vfi",
+  "./configure --prefix=/usr --mandir=/usr/share/man",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/hunspell/hunspell/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/hunspell/hunspell/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "hunspell-{version}"

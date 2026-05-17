@@ -1,0 +1,19 @@
+name = "gperftools"
+version = "2.18.1"
+description = "Fast malloc, heap profiler, and CPU profiler collection"
+source = "https://github.com/gperftools/gperftools/archive/refs/tags/gperftools-2.18.1.tar.gz"
+sha256 = "172d27e6f6c1fa69df4be30bc61ea35ed225b74cd3a15500e2d75e981478fb2b"
+source_dir = "gperftools-gperftools-2.18.1"
+deps = ["cmake"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -Dgperftools_build_benchmark=OFF -Dgperftools_enable_libunwind=OFF",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]
+
+[update]
+check_url = "https://api.github.com/repos/gperftools/gperftools/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"gperftools-([^\"]+)\""
+source_template = "https://github.com/gperftools/gperftools/archive/refs/tags/gperftools-{version}.tar.gz"
+source_dir_template = "gperftools-gperftools-{version}"

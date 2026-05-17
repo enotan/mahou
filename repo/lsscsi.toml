@@ -1,0 +1,19 @@
+name = "lsscsi"
+version = "0.32"
+description = "Lists information about SCSI devices on Linux"
+source = "https://sg.danny.cz/scsi/lsscsi-0.32.tgz"
+sha256 = "0a800e9e94dca2ab702d65d72777ae8cae078e3d74d0bcbed64ba0849e8029a1"
+source_dir = "lsscsi-0.32"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://sg.danny.cz/scsi/"
+version_pattern = "lsscsi-([0-9]+\\.[0-9]+)\\.tgz"
+source_template = "https://sg.danny.cz/scsi/lsscsi-{version}.tgz"
+source_dir_template = "lsscsi-{version}"

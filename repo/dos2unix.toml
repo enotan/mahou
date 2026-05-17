@@ -1,0 +1,18 @@
+name = "dos2unix"
+version = "7.5.5"
+description = "Text file format converters between DOS, Mac, and Unix"
+source = "https://waterlan.home.xs4all.nl/dos2unix/dos2unix-7.5.5.tar.gz"
+sha256 = "75f692b8484c8c24579a2ffd87df16b9c9428ed95497e3393a21d1ba0697ac33"
+source_dir = "dos2unix-7.5.5"
+deps = []
+
+build_steps = [
+  "make ENABLE_NLS=0",
+  "make ENABLE_NLS=0 DESTDIR=${MAHOU_DESTDIR} install",
+]
+
+[update]
+check_url = "https://waterlan.home.xs4all.nl/dos2unix.html"
+version_pattern = "dos2unix-([0-9]+\\.[0-9]+\\.[0-9]+)\\.tar\\.gz"
+source_template = "https://waterlan.home.xs4all.nl/dos2unix/dos2unix-{version}.tar.gz"
+source_dir_template = "dos2unix-{version}"

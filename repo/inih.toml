@@ -1,0 +1,19 @@
+name = "inih"
+version = "r62"
+description = "Simple INI file parser in C"
+source = "https://github.com/benhoyt/inih/archive/refs/tags/r62.tar.gz"
+sha256 = "9c15fa751bb8093d042dae1b9f125eb45198c32c6704cd5481ccde460d4f8151"
+source_dir = "inih-r62"
+deps = []
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Ddefault_library=shared",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
+
+[update]
+check_url = "https://api.github.com/repos/benhoyt/inih/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"(r[^\"]+)\""
+source_template = "https://github.com/benhoyt/inih/archive/refs/tags/{version}.tar.gz"
+source_dir_template = "inih-{version}"

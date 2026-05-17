@@ -1,0 +1,18 @@
+name = "pastel"
+version = "0.12.0"
+description = "Command-line color manipulation tool"
+source = "https://github.com/sharkdp/pastel/archive/refs/tags/v0.12.0.tar.gz"
+sha256 = "2903853f24d742fe955edd9bea17947eb8f3f44000a8ac528d16f2ea1e52b78b"
+source_dir = "pastel-0.12.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]
+
+[update]
+check_url = "https://api.github.com/repos/sharkdp/pastel/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sharkdp/pastel/archive/refs/tags/v{version}.tar.gz"
+source_dir_template = "pastel-{version}"

@@ -10,3 +10,9 @@ build_steps = [
   "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
   "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
 ]
+
+[update]
+check_url = "https://api.github.com/repos/sharkdp/fd/releases/latest"
+version_pattern = "\"tag_name\"\\s*:\\s*\"v?([^\"]+)\""
+source_template = "https://github.com/sharkdp/fd/archive/v{version}.tar.gz"
+source_dir_template = "fd-{version}"
