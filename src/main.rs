@@ -1151,7 +1151,7 @@ fn download_bytes(url: &str) -> Result<Vec<u8>, String> {
 }
 
 fn recipe_path(name: &str) -> String {
-    format!("repo/{}.toml", name)
+    format!("{}/{}.toml", recipe_repo_path(), name)
 }
 
 fn plan_recipe_update(package: &Package, latest: &str) -> Result<RecipeUpdate, String> {
