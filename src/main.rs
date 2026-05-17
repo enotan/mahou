@@ -520,6 +520,11 @@ fn main() {
                 eprintln!("Error: {}", message);
             }
         }
+        "upgrade" => {
+            if let Err(message) = upgrade_installed_packages() {
+                eprintln!("Error: {}", message);
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -548,6 +553,7 @@ fn print_help() {
     println!("  mahou update-recipe <name>");
     println!("  mahou repo-path");
     println!("  mahou sync");
+    println!("  mahou upgrade");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -794,6 +800,8 @@ fn build_package(package: &Package) -> Result<(), String> {
         println!("Already built: {}", package.name);
         return Ok(());
     }
+
+    clean_stage(package)?;
     
     extract_package(package)?;
 
@@ -829,7 +837,13 @@ fn build_marker_path(package: &Package) -> String {
 }
 
 fn is_built(package: &Package) -> bool {
-    fs::metadata(build_marker_path(package)).is_ok()
+    let marker_path = build_marker_path(package);
+
+    let Ok(contents) = fs::read_to_string(marker_path) else {
+        return false;
+    };
+
+    contents.trim() == format!("{} {}", package.name, package.version)
 }
 
 fn mark_built(package: &Package) -> Result<(), String> {
@@ -1310,6 +1324,47 @@ fn sync_upstream_recipes() -> Result<(), String> {
 
         println!("Updated: {} {} -> {}", package.name, package.version, plan.version);
 
+    }
+
+    Ok(())
+}
+
+fn upgrade_installed_packages() -> Result<(), String> {
+    sync_recipe_repo()?;
+    sync_upstream_recipes()?;
+
+    let installed = load_installed_packages()?;
+    let packages = load_repo_or_exit();
+
+    if installed.is_empty() {
+        println!("No packages installed");
+        return Ok(());
+    }
+
+    let mut upgraded = false;
+
+    for record in installed {
+        let Some(package) = find_package(&packages, &record.name) else {
+            println!("Installed package has no recipe: {}", record.name);
+            continue;
+        };
+
+        if package.version == record.version {
+            println!("Up to date: {} {}", package.name, package.version);
+            continue;
+        }
+
+        println!(
+            "Upgrading {} {} -> {}",
+            package.name, record.version, package.version
+        );
+
+        install_package(package)?;
+        upgraded = true;
+    }
+
+    if !upgraded {
+        println!("All installed packages are up to date");
     }
 
     Ok(())
