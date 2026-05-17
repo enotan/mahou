@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::collections::HashSet;
+use regex::bytes;
 use serde::Deserialize;
 use sha2::{Sha256, Digest};
 use std::process::Command;
@@ -406,6 +407,24 @@ fn main() {
                                 println!("{} is up to date ({})", package.name, package.version);
                             } else {
                                 println!("{} {} -> {}", package.name, package.version, latest);
+
+                                if let Some(update) = &package.update {
+                                    let source = render_update_template(&update.source_template, &latest);
+                                    let source_dir = render_update_template(&update.source_dir_template, &latest);
+
+                                    println!("New source: {}", source);
+                                    println!("New source dir: {}", source_dir);
+
+                                    match download_bytes(&source) {
+                                        Ok(bytes) => {
+                                            let sha256 = sha256_bytes(&bytes);
+                                            println!("New sha256: {}", sha256);
+                                        }
+                                        Err(message) => {
+                                            eprintln!("Failed to calculate sha256: {}", message);
+                                        }
+                                    }
+                                }
                             }
                         }
                         Ok(None) => {
@@ -710,10 +729,14 @@ fn sha256_file(path: &str) -> Result<String, String> {
     let contents = fs::read(path)
         .map_err(|error| format!("Failed to read {}: {}", path, error))?;
 
+    Ok(sha256_bytes(&contents))
+}
+
+fn sha256_bytes(contents: &[u8]) -> String {
     let mut hasher = Sha256::new();
     hasher.update(contents);
 
-    Ok(hex::encode(hasher.finalize()))
+    hex::encode(hasher.finalize())
 }
 
 fn build_marker_path(package: &Package) -> String {
@@ -1002,4 +1025,28 @@ fn compare_versions(left: &str, right: &str) -> Ordering {
     }
 
     Ordering::Equal
+}
+
+fn render_update_template(template: &str, version: &str) -> String {
+    template.replace("{version}", version)
+}
+
+fn download_bytes(url: &str) -> Result<Vec<u8>, String> {
+    let client = reqwest::blocking::Client::builder()
+        .user_agent("mahou/0.1")
+        .build()
+        .map_err(|error| format!("Failed to create HTTP client: {}", error))?;
+
+    let response = client
+        .get(url)
+        .send()
+        .map_err(|error| format!("Failed to download {}: {}", url, error))?
+        .error_for_status()
+        .map_err(|error| format!("Download failed for {}: {}", url, error))?;
+
+    let bytes = response
+        .bytes()
+        .map_err(|error| format!("Failed to read response for {}: {}", url, error))?;
+
+    Ok(bytes.to_vec())
 }
