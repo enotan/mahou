@@ -1,0 +1,13 @@
+name = "sway"
+version = "1.11"
+description = "i3-compatible Wayland window manager"
+source = "https://github.com/swaywm/sway/releases/download/1.11/sway-1.11.tar.gz"
+sha256 = "0e37a55b7c3379230e97e1ad982542b75016a0c7d6676198604e557f9b373dae"
+source_dir = "sway-1.11"
+deps = ["cairo", "gdk-pixbuf", "json-c", "libevdev", "libinput", "libxkbcommon", "pango", "pcre2", "wayland", "wayland-protocols", "wlroots"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

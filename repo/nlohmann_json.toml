@@ -1,0 +1,13 @@
+name = "nlohmann_json"
+version = "3.12.0"
+description = "JSON for Modern C++"
+source = "https://github.com/nlohmann/json/archive/v3.12.0.tar.gz"
+sha256 = "4b92eb0c06d10683f7447ce9406cb97cd4b453be18d7279320f7b2f025c10187"
+source_dir = "json-3.12.0"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

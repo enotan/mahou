@@ -1,0 +1,13 @@
+name = "pango"
+version = "1.57.1"
+description = "Internationalized text layout and rendering library"
+source = "https://download.gnome.org/sources/pango/1.57/pango-1.57.1.tar.xz"
+sha256 = "e65d6d117080dc3aeeb7d8b4b3b518f7383aa2e6cfce23117c623cd624764c2f"
+source_dir = "pango-1.57.1"
+deps = ["cairo", "fontconfig", "freetype", "glib", "harfbuzz"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

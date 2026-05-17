@@ -1,0 +1,12 @@
+name = "zstd"
+version = "1.5.7"
+description = "zstd fast compression library"
+source = "https://github.com/facebook/zstd/releases/download/v1.5.7/zstd-1.5.7.tar.gz"
+sha256 = "eb33e51f49a15e023950cd7825ca74a4a2b43db8354825ac24fc1b7ee09e6fa3"
+source_dir = "${WORKDIR}"
+deps = []
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

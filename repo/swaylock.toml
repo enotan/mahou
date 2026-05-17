@@ -1,0 +1,13 @@
+name = "swaylock"
+version = "1.8.5"
+description = "Screen locker for Wayland"
+source = "https://github.com/swaywm/swaylock/releases/download/v1.8.5/swaylock-1.8.5.tar.gz"
+sha256 = "ebd02c3c6a755d63102779c2c2430a4aab32d22bed0d73d6353974c1e5ad18a8"
+source_dir = "swaylock-1.8.5"
+deps = ["cairo", "libxkbcommon", "pam", "wayland"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

@@ -1,0 +1,13 @@
+name = "m4"
+version = "1.4.20"
+description = "GNU macro processor"
+source = "https://ftpmirror.gnu.org/m4/m4-1.4.20.tar.xz"
+sha256 = "e236ea3a1ccf5f6c270b1c4bb60726f371fa49459a8eaaebc90b216b328daf2b"
+source_dir = "m4-1.4.20"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

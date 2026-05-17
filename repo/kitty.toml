@@ -1,0 +1,12 @@
+name = "kitty"
+version = "0.46.2"
+description = "Fast, feature-rich, GPU-based terminal"
+source = "https://github.com/kovidgoyal/kitty/releases/download/v0.46.2/kitty-0.46.2.tar.xz"
+sha256 = "e8ea44b13a1c70032a35128a8c4c8c29c90a7cfbe0ad4f6aa2927a057d10f83e"
+source_dir = "kitty-0.46.2"
+deps = ["fontconfig", "freetype", "harfbuzz", "lcms", "libpng", "openssl", "wayland", "xkb-data"]
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

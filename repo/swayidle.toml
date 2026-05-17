@@ -1,0 +1,13 @@
+name = "swayidle"
+version = "1.9.0"
+description = "Idle management daemon for Wayland"
+source = "https://github.com/swaywm/swayidle/releases/download/v1.9.0/swayidle-1.9.0.tar.gz"
+sha256 = "6c1b769038b60250c88e47380cbb021cfa57a65f872bf4d6c340b5e3057096ac"
+source_dir = "swayidle-1.9.0"
+deps = ["wayland"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

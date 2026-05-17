@@ -1,0 +1,13 @@
+name = "pipewire"
+version = "1.6.4"
+description = "Low-latency multimedia processing"
+source = "https://gitlab.freedesktop.org/pipewire/pipewire/-/archive/1.6.4/pipewire-1.6.4.tar.bz2"
+sha256 = "2fce3abd2c8bc89bffc9435fb9e4e286a509abcf4479eafc45d2d81275baaa61"
+source_dir = "pipewire-1.6.4"
+deps = ["dbus", "libcap", "openssl"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

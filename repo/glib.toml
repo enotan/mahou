@@ -1,0 +1,13 @@
+name = "glib"
+version = "2.88.1"
+description = "Core application library for C"
+source = "https://download.gnome.org/sources/glib/2.88/glib-2.88.1.tar.xz"
+sha256 = "51ab804c56f6eab3e5045c774d1290ac5e4c923d4f9a3d8e33123bee45c1840e"
+source_dir = "glib-2.88.1"
+deps = ["pcre2", "libffi", "zlib"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

@@ -1,0 +1,13 @@
+name = "pixman"
+version = "0.46.4"
+description = "Low-level pixel manipulation routines"
+source = "https://www.x.org/releases/individual/lib/pixman-0.46.4.tar.xz"
+sha256 = "a098c33924754ad43f981b740f6d576c70f9ed1006e12221b1845431ebce1239"
+source_dir = "pixman-0.46.4"
+deps = []
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

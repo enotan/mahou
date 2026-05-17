@@ -1,0 +1,13 @@
+name = "waybar"
+version = "0.15.0"
+description = "Highly customizable Wayland bar"
+source = "https://github.com/Alexays/Waybar/archive/refs/tags/0.15.0.tar.gz"
+sha256 = "21c2bbef88c40473c355003582f9331d2f9b8a01efdcce0935edfc5f6b023a3e"
+source_dir = "Waybar-0.15.0"
+deps = ["date", "fmt", "gtk-layer-shell", "gtkmm", "jsoncpp", "libxkbcommon", "spdlog", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release -Dman-pages=disabled -Dtray=disabled -Dlibinput=disabled -Dlogind=disabled -Dmpd=disabled -Dmpris=disabled -Dnetwork=disabled -Dpulseaudio=disabled -Dpipewire=disabled -Dsndio=disabled -Dsystemd=disabled -Dupower=disabled -Dwifi=disabled -Djack=disabled -Dcava=disabled",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

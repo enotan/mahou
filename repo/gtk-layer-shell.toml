@@ -1,0 +1,13 @@
+name = "gtk-layer-shell"
+version = "0.10.1"
+description = "Library to create Wayland desktop components using GTK"
+source = "https://github.com/wmww/gtk-layer-shell/archive/refs/tags/v0.10.1.tar.gz"
+sha256 = "88c3a3e0a5300532f3d368d5df64838a87f1fb85273f22d41df0a6b8d0ec59c6"
+source_dir = "gtk-layer-shell-0.10.1"
+deps = ["gtk+", "wayland"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

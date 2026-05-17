@@ -1,0 +1,13 @@
+name = "libxkbcommon"
+version = "1.13.1"
+description = "Keymap handling library for toolkits and window systems"
+source = "https://github.com/xkbcommon/libxkbcommon/archive/refs/tags/xkbcommon-1.13.1.tar.gz"
+sha256 = "aeb951964c2f7ecc08174cb5517962d157595e9e3f38fc4a130b91dc2f9fec18"
+source_dir = "libxkbcommon-xkbcommon-1.13.1"
+deps = ["libxcb", "wayland", "wayland-protocols", "xorg-proto"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

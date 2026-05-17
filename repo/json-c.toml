@@ -1,0 +1,13 @@
+name = "json-c"
+version = "0.18"
+description = "A JSON implementation in C"
+source = "https://s3.amazonaws.com/json-c_releases/releases/json-c-0.18.tar.gz"
+sha256 = "876ab046479166b869afc6896d288183bbc0e5843f141200c677b3e8dfb11724"
+source_dir = "json-c-0.18"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

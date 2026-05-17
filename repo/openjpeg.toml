@@ -1,0 +1,13 @@
+name = "openjpeg"
+version = "2.5.4"
+description = "Open-source JPEG 2000 library"
+source = "https://github.com/uclouvain/openjpeg/archive/v2.5.4.tar.gz"
+sha256 = "a695fbe19c0165f295a8531b1e4e855cd94d0875d2f88ec4b61080677e27188a"
+source_dir = "openjpeg-2.5.4"
+deps = ["lcms", "libpng", "tiff"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

@@ -1,0 +1,12 @@
+name = "ripgrep"
+version = "15.1.0"
+description = "Search tool that combines the usability of ag with the raw speed of grep"
+source = "https://github.com/BurntSushi/ripgrep/archive/15.1.0.tar.gz"
+sha256 = "046fa01a216793b8bd2750f9d68d4ad43986eb9c0d6122600f993906012972e8"
+source_dir = "ripgrep-15.1.0"
+deps = []
+
+build_steps = [
+  "cargo install --path . --locked --root ${MAHOU_DESTDIR}/usr",
+  "rm -f ${MAHOU_DESTDIR}/usr/.crates.toml ${MAHOU_DESTDIR}/usr/.crates2.json",
+]

@@ -1,0 +1,13 @@
+name = "libinput"
+version = "1.31.2"
+description = "Library to handle input devices in Wayland"
+source = "https://gitlab.freedesktop.org/libinput/libinput/-/archive/1.31.2/libinput-1.31.2.tar.bz2"
+sha256 = "1daebac6cb5b8946139c9669a7e5c0e4c8f17320de232a6b9bf470f37dc569e4"
+source_dir = "libinput-1.31.2"
+deps = ["libevdev", "libwacom", "mtdev"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

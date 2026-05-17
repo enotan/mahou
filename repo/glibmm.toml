@@ -1,0 +1,13 @@
+name = "glibmm"
+version = "2.88.0"
+description = "C++ interface for GLib"
+source = "https://download.gnome.org/sources/glibmm/2.88/glibmm-2.88.0.tar.xz"
+sha256 = "a6549da3a6c43de83b8717dae5413c57a60d92f6ecc624615c612d0bb0ad0fe2"
+source_dir = "glibmm-2.88.0"
+deps = ["glib", "libsigc++"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

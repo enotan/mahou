@@ -1,0 +1,12 @@
+name = "st"
+version = "0.9.3"
+description = "Simple terminal implementation for X"
+source = "https://dl.suckless.org/st/st-0.9.3.tar.gz"
+sha256 = "9ed9feabcded713d4ded38c8cebf36a3b08f0042ef7934a0e2b2409da56e649b"
+source_dir = "st-0.9.3"
+deps = ["fontconfig", "libX11", "libXft"]
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

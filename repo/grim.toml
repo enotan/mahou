@@ -1,0 +1,13 @@
+name = "grim"
+version = "1.5.0"
+description = "Grab images from a Wayland compositor"
+source = "https://gitlab.freedesktop.org/emersion/grim/-/releases/v1.5.0/downloads/grim-1.5.0.tar.gz"
+sha256 = "99708950205d5bfd2e769519fcb6423a9f545175a29c46c7c1cf7965afc4b8eb"
+source_dir = "grim-1.5.0"
+deps = ["libpng", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

@@ -1,0 +1,13 @@
+name = "make"
+version = "4.4.1"
+description = "GNU make build tool"
+source = "https://ftpmirror.gnu.org/make/make-4.4.1.tar.gz"
+sha256 = "dd16fb1d67bfab79a72f5e8390735c49e3e8e70b4945a15ab1f81ddb78658fb3"
+source_dir = "make-4.4.1"
+deps = []
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

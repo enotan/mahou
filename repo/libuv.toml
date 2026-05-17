@@ -1,0 +1,13 @@
+name = "libuv"
+version = "1.52.1"
+description = "Cross-platform asychronous I/O"
+source = "https://dist.libuv.org/dist/v1.52.1/libuv-v1.52.1.tar.gz"
+sha256 = "66d511b9e6e334c0e62279eb234fbfb2b3110b1479c09b95b44c7afca8cff9e7"
+source_dir = "libuv-v1.52.1"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

@@ -1,0 +1,13 @@
+name = "spdlog"
+version = "1.17.0"
+description = "Fast C++ logging library"
+source = "https://github.com/gabime/spdlog/archive/v1.17.0.tar.gz"
+sha256 = "d8862955c6d74e5846b3f580b1605d2428b11d97a410d86e2fb13e857cd3a744"
+source_dir = "spdlog-1.17.0"
+deps = ["fmt"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

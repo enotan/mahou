@@ -1,0 +1,13 @@
+name = "libwebp"
+version = "1.6.0"
+description = "A lossy image compression format"
+source = "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz"
+sha256 = "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564"
+source_dir = "libwebp-1.6.0"
+deps = ["libjpeg-turbo", "libpng", "tiff"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

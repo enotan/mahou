@@ -1,0 +1,12 @@
+name = "dwm"
+version = "6.8"
+description = "a dynamic window manager for X11"
+source = "https://dl.suckless.org/dwm/dwm-6.8.tar.gz"
+sha256 = "bcf540589ad174d4073f4efa658828411e2f5ba63196cfaf6b71363700f590b7"
+source_dir = "dwm-6.8"
+deps = ["libX11", "libXft", "libXinerama"]
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

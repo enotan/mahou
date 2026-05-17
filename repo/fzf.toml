@@ -1,0 +1,12 @@
+name = "fzf"
+version = "0.72.0"
+description = "General-purpose command-line fuzzy finder, written in Golang"
+source = "https://github.com/junegunn/fzf/archive/v0.72.0.tar.gz"
+sha256 = "ca5ce083cec5187503ceb96d837c20d8efde85f03e62bba3a8890f8da526f2fc"
+source_dir = "fzf-0.72.0"
+deps = []
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

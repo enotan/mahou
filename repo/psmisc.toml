@@ -1,0 +1,13 @@
+name = "psmisc"
+version = "23.7"
+description = "A set of tools that use the proc filesystem"
+source = "https://downloads.sourceforge.net/psmisc/psmisc-23.7.tar.xz"
+sha256 = "58c55d9c1402474065adae669511c191de374b0871eec781239ab400b907c327"
+source_dir = "psmisc-23.7"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

@@ -1,0 +1,13 @@
+name = "libXau"
+version = "1.0.12"
+description = "X11 authorization protocol library"
+source = "https://www.x.org/releases/individual/lib/libXau-1.0.12.tar.xz"
+sha256 = "74d0e4dfa3d39ad8939e99bda37f5967aba528211076828464d2777d477fc0fb"
+source_dir = "libXau-1.0.12"
+deps = ["xorg-proto"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

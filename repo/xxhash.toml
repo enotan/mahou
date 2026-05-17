@@ -1,0 +1,12 @@
+name = "xxhash"
+version = "0.8.3"
+description = "Extremely fast non-cryptographic hash algorithm"
+source = "https://github.com/Cyan4973/xxHash/archive/v0.8.3.tar.gz"
+sha256 = "aae608dfe8213dfd05d909a57718ef82f30722c392344583d3f39050c7f29a80"
+source_dir = "xxHash-0.8.3"
+deps = []
+
+build_steps = [
+  "make",
+  "make PREFIX=/usr DESTDIR=${MAHOU_DESTDIR} install",
+]

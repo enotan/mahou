@@ -1,0 +1,13 @@
+name = "jsoncpp"
+version = "1.9.6"
+description = "C++ JSON reader and writer"
+source = "https://github.com/open-source-parsers/jsoncpp/archive/1.9.6.tar.gz"
+sha256 = "f93b6dd7ce796b13d02c108bc9f79812245a82e577581c4c9aabe57075c90ea2"
+source_dir = "jsoncpp-1.9.6"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

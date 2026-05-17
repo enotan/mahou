@@ -1,0 +1,13 @@
+name = "libxmlb"
+version = "0.3.26"
+description = "Library to help create and query binary XML blobs"
+source = "https://github.com/hughsie/libxmlb/releases/download/0.3.26/libxmlb-0.3.26.tar.xz"
+sha256 = "a18bc447fff0dd0d76a2e6cd4a603b4712047c027f9bbbdc31ebc25f0e2c1ed9"
+source_dir = "libxmlb-0.3.26"
+deps = ["glib", "libxml2"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

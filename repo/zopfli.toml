@@ -1,0 +1,13 @@
+name = "zopfli"
+version = "1.0.3"
+description = "Very good, but slow, deflate or zlib compression"
+source = "https://github.com/google/zopfli/archive/zopfli-1.0.3.tar.gz"
+sha256 = "e955a7739f71af37ef3349c4fa141c648e8775bceb2195be07e86f8e638814bd"
+source_dir = "zopfli-zopfli-1.0.3"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

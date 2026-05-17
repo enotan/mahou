@@ -1,0 +1,13 @@
+name = "date"
+version = "3.0.3"
+description = "Date and time library based on the C++11/14/17 <chrono> header"
+source = "https://github.com/HowardHinnant/date/archive/refs/tags/v3.0.3.tar.gz"
+sha256 = "30de45a34a2605cca33a993a9ea54e8f140f23b1caf1acf3c2fd436c42c7d942"
+source_dir = "date-3.0.3"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

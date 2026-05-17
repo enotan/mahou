@@ -1,0 +1,13 @@
+name = "mesa"
+version = "26.0.7"
+description = "OpenGL-like graphic library for Linux"
+source = "https://archive.mesa3d.org/mesa-26.0.7.tar.xz"
+sha256 = "0c56bbcf1947e1a6a90ac09b129b0ca0cb52cc31145b94595e57c8804cf02496"
+source_dir = "mesa-26.0.7"
+deps = ["libdrm", "libxkbcommon", "libglvnd", "wayland"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

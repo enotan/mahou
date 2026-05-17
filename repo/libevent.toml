@@ -1,0 +1,13 @@
+name = "libevent"
+version = "2.2.1"
+description = "Library to execute a function when a specific event occurs on a file descriptor"
+source = "https://github.com/libevent/libevent/releases/download/release-2.2.1-alpha/libevent-2.2.1-alpha-dev.tar.gz"
+sha256 = "36d0726e570fc2ee61a0a27cfb6bf2799e14a28d030a7473a7a2411f7533d359"
+source_dir = "libevent-2.2.1-alpha-dev"
+deps = ["openssl"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

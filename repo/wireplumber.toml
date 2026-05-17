@@ -1,0 +1,13 @@
+name = "wireplumber"
+version = "0.5.14"
+description = "Replacement for pipewire-media-session"
+source = "https://gitlab.freedesktop.org/pipewire/wireplumber/-/archive/83d08dfa437095373f9e4e156b6ca4f9e0567585/wireplumber-83d08dfa437095373f9e4e156b6ca4f9e0567585.tar.bz2"
+sha256 = "d5d45721325389e8fb06dd3622cd59560be4a027742e6d610219cd2aba37b5df"
+source_dir = "${WORKDIR}"
+deps = ["glib", "pipewire"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

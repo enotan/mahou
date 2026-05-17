@@ -1,0 +1,13 @@
+name = "flac"
+version = "1.5.0"
+description = "Free lossless audio encoder and decoder"
+source = "https://github.com/xiph/flac/releases/download/1.5.0/flac-1.5.0.tar.xz"
+sha256 = "f2c1c76592a82ffff8413ba3c4a1299b6c7ab06c734dee03fd88630485c2b920"
+source_dir = "flac-1.5.0"
+deps = ["libogg"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

@@ -1,0 +1,13 @@
+name = "pulseaudio"
+version = "17.0"
+description = "Sound server for POSIX systems"
+source = "https://freedesktop.org/software/pulseaudio/releases/pulseaudio-17.0.tar.xz"
+sha256 = "053794d6671a3e397d849e478a80b82a63cb9d8ca296bd35b73317bb5ceb87b5"
+source_dir = "pulseaudio-17.0"
+deps = ["dbus", "libsndfile", "openssl"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

@@ -1,0 +1,13 @@
+name = "brotli"
+version = "1.2.0"
+description = "Generic-purpose lossless compression algorithm"
+source = "https://github.com/google/brotli/archive/v1.2.0.tar.gz"
+sha256 = "816c96e8e8f193b40151dad7e8ff37b1221d019dbcb9c35cd3fadbfe6477dfec"
+source_dir = "brotli-1.2.0"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

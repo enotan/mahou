@@ -1,0 +1,13 @@
+name = "xcb-util-wm"
+version = "0.4.2"
+description = "XCB utility functions for ICCCM and EWMH"
+source = "https://xorg.freedesktop.org/archive/individual/xcb/xcb-util-wm-0.4.2.tar.xz"
+sha256 = "62c34e21d06264687faea7edbf63632c9f04d55e72114aa4a57bb95e4f888a0b"
+source_dir = "xcb-util-wm-0.4.2"
+deps = ["libxcb", "xcb-util"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

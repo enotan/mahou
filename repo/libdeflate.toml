@@ -1,0 +1,13 @@
+name = "libdeflate"
+version = "1.25"
+description = "Heavily optimized DEFLATE/zlib/gzip (de)compression"
+source = "https://github.com/ebiggers/libdeflate/archive/v1.25.tar.gz"
+sha256 = "d11473c1ad4c57d874695e8026865e38b47116bbcb872bfc622ec8f37a86017d"
+source_dir = "libdeflate-1.25"
+deps = []
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

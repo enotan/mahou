@@ -1,0 +1,13 @@
+name = "mako"
+version = "1.11.0"
+description = "A lightweight notification daemon for Wayland. Works on Sway"
+source = "https://github.com/emersion/mako/releases/download/v1.11.0/mako-1.11.0.tar.gz"
+sha256 = "e97eb5bd0dc6a9159019949f48b3db4e8781b56bd6377bd65827e1cb440a7def"
+source_dir = "mako-1.11.0"
+deps = ["cairo", "pango", "wayland"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

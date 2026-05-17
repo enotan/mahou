@@ -1,0 +1,13 @@
+name = "fish"
+version = "4.6.0"
+description = "Friendly Interactive SHell"
+source = "https://github.com/fish-shell/fish-shell/releases/download/4.6.0/fish-4.6.0.tar.xz"
+sha256 = "fc9165f733a0e28a3dba11c9b1a286bc88a853f152a6694cd993512a2f1761aa"
+source_dir = "fish-4.6.0"
+deps = ["ncurses", "pcre2"]
+
+build_steps = [
+  "cmake -S . -B build -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release",
+  "cmake --build build",
+  "DESTDIR=${MAHOU_DESTDIR} cmake --install build",
+]

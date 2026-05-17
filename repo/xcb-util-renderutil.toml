@@ -1,0 +1,13 @@
+name = "xcb-util-renderutil"
+version = "0.3.10"
+description = "XCB render extension utility library"
+source = "https://xorg.freedesktop.org/archive/individual/xcb/xcb-util-renderutil-0.3.10.tar.xz"
+sha256 = "3e15d4f0e22d8ddbfbb9f5d77db43eacd7a304029bf25a6166cc63caa96d04ba"
+source_dir = "xcb-util-renderutil-0.3.10"
+deps = ["libxcb"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

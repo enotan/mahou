@@ -1,0 +1,13 @@
+name = "foot"
+version = "1.26.1"
+description = "Fast, lightweight and minimalistic Wayland terminal emulator"
+source = "https://codeberg.org/dnkl/foot/releases/download/1.26.1/foot-1.26.1.tar.gz"
+sha256 = "4beb43f2d80719f53eb427f2185d43fe65bb82a763e25b3b1fe088d8947c2d73"
+source_dir = "foot-1.26.1"
+deps = ["fontconfig", "ncurses", "wayland", "wayland-protocols"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

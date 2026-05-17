@@ -1,0 +1,13 @@
+name = "vim"
+version = "9.1.1652"
+description = "Vim, an improved vi-style text editor"
+source = "https://github.com/vim/vim/archive/v9.1.1652.tar.gz"
+sha256 = "b6d131fbbdeb4a00e7832877395890925e0d18df4f6ebce8d19b9a442c380467"
+source_dir = "vim-9.1.1652"
+deps = ["ncurses"]
+
+build_steps = [
+  "./configure --prefix=/usr",
+  "make",
+  "make DESTDIR=${MAHOU_DESTDIR} install",
+]

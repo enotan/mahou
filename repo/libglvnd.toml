@@ -1,0 +1,13 @@
+name = "libglvnd"
+version = "1.7.0"
+description = "The GL Vendor-Neutral Dispatch library"
+source = "https://gitlab.freedesktop.org/glvnd/libglvnd/-/archive/v1.7.0/libglvnd-v1.7.0.tar.bz2"
+sha256 = "d0e1925a3c9aee0143b8c181ac31d5637c8faa081759c277b8e16c7075612c11"
+source_dir = "libglvnd-v1.7.0"
+deps = ["libX11", "libXext"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]

@@ -1,0 +1,13 @@
+name = "cairo"
+version = "1.18.4"
+description = "A vector graphics library with cross-device output support"
+source = "https://gitlab.freedesktop.org/cairo/cairo/-/archive/1.18.4/cairo-1.18.4.tar.bz2"
+sha256 = "6d9281e786fd289d382324d4588d59973a36911e1865b40e64f9ec39936ceba8"
+source_dir = "cairo-1.18.4"
+deps = ["fontconfig", "freetype", "libpng", "pixman", "zlib"]
+
+build_steps = [
+  "meson setup build --prefix=/usr --buildtype=release",
+  "ninja -C build",
+  "DESTDIR=${MAHOU_DESTDIR} ninja -C build install",
+]
