@@ -5,6 +5,7 @@ use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::env;
 use std::fs;
+use std::io::{self, Write};
 use std::os::unix::fs as unix_fs;
 use std::process::Command;
 
@@ -34,6 +35,14 @@ struct InstallRecord {
     name: String,
     version: String,
     files: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Default)]
+struct MahouConfig {
+    github_token: Option<String>,
+    recipe_repo_url: Option<String>,
+    recipe_repo_path: Option<String>,
+    cache_dir: Option<String>,
 }
 
 struct RecipeUpdate {
@@ -525,6 +534,11 @@ fn main() {
                 eprintln!("Error: {}", message);
             }
         }
+        "init-config" => {
+            if let Err(message) = init_config() {
+                eprintln!("Error: {}", message);
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
             print_help();
@@ -554,6 +568,7 @@ fn print_help() {
     println!("  mahou repo-path");
     println!("  mahou sync");
     println!("  mahou upgrade");
+    println!("  mahou init-config");
 }
 
 fn load_packages(repo_path: &str) -> Result<Vec<Package>, String> {
@@ -675,13 +690,9 @@ fn fetch_package(package: &Package) -> Result<(), String> {
 
     println!("Fetching {} from {}", package.name, package.source);
 
-    let client = reqwest::blocking::Client::builder()
-        .user_agent("mahou/0.1")
-        .build()
-        .map_err(|error| format!("Failed to create HTTP client: {}", error))?;
+    let client = http_client()?;
 
-    let response = client
-        .get(&package.source)
+    let response = add_auth_header(client.get(&package.source), &package.source)
         .send()
         .map_err(|error| format!("Failed to download {}: {}", package.name, error))?
         .error_for_status()
@@ -1005,8 +1016,10 @@ fn install_package(package: &Package) -> Result<(), String> {
     Ok(())
 }
 
-fn cache_dir() -> &'static str {
-    "/var/cache/mahou"
+fn cache_dir() -> String {
+    load_config()
+        .cache_dir
+        .unwrap_or_else(|| default_cache_dir().to_string())
 }
 
 fn distfiles_dir() -> String {
@@ -1082,11 +1095,9 @@ fn check_for_update(package: &Package) -> Result<Option<String>, String> {
         return Ok(None);
     };
 
-    let body = reqwest::blocking::Client::builder()
-        .user_agent("mahou/0.1")
-        .build()
-        .map_err(|error| format!("Failed to create HTTP client: {}", error))?
-        .get(&update.check_url)
+    let client = http_client()?;
+
+    let body = add_auth_header(client.get(&update.check_url), &update.check_url)
         .send()
         .map_err(|error| format!("Failed to check {}: {}", update.check_url, error))?
         .error_for_status()
@@ -1145,13 +1156,9 @@ fn render_update_template(template: &str, version: &str) -> String {
 }
 
 fn download_bytes(url: &str) -> Result<Vec<u8>, String> {
-    let client = reqwest::blocking::Client::builder()
-        .user_agent("mahou/0.1")
-        .build()
-        .map_err(|error| format!("Failed to create HTTP client: {}", error))?;
+    let client = http_client()?;
 
-    let response = client
-        .get(url)
+    let response = add_auth_header(client.get(url), url)
         .send()
         .map_err(|error| format!("Failed to download {}: {}", url, error))?
         .error_for_status()
@@ -1264,23 +1271,41 @@ fn recipe_repo_path() -> String {
     if fs::metadata("repo").is_ok() {
         "repo".to_string()
     } else {
-        "/var/lib/mahou/repos/main/repo".to_string()
+        load_config()
+            .recipe_repo_path
+            .unwrap_or_else(|| default_recipe_repo_path().to_string())
     }
 }
 
-fn recipe_repo_url() -> &'static str {
-    "https://github.com/enotan/mahou-recipes.git"
+fn recipe_repo_url() -> String {
+    load_config()
+        .recipe_repo_url
+        .unwrap_or_else(|| default_recipe_repo_url().to_string())
+}
+
+fn recipe_checkout_path() -> String {
+    let recipe_path = load_config()
+        .recipe_repo_path
+        .unwrap_or_else(|| default_recipe_repo_path().to_string());
+
+    let path = std::path::Path::new(&recipe_path);
+
+    if path.file_name().and_then(|name| name.to_str()) == Some("repo") {
+        return path.parent().unwrap_or(path).to_string_lossy().to_string();
+    }
+
+    recipe_path
 }
 
 fn sync_recipe_repo() -> Result<(), String> {
-    let repo_path = "/var/lib/mahou/repos/main";
+    let repo_path = recipe_checkout_path();
 
-    if fs::metadata(repo_path).is_ok() {
+    if fs::metadata(&repo_path).is_ok() {
         println!("Syncing recipe repo: {}", repo_path);
 
         let status = Command::new("git")
             .arg("-C")
-            .arg(repo_path)
+            .arg(&repo_path)
             .arg("pull")
             .arg("--ff-only")
             .status()
@@ -1295,7 +1320,7 @@ fn sync_recipe_repo() -> Result<(), String> {
 
     println!("Cloning recipe repo into {}", repo_path);
 
-    if let Some(parent) = std::path::Path::new(repo_path).parent() {
+    if let Some(parent) = std::path::Path::new(&repo_path).parent() {
         fs::create_dir_all(parent)
             .map_err(|error| format!("Failed to create repo directory: {}", error))?;
     }
@@ -1303,7 +1328,7 @@ fn sync_recipe_repo() -> Result<(), String> {
     let status = Command::new("git")
         .arg("clone")
         .arg(recipe_repo_url())
-        .arg(repo_path)
+        .arg(&repo_path)
         .status()
         .map_err(|error| format!("Failed to run git clone: {}", error))?;
 
@@ -1418,4 +1443,116 @@ fn upgrade_installed_packages() -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn load_config() -> MahouConfig {
+    let path = env::var("MAHOU_CONFIG").unwrap_or_else(|_| "/etc/mahou/config.toml".to_string());
+
+    let Ok(contents) = fs::read_to_string(&path) else {
+        return MahouConfig::default();
+    };
+
+    match toml::from_str(&contents) {
+        Ok(config) => config,
+        Err(error) => {
+            eprintln!("Warning: failed to parse {}: {}", path, error);
+            MahouConfig::default()
+        }
+    }
+}
+
+fn github_token() -> Option<String> {
+    env::var("GITHUB_TOKEN")
+        .ok()
+        .or_else(|| load_config().github_token)
+}
+
+fn http_client() -> Result<reqwest::blocking::Client, String> {
+    reqwest::blocking::Client::builder()
+        .user_agent("mahou/0.2")
+        .build()
+        .map_err(|error| format!("Failed to create HTTP client: {}", error))
+}
+
+fn add_auth_header(
+    request: reqwest::blocking::RequestBuilder,
+    url: &str,
+) -> reqwest::blocking::RequestBuilder {
+    if !url.contains("github.com") && !url.contains("api.github.com") {
+        return request;
+    }
+
+    match github_token() {
+        Some(token) => request.bearer_auth(token),
+        None => request,
+    }
+}
+
+fn init_config() -> Result<(), String> {
+    let path = config_path();
+
+    if fs::metadata(&path).is_ok() {
+        return Err(format!("Config already exists: {}", path));
+    }
+
+    if let Some(parent) = std::path::Path::new(&path).parent() {
+        fs::create_dir_all(parent)
+            .map_err(|error| format!("Failed to create config directory: {}", error))?;
+    }
+
+    print!("GitHub token (Optional, press Enter to skip): ");
+    io::stdout()
+        .flush()
+        .map_err(|error| format!("Failed to flush stdout: {}", error))?;
+
+    let mut token = String::new();
+    io::stdin()
+        .read_line(&mut token)
+        .map_err(|error| format!("Failed to read token: {}", error))?;
+
+    let token = token.trim();
+
+    let token_line = if token.is_empty() {
+        "# github_token = \"ghp_your_token_here\"".to_string()
+    } else {
+        format!("github_token = \"{}\"", token)
+    };
+
+    let contents = format!(
+        r#"# Mahou configuration
+# The GitHub token is optional, but it helps avoid rate limits.
+
+{}
+
+recipe_repo_url = "{}"
+recipe_repo_path = "{}"
+cache_dir = "{}"
+"#,
+        token_line,
+        default_recipe_repo_url(),
+        default_recipe_repo_path(),
+        default_cache_dir(),
+    );
+
+    fs::write(&path, contents).map_err(|error| format!("Failed to write {}: {}", path, error))?;
+
+    println!("Created config: {}", path);
+
+    Ok(())
+}
+
+fn default_recipe_repo_url() -> &'static str {
+    "https://github.com/enotan/mahou-recipes.git"
+}
+
+fn default_recipe_repo_path() -> &'static str {
+    "/var/lib/mahou/repos/main/repo"
+}
+
+fn default_cache_dir() -> &'static str {
+    "/var/cache/mahou"
+}
+
+fn config_path() -> String {
+    env::var("MAHOU_CONFIG").unwrap_or_else(|_| "/etc/mahou/config.toml".to_string())
 }
