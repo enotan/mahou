@@ -805,19 +805,50 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 
     println!("Running build step for {}: {}", package.name, step);
 
+    let pkg_config_path = build_env_path(
+        "PKG_CONFIG_PATH",
+        &[
+            "/usr/lib/pkgconfig",
+            "/usr/lib64/pkgconfig",
+            "/usr/share/pkgconfig",
+        ],
+    );
+
+    let library_path = build_env_path("LIBRARY_PATH", &["/usr/lib", "/usr/lib64"]);
+
+    let ld_library_path = build_env_path("LD_LIBRARY_PATH", &["/usr/lib", "/usr/lib64"]);
+
     let status = Command::new("sh")
         .arg("-c")
         .arg(step)
         .current_dir(&source_dir)
         .env("MAHOU_DESTDIR", &destdir)
+        .env("PKG_CONFIG_PATH", pkg_config_path)
+        .env("LIBRARY_PATH", library_path)
+        .env("LD_LIBRARY_PATH", ld_library_path)
+        .env("CMAKE_PREFIX_PATH", "/usr")
         .status()
-        .map_err(|error| format!("Failed to run build step '{}': {}", step, error))?;
+        .map_err(|error| format!("Failed to run build step '{}': '{}'", step, error))?;
 
     if !status.success() {
         return Err(format!("Build step failed for {}: {}", package.name, step));
     }
 
     Ok(())
+}
+
+fn build_env_path(name: &str, defaults: &[&str]) -> String {
+    let mut paths: Vec<String> = defaults.iter().map(|path| path.to_string()).collect();
+
+    if let Ok(existing) = env::var(name) {
+        for path in existing.split(':') {
+            if !path.is_empty() && !paths.iter().any(|existing| existing == path) {
+                paths.push(path.to_string());
+            }
+        }
+    }
+
+    paths.join(":")
 }
 
 fn build_package(package: &Package) -> Result<(), String> {
