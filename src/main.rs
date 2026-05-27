@@ -1003,12 +1003,64 @@ fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
             unix_fs::symlink(&link_target, &target)
                 .map_err(|error| format!("Failed to create symlink {}: {}", target, error))?;
         } else {
-            fs::copy(&source, &target)
-                .map_err(|error| format!("Failed to copy {} to {}: {}", source, target, error))?;
+            install_regular_file(&source, &target, &metadata)?;
         }
     }
 
     Ok(files)
+}
+
+fn install_regular_file(source: &str, target: &str, metadata: &fs::Metadata) -> Result<(), String> {
+    let target_path = std::path::Path::new(target);
+    let parent = target_path
+        .parent()
+        .ok_or_else(|| format!("Invalid install target: {}", target))?;
+
+    let filename = target_path
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| format!("Invalid install target: {}", target))?;
+
+    let temp_target = parent.join(format!(
+        ".mahou-install-{}-{}",
+        std::process::id(),
+        filename
+    ));
+
+    if temp_target.exists() {
+        fs::remove_file(&temp_target).map_err(|error| {
+            format!(
+                "Failed to remove temporary file {}: {}",
+                temp_target.display(),
+                error
+            )
+        })?;
+    }
+
+    fs::copy(source, &temp_target).map_err(|error| {
+        format!(
+            "Failed to copy {} to temporary file {}: {}",
+            source,
+            temp_target.display(),
+            error
+        )
+    })?;
+
+    fs::set_permissions(&temp_target, metadata.permissions()).map_err(|error| {
+        let _ = fs::remove_file(&temp_target);
+        format!(
+            "Failed to set permissions on {}: {}",
+            temp_target.display(),
+            error
+        )
+    })?;
+
+    fs::rename(&temp_target, target).map_err(|error| {
+        let _ = fs::remove_file(&temp_target);
+        format!("Failed to install {} to {}: {}", source, target, error)
+    })?;
+
+    Ok(())
 }
 
 fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
