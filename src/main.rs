@@ -2,7 +2,7 @@ use regex::Regex;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
 use std::io::{self, Write};
@@ -10,6 +10,7 @@ use std::os::unix::fs as unix_fs;
 use std::process::Command;
 
 #[derive(Debug, Deserialize)]
+
 struct Package {
     name: String,
     version: String,
@@ -19,7 +20,28 @@ struct Package {
     source_dir: String,
     deps: Vec<String>,
     build_steps: Vec<String>,
+    #[serde(default)]
+    features: HashMap<String, PackageFeature>,
     update: Option<UpdateInfo>,
+}
+
+#[derive(Debug, Deserialize)]
+struct PackageFeature {
+    #[serde(default = "default_feature_enabled")]
+    enabled: bool,
+
+    #[serde(default)]
+    deps: Vec<String>,
+
+    #[serde(default)]
+    build_flags: Vec<String>,
+
+    #[serde(default)]
+    disabled_build_flags: Vec<String>,
+}
+
+fn default_feature_enabled() -> bool {
+    true
 }
 
 #[derive(Debug, Deserialize)]
@@ -43,6 +65,9 @@ struct MahouConfig {
     recipe_repo_url: Option<String>,
     recipe_repo_path: Option<String>,
     cache_dir: Option<String>,
+
+    #[serde(default)]
+    feature_flags: Vec<String>,
 }
 
 struct RecipeUpdate {
@@ -96,6 +121,7 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&args[3..]);
 
             match find_package(&packages, name) {
                 Some(package) => {
@@ -118,6 +144,8 @@ fn main() {
                             println!(" - {}", step);
                         }
                     }
+
+                    print_features(package, &feature_flags);
                 }
                 None => {
                     eprintln!("Package not found: {}", name);
@@ -132,10 +160,11 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
             match find_package(&packages, name) {
                 Some(package) => {
-                    print_deps(&packages, package, 0);
+                    print_deps(&packages, package, &feature_flags, 0);
                 }
                 None => {
                     eprintln!("Package not found: {}", name);
@@ -150,8 +179,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         println!("{}", package_name);
@@ -170,8 +200,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
@@ -198,8 +229,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
@@ -226,8 +258,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
@@ -259,8 +292,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
@@ -273,7 +307,7 @@ fn main() {
                             return;
                         }
 
-                        if let Err(message) = build_package(package) {
+                        if let Err(message) = build_package(package, &feature_flags) {
                             eprintln!("Error: {}", message);
                             return;
                         }
@@ -292,8 +326,9 @@ fn main() {
 
             let name = &args[2];
             let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
 
-            match resolve_package_order(&packages, name) {
+            match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => {
                     for package_name in order {
                         let Some(package) = find_package(&packages, &package_name) else {
@@ -301,7 +336,7 @@ fn main() {
                             return;
                         };
 
-                        if let Err(message) = build_package(package) {
+                        if let Err(message) = build_package(package, &feature_flags) {
                             eprintln!("Error: {}", message);
                             return;
                         }
@@ -319,9 +354,10 @@ fn main() {
             }
 
             let name = &args[2];
+            let feature_flags = active_feature_flags(&args[3..]);
             let mut packages = load_repo_or_exit();
 
-            let order = match resolve_package_order(&packages, name) {
+            let order = match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => order,
                 Err(message) => {
                     eprintln!("Error: {}", message);
@@ -340,7 +376,7 @@ fn main() {
                 }
             }
 
-            let order = match resolve_package_order(&packages, name) {
+            let order = match resolve_package_order(&packages, name, &feature_flags) {
                 Ok(order) => order,
                 Err(message) => {
                     eprintln!("Error: {}", message);
@@ -354,7 +390,7 @@ fn main() {
                     return;
                 };
 
-                if let Err(message) = install_package(package) {
+                if let Err(message) = install_package(package, &feature_flags) {
                     eprintln!("Error: {}", message);
                     return;
                 }
@@ -610,7 +646,7 @@ fn find_package<'a>(packages: &'a [Package], name: &str) -> Option<&'a Package> 
     packages.iter().find(|package| package.name == name)
 }
 
-fn print_deps(packages: &[Package], package: &Package, depth: usize) {
+fn print_deps(packages: &[Package], package: &Package, flags: &[String], depth: usize) {
     let indent = "  ".repeat(depth);
 
     if depth == 0 {
@@ -619,19 +655,61 @@ fn print_deps(packages: &[Package], package: &Package, depth: usize) {
         println!("{}└── {}", indent, package.name);
     }
 
-    for dep_name in &package.deps {
+    let mut deps = package.deps.clone();
+    deps.extend(enabled_feature_deps(package, flags));
+
+    for dep_name in &deps {
         match find_package(packages, dep_name) {
-            Some(dep) => print_deps(packages, dep, depth + 1),
+            Some(dep) => print_deps(packages, dep, flags, depth + 1),
             None => println!("{} └── {} (missing)", indent, dep_name),
         }
     }
 }
 
-fn resolve_package_order(packages: &[Package], name: &str) -> Result<Vec<String>, String> {
+fn print_features(package: &Package, flags: &[String]) {
+    if package.features.is_empty() {
+        println!("Features: None");
+        return;
+    }
+
+    println!("Features:");
+
+    let mut feature_names: Vec<&String> = package.features.keys().collect();
+    feature_names.sort();
+
+    for feature_name in feature_names {
+        let Some(feature) = package.features.get(feature_name) else {
+            continue;
+        };
+
+        let status = if feature_enabled(package, feature_name, flags) {
+            "enabled"
+        } else {
+            "disabled"
+        };
+
+        if feature.deps.is_empty() {
+            println!(" - {}: {}", feature_name, status);
+        } else {
+            println!(
+                " - {}: {} deps: {}",
+                feature_name,
+                status,
+                feature.deps.join(", ")
+            );
+        }
+    }
+}
+
+fn resolve_package_order(
+    packages: &[Package],
+    name: &str,
+    flags: &[String],
+) -> Result<Vec<String>, String> {
     let mut visited = HashSet::new();
     let mut order = Vec::new();
 
-    resolve_package(packages, name, &mut visited, &mut order)?;
+    resolve_package(packages, name, flags, &mut visited, &mut order)?;
 
     Ok(order)
 }
@@ -639,6 +717,7 @@ fn resolve_package_order(packages: &[Package], name: &str) -> Result<Vec<String>
 fn resolve_package(
     packages: &[Package],
     name: &str,
+    flags: &[String],
     visited: &mut HashSet<String>,
     order: &mut Vec<String>,
 ) -> Result<(), String> {
@@ -652,8 +731,11 @@ fn resolve_package(
 
     visited.insert(name.to_string());
 
-    for dep_name in &package.deps {
-        resolve_package(packages, dep_name, visited, order)?;
+    let mut deps = package.deps.clone();
+    deps.extend(enabled_feature_deps(package, flags));
+
+    for dep_name in &deps {
+        resolve_package(packages, dep_name, flags, visited, order)?;
     }
 
     order.push(package.name.clone());
@@ -851,7 +933,7 @@ fn build_env_path(name: &str, defaults: &[&str]) -> String {
     paths.join(":")
 }
 
-fn build_package(package: &Package) -> Result<(), String> {
+fn build_package(package: &Package, flags: &[String]) -> Result<(), String> {
     if is_built(package) {
         println!("Already built: {}", package.name);
         return Ok(());
@@ -864,7 +946,8 @@ fn build_package(package: &Package) -> Result<(), String> {
     println!("Building {} {}", package.name, package.version);
 
     for step in &package.build_steps {
-        run_build_step(package, step)?;
+        let expanded_step = expand_build_step(package, step, flags);
+        run_build_step(package, &expanded_step)?;
     }
 
     mark_built(package)?;
@@ -1086,8 +1169,8 @@ fn write_install_record(package: &Package, files: &[String]) -> Result<(), Strin
     Ok(())
 }
 
-fn install_package(package: &Package) -> Result<(), String> {
-    build_package(package)?;
+fn install_package(package: &Package, flags: &[String]) -> Result<(), String> {
+    build_package(package, flags)?;
 
     println!("Installing {} {}", package.name, package.version);
 
@@ -1517,7 +1600,8 @@ fn upgrade_installed_packages() -> Result<(), String> {
             package.name, record.version, package.version
         );
 
-        install_package(package)?;
+        let feature_flags = active_feature_flags(&[]);
+        install_package(package, &feature_flags)?;
         upgraded = true;
     }
 
@@ -1542,6 +1626,73 @@ fn load_config() -> MahouConfig {
             MahouConfig::default()
         }
     }
+}
+
+fn feature_enabled(package: &Package, feature_name: &str, flags: &[String]) -> bool {
+    let Some(feature) = package.features.get(feature_name) else {
+        return false;
+    };
+
+    let global_enable = feature_name.to_string();
+    let global_disable = format!("-{}", feature_name);
+    let package_enable = format!("{}.{}", package.name, feature_name);
+    let package_disable = format!("-{}.{}", package.name, feature_name);
+
+    if flags.contains(&package_disable) {
+        return false;
+    }
+
+    if flags.contains(&package_enable) {
+        return true;
+    }
+
+    if flags.contains(&global_disable) {
+        return false;
+    }
+
+    if flags.contains(&global_enable) {
+        return true;
+    }
+
+    feature.enabled
+}
+
+fn enabled_feature_deps(package: &Package, flags: &[String]) -> Vec<String> {
+    let mut deps = Vec::new();
+
+    for (feature_name, feature) in &package.features {
+        if feature_enabled(package, feature_name, flags) {
+            deps.extend(feature.deps.clone());
+        }
+    }
+
+    deps
+}
+
+fn feature_build_flags(package: &Package, flags: &[String]) -> Vec<String> {
+    let mut build_flags = Vec::new();
+
+    for (feature_name, feature) in &package.features {
+        if feature_enabled(package, feature_name, flags) {
+            build_flags.extend(feature.build_flags.clone());
+        } else {
+            build_flags.extend(feature.disabled_build_flags.clone());
+        }
+    }
+
+    build_flags
+}
+
+fn active_feature_flags(extra_flags: &[String]) -> Vec<String> {
+    let mut flags = load_config().feature_flags;
+    flags.extend(extra_flags.iter().cloned());
+    flags
+}
+
+fn expand_build_step(package: &Package, step: &str, flags: &[String]) -> String {
+    let feature_flags = feature_build_flags(package, flags).join(" ");
+
+    step.replace("{feature_flags}", &feature_flags)
 }
 
 fn github_token() -> Option<String> {
@@ -1610,6 +1761,18 @@ fn init_config() -> Result<(), String> {
 recipe_repo_url = "{}"
 recipe_repo_path = "{}"
 cache_dir = "{}"
+
+# Optional package features are enabled by default when recipes declare them.
+# Prefix a feature with "-" to disable it globally.
+# Use "package.feature" or "-package.feature" for package-specific overrides.
+#
+# Examples:
+# feature_flags = [
+#   "-bluetooth",
+#   "-waybar.pipewire",
+#   "waybar.pulseaudio",
+# ]
+feature_ flags = []
 "#,
         token_line,
         default_recipe_repo_url(),
