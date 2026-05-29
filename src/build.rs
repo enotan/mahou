@@ -5,8 +5,10 @@ use crate::package::{InstallRecord, Package};
 use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
+use std::io::{Read, Write};
 use std::os::unix::fs as unix_fs;
 use std::process::Command;
+use std::time::{Duration, Instant};
 
 use crate::features::expand_build_step;
 
@@ -35,12 +37,7 @@ pub fn fetch_package(package: &Package) -> Result<(), String> {
         .error_for_status()
         .map_err(|error| format!("Download failed for {}: {}", package.source, error))?;
 
-    let bytes = response
-        .bytes()
-        .map_err(|error| format!("Failed to read response for {}: {}", package.name, error))?;
-
-    fs::write(&partial_path, &bytes)
-        .map_err(|error| format!("Failed to save {}: {}", partial_path, error))?;
+    download_with_progress(response, &partial_path, &package.name)?;
 
     let actual = sha256_file(&partial_path)?;
 
@@ -58,6 +55,73 @@ pub fn fetch_package(package: &Package) -> Result<(), String> {
 
     println!("Saved to {}", output_path);
     println!("Verified: {}", output_path);
+
+    Ok(())
+}
+
+fn download_with_progress(
+    mut response: reqwest::blocking::Response,
+    output_path: &str,
+    package_name: &str,
+) -> Result<(), String> {
+    let mut file = fs::File::create(output_path)
+        .map_err(|error| format!("Failed to create {}: {}", output_path, error))?;
+
+    let total = response.content_length();
+    let mut downloaded = 0_u64;
+    let mut buffer = [0_u8; 64 * 1024];
+
+    let frames = ["✦", "✧", "◇", "◆"];
+    let mut frame_index = 0_usize;
+    let mut last_draw = Instant::now();
+
+    loop {
+        let bytes_read = response
+            .read(&mut buffer)
+            .map_err(|error| format!("Failed to read response for {}: {}", package_name, error))?;
+
+        if bytes_read == 0 {
+            break;
+        }
+
+        file.write_all(&buffer[..bytes_read])
+            .map_err(|error| format!("Failed to write {}: {}", output_path, error))?;
+
+        downloaded += bytes_read as u64;
+
+        if last_draw.elapsed() >= Duration::from_millis(100) {
+            let frame = frames[frame_index % frames.len()];
+            frame_index += 1;
+
+            match total {
+                Some(total) => {
+                    print!(
+                        "\rFetching {} {} {:.1} MiB / {:.1} MiB",
+                        package_name,
+                        frame,
+                        downloaded as f64 / 1024.0 / 1024.0,
+                        total as f64 / 1024.0 / 1024.0
+                    );
+                }
+                None => {
+                    print!(
+                        "\rFetching {} {} {:.1} MiB",
+                        package_name,
+                        frame,
+                        downloaded as f64 / 1024.0 / 1024.0
+                    );
+                }
+            }
+
+            std::io::stdout()
+                .flush()
+                .map_err(|error| format!("Failed to flush stdout: {}", error))?;
+
+            last_draw = Instant::now();
+        }
+    }
+
+    println!();
 
     Ok(())
 }

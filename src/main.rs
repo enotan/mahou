@@ -1,18 +1,12 @@
 use std::collections::HashSet;
 use std::env;
 
-mod build;
-mod config;
-mod features;
-mod package;
-mod repo;
-mod update;
-use build::*;
-use config::*;
-use features::*;
-use package::Package;
-use repo::*;
-use update::*;
+use mahou::build::*;
+use mahou::config::*;
+use mahou::features::*;
+use mahou::package::Package;
+use mahou::repo::*;
+use mahou::update::*;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
