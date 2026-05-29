@@ -502,3 +502,36 @@ pub fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
     Ok(records)
 }
 
+pub fn uninstall_package(name: &str) -> Result<(), String> {
+    let Some(record) = load_install_record(name)? else {
+        return Err(format!("Package is not installed: {}", name));
+    };
+
+    let mut removed = 0;
+
+    for file in record.files.iter().rev() {
+        match fs::symlink_metadata(file) {
+            Ok(metadata) => {
+                if metadata.is_file() || metadata.file_type().is_symlink() {
+                    fs::remove_file(file)
+                        .map_err(|error| format!("Failed to remove {}: {}", file, error))?;
+                    removed += 1;
+                }
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                eprintln!("Warning: already missing: {}", file);
+            }
+            Err(error) => {
+                return Err(format!("Failed to inspect {}: {}", file, error));
+            }
+        }
+    }
+
+    let record_path = install_record_path_for_name(name);
+    fs::remove_file(&record_path)
+        .map_err(|error| format!("Failed to remove install record {}: {}", record_path, error))?;
+
+    println!("Uninstalled {} ({} files removed)", name, removed);
+
+    Ok(())
+}

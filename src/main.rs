@@ -355,6 +355,18 @@ fn main() {
                 }
             }
         }
+        "uninstall" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+
+            if let Err(message) = uninstall_package(name) {
+                eprintln!("Error: {}", message);
+            }
+        }
         "list" => match load_installed_packages() {
 
             //list all installed files
@@ -569,6 +581,7 @@ fn print_help() {
     println!("  mahou info <name>");
     println!("  mahou build <name>");
     println!("  mahou install <name>");
+    println!("  mahou uninstall <name>");
     println!("  mahou deps <name>");
     println!("  mahou resolve <name>");
     println!("  mahou fetch <name>");
@@ -584,6 +597,7 @@ fn print_help() {
     println!("  mahou sync");
     println!("  mahou upgrade");
     println!("  mahou init-config");
+    
 }
 
 fn print_deps(packages: &[Package], package: &Package, flags: &[String], depth: usize) {
