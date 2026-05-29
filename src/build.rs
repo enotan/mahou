@@ -221,11 +221,25 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 
     let ld_library_path = build_env_path("LD_LIBRARY_PATH", &["/usr/lib", "/usr/lib64"]);
 
+    let path = build_env_path(
+        "PATH",
+        &[
+            "/opt/rustc/bin",
+            "/usr/local/sbin",
+            "/usr/local/bin",
+            "/usr/sbin",
+            "/usr/bin",
+            "/sbin",
+            "/bin",
+        ],
+    );
+
     let status = Command::new("sh")
         .arg("-c")
         .arg(step)
         .current_dir(&source_dir)
         .env("MAHOU_DESTDIR", &destdir)
+        .env("PATH", path)
         .env("PKG_CONFIG_PATH", pkg_config_path)
         .env("LIBRARY_PATH", library_path)
         .env("LD_LIBRARY_PATH", ld_library_path)
