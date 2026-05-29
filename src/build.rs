@@ -1,4 +1,6 @@
-use crate::config::{install_db_dir, add_auth_header, build_dir, distfiles_dir, http_client, stage_dir};
+use crate::config::{
+    add_auth_header, build_dir, distfiles_dir, http_client, install_db_dir, stage_dir,
+};
 
 use crate::package::{InstallRecord, Package};
 

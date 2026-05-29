@@ -56,20 +56,28 @@ impl App {
     fn filtered_indices(&self) -> Vec<usize> {
         let query = self.query.to_lowercase();
 
-        self.packages
+        if query.is_empty() {
+            return (0..self.packages.len()).collect();
+        }
+
+        let mut scored: Vec<(usize, i64)> = self
+            .packages
             .iter()
             .enumerate()
             .filter_map(|(index, package)| {
-                let matches_name = package.name.to_lowercase().contains(&query);
-                let matches_description = package.description.to_lowercase().contains(&query);
-
-                if matches_name || matches_description {
-                    Some(index)
-                } else {
-                    None
-                }
+                score_package(package, &query).map(|score| (index, score))
             })
-            .collect()
+            .collect();
+
+        scored.sort_by(|(left_index, left_score), (right_index, right_score)| {
+            right_score.cmp(left_score).then_with(|| {
+                self.packages[*left_index]
+                    .name
+                    .cmp(&self.packages[*right_index].name)
+            })
+        });
+
+        scored.into_iter().map(|(index, _score)| index).collect()
     }
 
     // fn clamp_selection(&mut self, filtered_len: usize) {
@@ -242,4 +250,68 @@ fn run_app(
             }
         }
     }
+}
+
+fn score_package(package: &Package, query: &str) -> Option<i64> {
+    let name = package.name.to_lowercase();
+    let description = package.description.to_lowercase();
+
+    let mut best = None;
+
+    if let Some(score) = score_text(&name, query, 1000) {
+        best = Some(score);
+    }
+
+    if let Some(score) = score_text(&description, query, 300) {
+        best = Some(best.map_or(score, |current| current.max(score)));
+    }
+
+    best
+}
+
+fn score_text(text: &str, query: &str, base: i64) -> Option<i64> {
+    if text == query {
+        return Some(base + 10_000);
+    }
+
+    if text.starts_with(query) {
+        return Some(base + 5_000 - text.len() as i64);
+    }
+
+    if let Some(position) = text.find(query) {
+        return Some(base + 3_000 - position as i64);
+    }
+
+    fuzzy_subsequence_score(text, query).map(|score| base + score)
+}
+
+fn fuzzy_subsequence_score(text: &str, query: &str) -> Option<i64> {
+    let mut score = 0_i64;
+    let mut last_match = None;
+    let mut search_start = 0_usize;
+
+    for query_char in query.chars() {
+        let search_slice = &text[search_start..];
+        let Some(relative_position) = search_slice.find(query_char) else {
+            return None;
+        };
+
+        let position = search_start + relative_position;
+
+        if let Some(last) = last_match {
+            if position == last + 1 {
+                score += 30;
+            } else {
+                score -= (position - last) as i64;
+            }
+        } else {
+            score -= position as i64;
+        }
+
+        score += 100;
+        last_match = Some(position);
+        search_start = position + query_char.len_utf8();
+    }
+
+    Some(score)
 }
