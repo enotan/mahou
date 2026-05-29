@@ -282,6 +282,45 @@ pub fn sync_upstream_recipes() -> Result<(), String> {
     Ok(())
 }
 
+pub fn refresh_installed_recipes() -> Result<(), String> {
+    let packages = load_repo_or_exit();
+    let installed = load_installed_packages()?;
+
+    if installed.is_empty() {
+        println!("No packages installed");
+        return Ok(());
+    }
+
+    let mut checked = 0;
+    let mut updated = 0;
+    let mut failed = 0;
+
+    for record in installed {
+        let Some(package) = find_package(&packages, &record.name) else {
+            println!("Installed package has no recipe: {}", record.name);
+            continue;
+        };
+
+        checked += 1;
+
+        match update_recipe_if_needed(package) {
+            Ok(true) => updated += 1,
+            Ok(false) => {}
+            Err(message) => {
+                failed += 1;
+                eprintln!("Warning: failed to refresh {}: {}", package.name, message);
+            }
+        }
+    }
+
+    println!(
+        "Refresh complete: checked {}, updated {}, failed {}",
+        checked, updated, failed
+    );
+
+    Ok(())
+}
+
 pub fn upgrade_installed_packages() -> Result<(), String> {
     sync_recipe_repo()?;
     sync_upstream_recipes()?;

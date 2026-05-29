@@ -539,14 +539,40 @@ fn main() {
             println!("{}", recipe_repo_path());
         }
         "sync" => {
-            //checks ALL recipe repos to sync them to latest upstream version
+            //pull new toml files from repo
 
             if let Err(message) = sync_recipe_repo() {
                 eprintln!("Error: {}", message);
+            }
+        }
+        "refresh" => {
+            //check installed packages for newer upstream versions
+
+            if args.len() >= 3 && args[2] == "--all" {
+                if let Err(message) = sync_upstream_recipes() {
+                    eprintln!("Error: {}", message);
+                }
+
                 return;
             }
 
-            if let Err(message) = sync_upstream_recipes() {
+            if args.len() >= 3 {
+                let name = &args[2];
+                let packages = load_repo_or_exit();
+
+                let Some(package) = find_package(&packages, name) else {
+                    eprintln!("Package not found: {}", name);
+                    return;
+                };
+
+                if let Err(message) = update_recipe_if_needed(package) {
+                    eprintln!("Error: {}", message);
+                }
+
+                return;
+            }
+
+            if let Err(message) = refresh_installed_recipes() {
                 eprintln!("Error: {}", message);
             }
         }
@@ -595,6 +621,7 @@ fn print_help() {
     println!("  mahou update-recipe <name>");
     println!("  mahou repo-path");
     println!("  mahou sync");
+    println!("  mahou refresh <name> (--all)");
     println!("  mahou upgrade");
     println!("  mahou init-config");
 }
