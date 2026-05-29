@@ -56,6 +56,7 @@ pub struct MahouConfig {
     pub recipe_repo_url: Option<String>,
     pub recipe_repo_path: Option<String>,
     pub cache_dir: Option<String>,
+    pub install_db_dir: Option<String>,
 
     #[serde(default)]
     pub feature_flags: Vec<String>,

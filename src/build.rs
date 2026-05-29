@@ -1,4 +1,4 @@
-use crate::config::{add_auth_header, build_dir, distfiles_dir, http_client, stage_dir};
+use crate::config::{install_db_dir, add_auth_header, build_dir, distfiles_dir, http_client, stage_dir};
 
 use crate::package::{InstallRecord, Package};
 
@@ -491,10 +491,6 @@ pub fn install_package(package: &Package, flags: &[String]) -> Result<(), String
     println!("Installed: {} ({} files)", package.name, files.len());
 
     Ok(())
-}
-
-pub fn install_db_dir() -> &'static str {
-    "/var/lib/mahou/installed"
 }
 
 fn install_record_path(package: &Package) -> String {

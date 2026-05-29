@@ -5,6 +5,7 @@ use crossterm::terminal::{
 
 use crossterm::event::{self, Event, KeyCode, KeyEventKind};
 
+use mahou::build::load_installed_packages;
 use mahou::config::recipe_repo_path;
 use mahou::package::Package;
 use mahou::repo::load_packages;
@@ -15,22 +16,25 @@ use ratatui::layout::{Constraint, Direction, Layout};
 use ratatui::style::{Color, Modifier, Style};
 use ratatui::widgets::{Block, Borders, Paragraph};
 use ratatui::widgets::{List, ListItem, ListState};
+use std::collections::HashSet;
 use std::io;
 
 struct App {
     packages: Vec<Package>,
     query: String,
     selected: usize,
+    installed: HashSet<String>,
 }
 
 impl App {
-    fn new(mut packages: Vec<Package>) -> Self {
+    fn new(mut packages: Vec<Package>, installed: HashSet<String>) -> Self {
         packages.sort_by(|left, right| left.name.cmp(&right.name));
 
         Self {
             packages,
             query: String::new(),
             selected: 0,
+            installed,
         }
     }
 
@@ -90,7 +94,11 @@ impl App {
 fn main() -> Result<(), String> {
     let repo_path = recipe_repo_path();
     let packages = load_packages(&repo_path)?;
-    let mut app = App::new(packages);
+    let installed = load_installed_packages()?
+        .into_iter()
+        .map(|record| record.name)
+        .collect();
+    let mut app = App::new(packages, installed);
 
     enable_raw_mode().map_err(|error| format!("Failed to enable raw mode: {}", error))?;
 
@@ -134,7 +142,7 @@ fn draw(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &App) -> Res
                 .split(frame.area());
 
             let header = Paragraph::new(format!(
-                "Search: {} | Matches: {} / {} | Press q or Esc to quit",
+                "Search: {} | Matches: {} / {} | Press Esc to quit",
                 app.query,
                 filtered.len(),
                 app.packages.len()
@@ -148,9 +156,15 @@ fn draw(terminal: &mut Terminal<CrosstermBackend<io::Stdout>>, app: &App) -> Res
                 .map(|index| {
                     let package = &app.packages[*index];
 
+                    let marker = if app.installed.contains(&package.name) {
+                        "[installed] "
+                    } else {
+                        ""
+                    };
+
                     ListItem::new(format!(
-                        "{} {} - {}",
-                        package.name, package.version, package.description
+                        "{}{} {} - {}",
+                        marker, package.name, package.version, package.description
                     ))
                 })
                 .collect();
@@ -219,7 +233,7 @@ fn run_app(
             }
 
             match key.code {
-                KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
+                KeyCode::Esc => return Ok(()),
                 KeyCode::Down => app.move_down(),
                 KeyCode::Up => app.move_up(),
                 KeyCode::Backspace => app.backspace(),

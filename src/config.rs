@@ -184,3 +184,13 @@ pub fn default_cache_dir() -> &'static str {
 pub fn config_path() -> String {
     env::var("MAHOU_CONFIG").unwrap_or_else(|_| "/etc/mahou/config.toml".to_string())
 }
+
+pub fn install_db_dir() -> String {
+    load_config()
+        .install_db_dir
+        .unwrap_or_else(|| default_install_db_dir().to_string())
+}
+
+pub fn default_install_db_dir() -> &'static str {
+    "/var/lib/mahou/installed"
+}
