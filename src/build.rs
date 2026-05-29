@@ -1,27 +1,14 @@
-use crate::config::{
-    add_auth_header,
-    build_dir,
-    distfiles_dir,
-    http_client,
-    stage_dir
-};
+use crate::config::{add_auth_header, build_dir, distfiles_dir, http_client, stage_dir};
 
-use crate::package::{
-    Package,
-    InstallRecord
-};
+use crate::package::{InstallRecord, Package};
 
+use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
 use std::os::unix::fs as unix_fs;
 use std::process::Command;
-use sha2::{
-    Digest,
-    Sha256
-};
 
 use crate::features::expand_build_step;
-
 
 pub fn fetch_package(package: &Package) -> Result<(), String> {
     fs::create_dir_all(distfiles_dir())
@@ -502,7 +489,7 @@ pub fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
     Ok(records)
 }
 
-pub fn uninstall_package(name: &str) -> Result<(), String> {
+pub fn uninstall_package(name: &str, dry_run: bool) -> Result<(), String> {
     let Some(record) = load_install_record(name)? else {
         return Err(format!("Package is not installed: {}", name));
     };
@@ -513,8 +500,15 @@ pub fn uninstall_package(name: &str) -> Result<(), String> {
         match fs::symlink_metadata(file) {
             Ok(metadata) => {
                 if metadata.is_file() || metadata.file_type().is_symlink() {
-                    fs::remove_file(file)
-                        .map_err(|error| format!("Failed to remove {}: {}", file, error))?;
+                    if dry_run {
+                        println!("Would remove: {}", file);
+                    } else {
+                        fs::remove_file(file)
+                            .map_err(|error| format!("Failed to remove {}: {}", file, error))?;
+
+                        cleanup_empty_parent_dirs(file);
+                    }
+
                     removed += 1;
                 }
             }
@@ -528,10 +522,70 @@ pub fn uninstall_package(name: &str) -> Result<(), String> {
     }
 
     let record_path = install_record_path_for_name(name);
-    fs::remove_file(&record_path)
-        .map_err(|error| format!("Failed to remove install record {}: {}", record_path, error))?;
 
-    println!("Uninstalled {} ({} files removed)", name, removed);
+    if dry_run {
+        println!("Would remove install record: {}", record_path);
+        println!("Dry run: {} ({} files would be removed)", name, removed);
+    } else {
+        fs::remove_file(&record_path).map_err(|error| {
+            format!("Failed to remove install record {}: {}", record_path, error)
+        })?;
+
+        println!("Uninstalled {} ({} files removed)", name, removed);
+    }
 
     Ok(())
+}
+
+fn cleanup_empty_parent_dirs(file: &str) {
+    let Some(mut dir) = std::path::Path::new(file).parent() else {
+        return;
+    };
+
+    while should_cleanup_dir(dir) {
+        match fs::remove_dir(dir) {
+            Ok(()) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) if error.kind() == std::io::ErrorKind::DirectoryNotEmpty => return,
+            Err(error) => {
+                eprintln!(
+                    "Warning: failed to remove empty directory {}: {}",
+                    dir.display(),
+                    error
+                );
+                return;
+            }
+        }
+
+        let Some(parent) = dir.parent() else {
+            return;
+        };
+
+        dir = parent;
+    }
+}
+
+fn should_cleanup_dir(dir: &std::path::Path) -> bool {
+    let protected = [
+        "/",
+        "/bin",
+        "/etc",
+        "/lib",
+        "/lib64",
+        "/sbin",
+        "/usr",
+        "/usr/bin",
+        "/usr/etc",
+        "/usr/include",
+        "/usr/lib",
+        "/usr/lib64",
+        "/usr/sbin",
+        "/usr/share",
+        "/var",
+        "/var/lib",
+    ];
+
+    let dir_string = dir.to_string_lossy();
+
+    !protected.iter().any(|path| dir_string == *path)
 }

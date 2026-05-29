@@ -1,27 +1,13 @@
-use crate::build::{
-    install_package,
-    sha256_bytes,
-    load_installed_packages
-};
+use crate::build::{install_package, load_installed_packages, sha256_bytes};
 
 use crate::config::{
-    add_auth_header,
-    http_client,
-    recipe_checkout_path,
+    active_feature_flags, add_auth_header, http_client, recipe_checkout_path, recipe_repo_path,
     recipe_repo_url,
-    recipe_repo_path,
-    active_feature_flags
 };
 
-use crate::package::{
-    Package,
-    RecipeUpdate,
-};
+use crate::package::{Package, RecipeUpdate};
 
-use crate::repo::{
-    find_package,
-    load_repo_or_exit
-};
+use crate::repo::{find_package, load_repo_or_exit};
 
 use regex::Regex;
 use std::cmp::Ordering;

@@ -1,17 +1,17 @@
 use std::collections::HashSet;
 use std::env;
 
+mod build;
 mod config;
+mod features;
 mod package;
 mod repo;
-mod build;
-mod features;
 mod update;
-use config::*;
-use package::{Package};
-use repo::*;
 use build::*;
+use config::*;
 use features::*;
+use package::Package;
+use repo::*;
 use update::*;
 
 fn main() {
@@ -31,7 +31,7 @@ fn main() {
                 eprint!("Please provide a package name to search for.");
                 return;
             }
-            
+
             //searches through the entire repo using the repo path
 
             let query = &args[2];
@@ -362,15 +362,14 @@ fn main() {
             }
 
             let name = &args[2];
+            let dry_run = args[3..].iter().any(|arg| arg == "--dry-run");
 
-            if let Err(message) = uninstall_package(name) {
+            if let Err(message) = uninstall_package(name, dry_run) {
                 eprintln!("Error: {}", message);
             }
         }
         "list" => match load_installed_packages() {
-
             //list all installed files
-
             Ok(records) => {
                 if records.is_empty() {
                     println!("No packages installed");
@@ -409,7 +408,6 @@ fn main() {
             }
         }
         "outdated" => {
-
             //checks for outdated packages against the repo recipe
 
             let packages = load_repo_or_exit();
@@ -538,7 +536,6 @@ fn main() {
             println!("{}", recipe_repo_path());
         }
         "sync" => {
-
             //checks ALL recipe repos to sync them to latest upstream version
 
             if let Err(message) = sync_recipe_repo() {
@@ -581,7 +578,7 @@ fn print_help() {
     println!("  mahou info <name>");
     println!("  mahou build <name>");
     println!("  mahou install <name>");
-    println!("  mahou uninstall <name>");
+    println!("  mahou uninstall <name> [--dry-run]");
     println!("  mahou deps <name>");
     println!("  mahou resolve <name>");
     println!("  mahou fetch <name>");
@@ -597,7 +594,6 @@ fn print_help() {
     println!("  mahou sync");
     println!("  mahou upgrade");
     println!("  mahou init-config");
-    
 }
 
 fn print_deps(packages: &[Package], package: &Package, flags: &[String], depth: usize) {
