@@ -310,15 +310,12 @@ fn main() {
             let feature_flags = active_feature_flags(&args[3..]);
             let mut packages = load_repo_or_exit();
 
-            let order = match resolve_package_order(&packages, name, &feature_flags) {
-                Ok(order) => order,
-                Err(message) => {
-                    eprintln!("Error: {}", message);
-                    return;
-                }
+            let Some(requested_package) = find_package(&packages, name) else {
+                eprintln!("Error: Package vanished from repo: {}", name);
+                return;
             };
 
-            match refresh_recipes_for_order(&packages, &order) {
+            match update_recipe_if_needed(requested_package) {
                 Ok(true) => {
                     packages = load_repo_or_exit();
                 }
@@ -342,6 +339,18 @@ fn main() {
                     eprintln!("Error: Package vanished from repo: {}", package_name);
                     return;
                 };
+
+                match is_installed_same_version(package) {
+                    Ok(true) => {
+                        println!("Already installed: {} {}", package.name, package.version);
+                        continue;
+                    }
+                    Ok(false) => {}
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                        return;
+                    }
+                }
 
                 if let Err(message) = install_package(package, &feature_flags) {
                     eprintln!("Error: {}", message);

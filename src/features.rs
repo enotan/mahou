@@ -59,4 +59,7 @@ pub fn expand_build_step(package: &Package, step: &str, flags: &[String]) -> Str
     let feature_flags = feature_build_flags(package, flags).join(" ");
 
     step.replace("{feature_flags}", &feature_flags)
+        .replace("{name}", &package.name)
+        .replace("{version}", &package.version)
+        .replace("{source_dir}", &package.source_dir)
 }

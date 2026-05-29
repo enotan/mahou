@@ -135,7 +135,7 @@ pub fn recipe_path(name: &str) -> String {
     format!("{}/{}.toml", recipe_repo_path(), name)
 }
 
-fn update_recipe_if_needed(package: &Package) -> Result<bool, String> {
+pub fn update_recipe_if_needed(package: &Package) -> Result<bool, String> {
     let Some(_) = &package.update else {
         return Ok(false);
     };

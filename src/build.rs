@@ -495,6 +495,14 @@ pub fn install_package(package: &Package, flags: &[String]) -> Result<(), String
     Ok(())
 }
 
+pub fn is_installed_same_version(package: &Package) -> Result<bool, String> {
+    let Some(record) = load_install_record(&package.name)? else {
+        return Ok(false);
+    };
+
+    Ok(record.version == package.version)
+}
+
 fn install_record_path(package: &Package) -> String {
     format!("{}/{}.toml", install_db_dir(), package.name)
 }
