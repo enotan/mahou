@@ -648,7 +648,7 @@ fn pkg_config_candidates(name: &str) -> Vec<String> {
 fn host_file_candidates(name: &str) -> Vec<String> {
     let library_name = name.trim_start_matches("lib");
 
-    vec![
+    let mut candidates = vec![
         format!("/usr/bin/{}", name),
         format!("/usr/sbin/{}", name),
         format!("/bin/{}", name),
@@ -657,7 +657,29 @@ fn host_file_candidates(name: &str) -> Vec<String> {
         format!("/usr/lib64/lib{}.so", library_name),
         format!("/lib/lib{}.so", library_name),
         format!("/lib64/lib{}.so", library_name),
-    ]
+    ];
+
+    let command_names: &[&str] = match name {
+        "binutils" => &["as", "ld", "objdump"],
+        "coreutils" => &["ls", "cp", "mv", "mkdir"],
+        "diffutils" => &["diff", "cmp"],
+        "findutils" => &["find", "xargs"],
+        "gawk" => &["awk", "gawk"],
+        "gzip" => &["gzip", "gunzip"],
+        "pkgconf" => &["pkg-config", "pkgconf"],
+        "shadow" => &["useradd", "groupadd"],
+        "util-linux" => &["mount", "umount", "lsblk"],
+        _ => &[],
+    };
+
+    for command in command_names {
+        candidates.push(format!("/usr/bin/{}", command));
+        candidates.push(format!("/usr/sbin/{}", command));
+        candidates.push(format!("/bin/{}", command));
+        candidates.push(format!("/sbin/{}", command));
+    }
+
+    candidates
 }
 
 pub fn install_package(package: &Package, flags: &[String]) -> Result<(), String> {
