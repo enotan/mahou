@@ -9,6 +9,7 @@ use std::env;
 use std::fs;
 use std::io::{Read, Write};
 use std::os::unix::fs as unix_fs;
+use std::path::Path;
 use std::process::Command;
 use std::time::{Duration, Instant};
 
@@ -474,14 +475,22 @@ fn install_regular_file(source: &str, target: &str, metadata: &fs::Metadata) -> 
 }
 
 fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
+    write_install_record_with_version(&package.name, &package.version, files)
+}
+
+pub fn write_install_record_with_version(
+    name: &str,
+    version: &str,
+    files: &[String],
+) -> Result<(), String> {
     fs::create_dir_all(install_db_dir())
         .map_err(|error| format!("Failed to create install database: {}", error))?;
 
-    let path = install_record_path(package);
+    let path = install_record_path_for_name(name);
 
     let mut contents = String::new();
-    contents.push_str(&format!("name = \"{}\"\n", package.name));
-    contents.push_str(&format!("version = \"{}\"\n", package.version));
+    contents.push_str(&format!("name = \"{}\"\n", name));
+    contents.push_str(&format!("version = \"{}\"\n", version));
     contents.push_str("files = [\n");
 
     for file in files {
@@ -494,6 +503,161 @@ fn write_install_record(package: &Package, files: &[String]) -> Result<(), Strin
         .map_err(|error| format!("Failed to write install record {}: {}", path, error))?;
 
     Ok(())
+}
+
+pub fn adopt_package(package: &Package, as_current: bool, dry_run: bool) -> Result<bool, String> {
+    if load_install_record(&package.name)?.is_some() {
+        println!("Already tracked: {}", package.name);
+        return Ok(false);
+    }
+
+    let detection = detect_host_package(package);
+
+    if !detection.found {
+        println!("Not found: {}", package.name);
+        return Ok(false);
+    }
+
+    let adopt_version = match detection.version.as_deref() {
+        Some(version) if version == package.version => package.version.as_str(),
+        Some(version) if as_current => {
+            println!(
+                "Adopting {} as {} (detected {})",
+                package.name, package.version, version
+            );
+            package.version.as_str()
+        }
+        Some(version) => {
+            println!(
+                "Found {} {}, but recipe is {}; skipped (use --as-current to trust it)",
+                package.name, version, package.version
+            );
+            return Ok(false);
+        }
+        None if as_current => {
+            println!(
+                "Adopting {} as {} ({})",
+                package.name, package.version, detection.reason
+            );
+            package.version.as_str()
+        }
+        None => {
+            println!(
+                "Found {}, but could not detect version; skipped (use --as-current to trust it)",
+                package.name
+            );
+            return Ok(false);
+        }
+    };
+
+    if dry_run {
+        println!("Would adopt: {} {}", package.name, adopt_version);
+        return Ok(true);
+    }
+
+    write_install_record_with_version(&package.name, adopt_version, &[])?;
+    println!("Adopted: {} {}", package.name, adopt_version);
+    Ok(true)
+}
+
+struct HostPackageDetection {
+    found: bool,
+    version: Option<String>,
+    reason: String,
+}
+
+fn detect_host_package(package: &Package) -> HostPackageDetection {
+    for pc_name in pkg_config_candidates(&package.name) {
+        match pkg_config_version(&pc_name) {
+            Ok(Some(version)) => {
+                return HostPackageDetection {
+                    found: true,
+                    version: Some(version),
+                    reason: format!("pkg-config {}", pc_name),
+                };
+            }
+            Ok(None) => {}
+            Err(error) => {
+                eprintln!("Warning: failed to query pkg-config {}: {}", pc_name, error);
+            }
+        }
+    }
+
+    for path in host_file_candidates(&package.name) {
+        if Path::new(&path).exists() {
+            return HostPackageDetection {
+                found: true,
+                version: None,
+                reason: format!("found {}", path),
+            };
+        }
+    }
+
+    HostPackageDetection {
+        found: false,
+        version: None,
+        reason: "not found".to_string(),
+    }
+}
+
+fn pkg_config_version(name: &str) -> Result<Option<String>, String> {
+    let output = Command::new("pkg-config")
+        .arg("--modversion")
+        .arg(name)
+        .output()
+        .map_err(|error| format!("failed to run pkg-config: {}", error))?;
+
+    if !output.status.success() {
+        return Ok(None);
+    }
+
+    let version = String::from_utf8_lossy(&output.stdout).trim().to_string();
+
+    if version.is_empty() {
+        Ok(None)
+    } else {
+        Ok(Some(version))
+    }
+}
+
+fn pkg_config_candidates(name: &str) -> Vec<String> {
+    let mut candidates = vec![name.to_string(), name.to_lowercase()];
+
+    match name {
+        "atkmm" => candidates.push("atkmm-1.6".to_string()),
+        "cairomm" => candidates.push("cairomm-1.0".to_string()),
+        "freetype" => candidates.push("freetype2".to_string()),
+        "glibmm" => candidates.push("glibmm-2.4".to_string()),
+        "gtk+" => candidates.push("gtk+-3.0".to_string()),
+        "gtkmm" => candidates.push("gtkmm-3.0".to_string()),
+        "libsigc++" => candidates.push("sigc++-2.0".to_string()),
+        "libX11" => candidates.push("x11".to_string()),
+        "libXau" => candidates.push("xau".to_string()),
+        "libXdmcp" => candidates.push("xdmcp".to_string()),
+        "pangomm" => candidates.push("pangomm-1.4".to_string()),
+        "pcre2" => candidates.push("libpcre2-8".to_string()),
+        "zlib" => candidates.push("zlib".to_string()),
+        _ => {}
+    }
+
+    candidates.sort();
+    candidates.dedup();
+    candidates
+}
+
+fn host_file_candidates(name: &str) -> Vec<String> {
+    let library_name = name.trim_start_matches("lib");
+
+    vec![
+        format!("/usr/bin/{}", name),
+        format!("/usr/sbin/{}", name),
+        format!("/bin/{}", name),
+        format!("/sbin/{}", name),
+        format!("/usr/lib/lib{}.so", library_name),
+        format!("/usr/lib64/lib{}.so", library_name),
+        format!("/lib/lib{}.so", library_name),
+        format!("/lib64/lib{}.so", library_name),
+    ]
 }
 
 pub fn install_package(package: &Package, flags: &[String]) -> Result<(), String> {
@@ -515,10 +679,6 @@ pub fn is_installed_same_version(package: &Package) -> Result<bool, String> {
     };
 
     Ok(record.version == package.version)
-}
-
-fn install_record_path(package: &Package) -> String {
-    format!("{}/{}.toml", install_db_dir(), package.name)
 }
 
 pub fn install_record_path_for_name(name: &str) -> String {

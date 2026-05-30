@@ -371,6 +371,49 @@ fn main() {
                 eprintln!("Error: {}", message);
             }
         }
+        "adopt" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name, or use --all");
+                return;
+            }
+
+            let packages = load_repo_or_exit();
+            let as_current = args.iter().any(|arg| arg == "--as-current");
+            let dry_run = args.iter().any(|arg| arg == "--dry-run");
+
+            if args[2] == "--all" {
+                let mut adopted = 0;
+
+                for package in &packages {
+                    match adopt_package(package, as_current, dry_run) {
+                        Ok(true) => adopted += 1,
+                        Ok(false) => {}
+                        Err(message) => {
+                            eprintln!("Error adopting {}: {}", package.name, message);
+                        }
+                    }
+                }
+
+                if dry_run {
+                    println!("Would adopt {} packages", adopted);
+                } else {
+                    println!("Adopted {} packages", adopted);
+                }
+
+                return;
+            }
+
+            let name = &args[2];
+
+            let Some(package) = find_package(&packages, name) else {
+                eprintln!("Package not found: {}", name);
+                return;
+            };
+
+            if let Err(message) = adopt_package(package, as_current, dry_run) {
+                eprintln!("Error: {}", message);
+            }
+        }
         "list" => match load_installed_packages() {
             //list all installed files
             Ok(records) => {
@@ -608,6 +651,7 @@ fn print_help() {
     println!("  mahou build <name>");
     println!("  mahou install <name>");
     println!("  mahou uninstall <name> [--dry-run]");
+    println!("  mahou adopt <name|--all> [--as-current] [--dry-run]");
     println!("  mahou deps <name>");
     println!("  mahou resolve <name>");
     println!("  mahou fetch <name>");
