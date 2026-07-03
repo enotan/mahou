@@ -1,5 +1,5 @@
 use crate::config::{
-    add_auth_header, build_dir, distfiles_dir, http_client, install_db_dir, stage_dir,
+    add_auth_header, build_dir, distfiles_dir, http_client, install_db_dir, stage_dir, stage_root,
 };
 
 use crate::package::{InstallRecord, Package};
@@ -168,10 +168,11 @@ pub fn extract_package(package: &Package) -> Result<(), String> {
 
     let filename = source_filename(package)?;
     let archive_path = format!("{}/{}", distfiles_dir(), filename);
-    let source_dir = format!("{}/{}", build_dir(), package.source_dir);
+    let archive_source_dir = format!("{}/{}", build_dir(), package.source_dir);
+    let package_source_dir = package_build_dir(package);
 
-    if fs::metadata(&source_dir).is_ok() {
-        println!("Already extracted: {}", source_dir);
+    if fs::metadata(&package_source_dir).is_ok() {
+        println!("Already extracted: {}", package_source_dir);
         return Ok(());
     }
 
@@ -189,19 +190,26 @@ pub fn extract_package(package: &Package) -> Result<(), String> {
         return Err(format!("tar failed while extracting {}", archive_path));
     }
 
-    if fs::metadata(&source_dir).is_ok() {
-        println!("Extracted: {}", source_dir);
-        Ok(())
-    } else {
-        Err(format!(
+    if fs::metadata(&archive_source_dir).is_err() {
+        return Err(format!(
             "Expected source directory '{}' not found after extraction",
-            source_dir
-        ))
+            archive_source_dir
+        ));
     }
+
+    fs::rename(&archive_source_dir, &package_source_dir).map_err(|error| {
+        format!(
+            "Failed to isolate build directory '{}' as '{}': {}",
+            archive_source_dir, package_source_dir, error
+        )
+    })?;
+
+    println!("Extracted: {}", package_source_dir);
+    Ok(())
 }
 
 fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
-    let source_dir = format!("{}/{}", build_dir(), package.source_dir);
+    let source_dir = package_build_dir(package);
     let destdir = stage_dir(package);
 
     fs::create_dir_all(&destdir)
@@ -209,31 +217,54 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 
     println!("Running build step for {}: {}", package.name, step);
 
-    let pkg_config_path = build_env_path(
-        "PKG_CONFIG_PATH",
-        &[
-            "/usr/lib/pkgconfig",
-            "/usr/lib64/pkgconfig",
-            "/usr/share/pkgconfig",
-        ],
-    );
+    let stage_prefixes = staged_prefixes();
 
-    let library_path = build_env_path("LIBRARY_PATH", &["/usr/lib", "/usr/lib64"]);
+    let mut pkg_config_defaults = Vec::new();
+    for prefix in &stage_prefixes {
+        pkg_config_defaults.push(format!("{}/lib/pkgconfig", prefix));
+        pkg_config_defaults.push(format!("{}/lib64/pkgconfig", prefix));
+        pkg_config_defaults.push(format!("{}/share/pkgconfig", prefix));
+    }
+    pkg_config_defaults.extend([
+        "/usr/lib/pkgconfig".to_string(),
+        "/usr/lib64/pkgconfig".to_string(),
+        "/usr/share/pkgconfig".to_string(),
+    ]);
 
-    let ld_library_path = build_env_path("LD_LIBRARY_PATH", &["/usr/lib", "/usr/lib64"]);
+    let pkg_config_path = build_env_path("PKG_CONFIG_PATH", &pkg_config_defaults);
 
-    let path = build_env_path(
-        "PATH",
-        &[
-            "/opt/rustc/bin",
-            "/usr/local/sbin",
-            "/usr/local/bin",
-            "/usr/sbin",
-            "/usr/bin",
-            "/sbin",
-            "/bin",
-        ],
-    );
+    let mut library_defaults = Vec::new();
+    for prefix in &stage_prefixes {
+        library_defaults.push(format!("{}/lib", prefix));
+        library_defaults.push(format!("{}/lib64", prefix));
+    }
+    library_defaults.extend(["/usr/lib".to_string(), "/usr/lib64".to_string()]);
+
+    let library_path = build_env_path("LIBRARY_PATH", &library_defaults);
+
+    let ld_library_path = build_env_path("LD_LIBRARY_PATH", &library_defaults);
+
+    let mut path_defaults = Vec::new();
+    for prefix in &stage_prefixes {
+        path_defaults.push(format!("{}/bin", prefix));
+        path_defaults.push(format!("{}/sbin", prefix));
+    }
+    path_defaults.extend([
+        "/opt/rustc/bin".to_string(),
+        "/usr/local/sbin".to_string(),
+        "/usr/local/bin".to_string(),
+        "/usr/sbin".to_string(),
+        "/usr/bin".to_string(),
+        "/sbin".to_string(),
+        "/bin".to_string(),
+    ]);
+
+    let path = build_env_path("PATH", &path_defaults);
+
+    let mut cmake_prefix_defaults = stage_prefixes;
+    cmake_prefix_defaults.push("/usr".to_string());
+
+    let cmake_prefix_path = build_env_path("CMAKE_PREFIX_PATH", &cmake_prefix_defaults);
 
     let status = Command::new("sh")
         .arg("-c")
@@ -244,7 +275,7 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
         .env("PKG_CONFIG_PATH", pkg_config_path)
         .env("LIBRARY_PATH", library_path)
         .env("LD_LIBRARY_PATH", ld_library_path)
-        .env("CMAKE_PREFIX_PATH", "/usr")
+        .env("CMAKE_PREFIX_PATH", cmake_prefix_path)
         .status()
         .map_err(|error| format!("Failed to run build step '{}': '{}'", step, error))?;
 
@@ -255,8 +286,8 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
     Ok(())
 }
 
-fn build_env_path(name: &str, defaults: &[&str]) -> String {
-    let mut paths: Vec<String> = defaults.iter().map(|path| path.to_string()).collect();
+fn build_env_path(name: &str, defaults: &[String]) -> String {
+    let mut paths = defaults.to_vec();
 
     if let Ok(existing) = env::var(name) {
         for path in existing.split(':') {
@@ -267,6 +298,22 @@ fn build_env_path(name: &str, defaults: &[&str]) -> String {
     }
 
     paths.join(":")
+}
+
+fn staged_prefixes() -> Vec<String> {
+    let Ok(entries) = fs::read_dir(stage_root()) else {
+        return Vec::new();
+    };
+
+    let mut prefixes: Vec<String> = entries
+        .filter_map(Result::ok)
+        .map(|entry| entry.path().join("usr"))
+        .filter(|path| path.is_dir())
+        .filter_map(|path| path.to_str().map(|path| path.to_string()))
+        .collect();
+
+    prefixes.sort();
+    prefixes
 }
 
 pub fn build_package(package: &Package, flags: &[String]) -> Result<(), String> {
@@ -332,6 +379,17 @@ fn mark_built(package: &Package) -> Result<(), String> {
     Ok(())
 }
 
+pub fn clean_build(package: &Package) -> Result<(), String> {
+    let path = package_build_dir(package);
+
+    if fs::metadata(&path).is_ok() {
+        fs::remove_dir_all(&path)
+            .map_err(|error| format!("Failed to remove build directory {}: {}", path, error))?;
+    }
+
+    Ok(())
+}
+
 pub fn clean_stage(package: &Package) -> Result<(), String> {
     let path = stage_dir(package);
 
@@ -341,6 +399,28 @@ pub fn clean_stage(package: &Package) -> Result<(), String> {
     }
 
     Ok(())
+}
+
+fn package_build_dir(package: &Package) -> String {
+    format!(
+        "{}/{}-{}",
+        build_dir(),
+        package.source_dir,
+        sanitize_build_component(&package.name),
+    )
+}
+
+fn sanitize_build_component(value: &str) -> String {
+    value
+        .chars()
+        .map(|character| {
+            if character.is_ascii_alphanumeric() || matches!(character, '-' | '_' | '.' | '+') {
+                character
+            } else {
+                '-'
+            }
+        })
+        .collect()
 }
 
 fn collect_files(root: &str) -> Result<Vec<String>, String> {

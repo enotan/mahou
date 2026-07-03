@@ -292,9 +292,7 @@ fn fuzzy_subsequence_score(text: &str, query: &str) -> Option<i64> {
 
     for query_char in query.chars() {
         let search_slice = &text[search_start..];
-        let Some(relative_position) = search_slice.find(query_char) else {
-            return None;
-        };
+        let relative_position = search_slice.find(query_char)?;
 
         let position = search_start + relative_position;
 

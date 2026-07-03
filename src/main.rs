@@ -256,6 +256,11 @@ fn main() {
                             return;
                         }
 
+                        if let Err(message) = clean_build(package) {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+
                         if let Err(message) = build_package(package, &feature_flags) {
                             eprintln!("Error: {}", message);
                             return;
