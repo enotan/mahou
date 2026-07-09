@@ -219,30 +219,13 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 
     let stage_prefixes = staged_prefixes();
 
-    let mut pkg_config_defaults = Vec::new();
-    for prefix in &stage_prefixes {
-        pkg_config_defaults.push(format!("{}/lib/pkgconfig", prefix));
-        pkg_config_defaults.push(format!("{}/lib64/pkgconfig", prefix));
-        pkg_config_defaults.push(format!("{}/share/pkgconfig", prefix));
-    }
-    pkg_config_defaults.extend([
-        "/usr/lib/pkgconfig".to_string(),
-        "/usr/lib64/pkgconfig".to_string(),
-        "/usr/share/pkgconfig".to_string(),
-    ]);
+    let pkg_config_defaults = build_pkg_config_defaults(package, &stage_prefixes);
+    let pkg_config_path = build_profile_path(package, "PKG_CONFIG_PATH", &pkg_config_defaults);
 
-    let pkg_config_path = build_env_path("PKG_CONFIG_PATH", &pkg_config_defaults);
+    let library_defaults = build_library_defaults(package, &stage_prefixes);
 
-    let mut library_defaults = Vec::new();
-    for prefix in &stage_prefixes {
-        library_defaults.push(format!("{}/lib", prefix));
-        library_defaults.push(format!("{}/lib64", prefix));
-    }
-    library_defaults.extend(["/usr/lib".to_string(), "/usr/lib64".to_string()]);
-
-    let library_path = build_env_path("LIBRARY_PATH", &library_defaults);
-
-    let ld_library_path = build_env_path("LD_LIBRARY_PATH", &library_defaults);
+    let library_path = build_profile_path(package, "LIBRARY_PATH", &library_defaults);
+    let ld_library_path = build_profile_path(package, "LD_LIBRARY_PATH", &library_defaults);
 
     let mut path_defaults = Vec::new();
     for prefix in &stage_prefixes {
@@ -266,7 +249,10 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
 
     let cmake_prefix_path = build_env_path("CMAKE_PREFIX_PATH", &cmake_prefix_defaults);
 
-    let status = Command::new("sh")
+    let profile_env = build_profile_env(package);
+
+    let mut command = Command::new("sh");
+    command
         .arg("-c")
         .arg(step)
         .current_dir(&source_dir)
@@ -275,14 +261,20 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
         .env("PKG_CONFIG_PATH", pkg_config_path)
         .env("LIBRARY_PATH", library_path)
         .env("LD_LIBRARY_PATH", ld_library_path)
-        .env("CMAKE_PREFIX_PATH", cmake_prefix_path)
+        .env("CMAKE_PREFIX_PATH", cmake_prefix_path);
+    
+    for (name, value) in profile_env {
+        command.env(name, value);
+    }
+
+    let status = command
         .status()
-        .map_err(|error| format!("Failed to run build step '{}': '{}'", step, error))?;
+        .map_err(|error| format!("Failed to run build step for {}: {}", step, error))?;
 
     if !status.success() {
         return Err(format!("Build step failed for {}: {}", package.name, step));
     }
-
+    
     Ok(())
 }
 
@@ -298,6 +290,96 @@ fn build_env_path(name: &str, defaults: &[String]) -> String {
     }
 
     paths.join(":")
+}
+
+fn build_profile_path(package: &Package, name: &str, defaults: &[String]) -> String {
+    match package.build_profile.as_str() {
+        "lib32" => defaults.join(":"),
+        _ => build_env_path(name, defaults),
+    }
+}
+
+fn build_profile_env(package: &Package) -> Vec<(&'static str, String)> {
+    match package.build_profile.as_str() {
+        "lib32" => vec![
+            ("CFLAGS", merge_flags("CFLAGS", "-m32")),
+            ("CXXFLAGS", merge_flags("CXXFLAGS", "-m32")),
+            ("LDFLAGS", merge_flags("LDFLAGS", "-m32")),
+            (
+                "PKG_CONFIG_LIBDIR",
+                "/usr/lib32/pkgconfig:/usr/share/pkgconfig".to_string(),
+            ),
+        ],
+        "native" => Vec::new(),
+        other =>{
+            eprintln!(
+                "Warning: unknown build profile '{}' for package '{}'; using default profile.",
+                other, package.name
+            );
+            Vec::new()
+        }
+    }
+}
+
+fn build_library_defaults(package: &Package, stage_prefixes: &[String]) -> Vec<String> {
+    let mut paths = Vec::new();
+
+    match package.build_profile.as_str() {
+        "lib32" => {
+            for prefix in stage_prefixes {
+                paths.push(format!("{}/lib32", prefix));
+            }
+
+            paths.push("/usr/lib32".to_string());
+        }
+        _ => {
+            for prefix in stage_prefixes {
+                paths.push(format!("{}/lib64", prefix));
+                paths.push(format!("{}/lib", prefix));
+            }
+
+            paths.push("/usr/lib64".to_string());
+            paths.push("/usr/lib".to_string());
+        }
+    }
+
+    paths
+}
+
+fn build_pkg_config_defaults(package: &Package, stage_prefixes: &[String]) -> Vec<String> {
+    let mut paths = Vec::new();
+
+    match package.build_profile.as_str() {
+        "lib32" => {
+            for prefix in stage_prefixes {
+                paths.push(format!("{}/lib32/pkgconfig", prefix));
+                paths.push(format!("{}/share/pkgconfig", prefix));
+            }
+
+            paths.push("/usr/lib32/pkgconfig".to_string());
+            paths.push("/usr/share/pkgconfig".to_string());
+        }
+        _ => {
+            for prefix in stage_prefixes {
+                paths.push(format!("{}/lib64/pkgconfig", prefix));
+                paths.push(format!("{}/lib/pkgconfig", prefix));
+                paths.push(format!("{}/share/pkgconfig", prefix));
+            }
+
+            paths.push("/usr/lib64/pkgconfig".to_string());
+            paths.push("/usr/lib/pkgconfig".to_string());
+            paths.push("/usr/share/pkgconfig".to_string());
+        }
+    }
+
+    paths
+}
+
+fn merge_flags(name: &str, flags: &str) -> String {
+    match env::var(name) {
+        Ok(existing) if !existing.trim().is_empty() => format!("{} {}", flags, existing),
+        _ => flags.to_string(),
+    }
 }
 
 fn staged_prefixes() -> Vec<String> {
@@ -403,10 +485,11 @@ pub fn clean_stage(package: &Package) -> Result<(), String> {
 
 fn package_build_dir(package: &Package) -> String {
     format!(
-        "{}/{}-{}",
+        "{}/{}-{}-{}",
         build_dir(),
         package.source_dir,
-        sanitize_build_component(&package.name),
+        sanitize_build_component(&package.build_profile),
+        sanitize_build_component(&package.name)
     )
 }
 
