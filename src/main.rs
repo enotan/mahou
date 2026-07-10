@@ -458,6 +458,65 @@ fn main() {
                 }
             }
         }
+        "owns" => {
+            if args.len() < 3 {
+                eprintln!("Missing file path");
+                return;
+            }
+
+            let path = &args[2];
+
+            match find_file_owner(path) {
+                Ok(Some(owner)) => {
+                    println!("{}", owner);
+                }
+                Ok(None) => {
+                    println!("no package owns {}", path);
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
+        "conflicts" => {
+            if args.len() < 3 {
+                eprintln!("Missing package name");
+                return;
+            }
+
+            let name = &args[2];
+            let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&args[3..]);
+
+            let Some(package) = find_package(&packages, name) else {
+                eprintln!("Package not found: {}", name);
+                return;
+            };
+
+            if let Err(message) = build_package(package, &feature_flags) {
+                eprintln!("Error: {}", message);
+                return;
+            }
+
+            let stage = stage_dir(package);
+
+            let files = match collect_files(&stage) {
+                Ok(files) => files,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            match check_file_conflicts(package, &files) {
+                Ok(()) => {
+                    println!("No conflicts");
+                }
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                }
+            }
+        }
         "outdated" => {
             //checks for outdated packages against the repo recipe
 
@@ -665,6 +724,8 @@ fn print_help() {
     println!("  mahou rebuild <name>");
     println!("  mahou help");
     println!("  mahou files <name>");
+    println!("  mahou owns <path>");
+    println!("  mahou conflicts <name>");
     println!("  mahou outdated");
     println!("  mahou update-check <name>");
     println!("  mahou update-recipe <name>");

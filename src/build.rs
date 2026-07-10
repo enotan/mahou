@@ -506,7 +506,7 @@ fn sanitize_build_component(value: &str) -> String {
         .collect()
 }
 
-fn collect_files(root: &str) -> Result<Vec<String>, String> {
+pub fn collect_files(root: &str) -> Result<Vec<String>, String> {
     let mut files = Vec::new();
 
     collect_files_recursive(root, root, &mut files)?;
@@ -551,6 +551,8 @@ fn collect_files_recursive(
 pub fn install_staged_files(package: &Package) -> Result<Vec<String>, String> {
     let stage = stage_dir(package);
     let files = collect_files(&stage)?;
+
+    check_file_conflicts(package, &files)?;
 
     for file in &files {
         let source = format!("{}{}", stage, file);
@@ -916,6 +918,30 @@ pub fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
 
     records.sort_by(|a, b| a.name.cmp(&b.name));
     Ok(records)
+}
+
+pub fn find_file_owner(path: &str) -> Result<Option<String>, String> {
+    for record in load_installed_packages()? {
+        if record.files.iter().any(|file| file == path) {
+            return Ok(Some(record.name));
+        }
+    }
+
+    Ok(None)
+}
+
+pub fn check_file_conflicts(package: &Package, files: &[String]) -> Result<(), String> {
+    for file in files {
+        let Some(owner) = find_file_owner(file)? else {
+            continue;
+        };
+
+        if owner != package.name {
+            return Err(format!("File conflict: {} is already owned by {}", file, owner));
+        }
+    }
+
+    Ok(())
 }
 
 pub fn uninstall_package(name: &str, dry_run: bool) -> Result<(), String> {
