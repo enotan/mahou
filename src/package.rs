@@ -63,6 +63,13 @@ pub struct UpdateInfo {
 pub struct InstallRecord {
     pub name: String,
     pub version: String,
+
+    #[serde(default)]
+    pub build_profile: String,
+
+    #[serde(default)]
+    pub installed_at: String,
+    
     pub files: Vec<String>,
 }
 

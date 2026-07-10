@@ -12,6 +12,7 @@ use std::os::unix::fs as unix_fs;
 use std::path::Path;
 use std::process::Command;
 use std::time::{Duration, Instant};
+use chrono::Utc;
 
 use crate::features::expand_build_step;
 
@@ -640,12 +641,13 @@ fn install_regular_file(source: &str, target: &str, metadata: &fs::Metadata) -> 
 }
 
 fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
-    write_install_record_with_version(&package.name, &package.version, files)
+    write_install_record_with_version(&package.name, &package.version, &package.build_profile, files)
 }
 
 pub fn write_install_record_with_version(
     name: &str,
     version: &str,
+    build_profile: &str,
     files: &[String],
 ) -> Result<(), String> {
     fs::create_dir_all(install_db_dir())
@@ -655,7 +657,12 @@ pub fn write_install_record_with_version(
 
     let mut contents = String::new();
     contents.push_str(&format!("name = \"{}\"\n", name));
+
+    let installed_at = Utc::now().to_rfc3339();
+
     contents.push_str(&format!("version = \"{}\"\n", version));
+    contents.push_str(&format!("build_profile = \"{}\"\n", build_profile));
+    contents.push_str(&format!("installed_at = \"{}\"\n", installed_at));
     contents.push_str("files = [\n");
 
     for file in files {
@@ -720,7 +727,7 @@ pub fn adopt_package(package: &Package, as_current: bool, dry_run: bool) -> Resu
         return Ok(true);
     }
 
-    write_install_record_with_version(&package.name, adopt_version, &[])?;
+    write_install_record_with_version(&package.name, adopt_version, &package.build_profile, &[])?;
     println!("Adopted: {} {}", package.name, adopt_version);
     Ok(true)
 }

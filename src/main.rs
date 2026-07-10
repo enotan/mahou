@@ -428,7 +428,20 @@ fn main() {
                 }
 
                 for record in records {
-                    println!("{} {}", record.name, record.version);
+                    let profile = if record.build_profile.is_empty() {
+                        "unknown"
+                    } else {
+                        &record.build_profile
+                    };
+
+                    if record.installed_at.is_empty() {
+                        println!("{} {} [{}]", record.name, record.version, profile);
+                    } else {
+                        println!(
+                            "{} {} [{}] {}",
+                            record.name, record.version, profile, record.installed_at
+                        );
+                    }
                 }
             }
 
