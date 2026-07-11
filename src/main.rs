@@ -357,7 +357,13 @@ fn main() {
                     }
                 }
 
-                if let Err(message) = install_package(package, &feature_flags) {
+                let install_reason = if package.name == *name {
+                    "explicit"
+                } else {
+                    "dependency"
+                };
+
+                if let Err(message) = install_package(package, &feature_flags, install_reason) {
                     eprintln!("Error: {}", message);
                     return;
                 }
@@ -434,12 +440,18 @@ fn main() {
                         &record.build_profile
                     };
 
+                    let reason = if record.install_reason.is_empty() {
+                        "unknown"
+                    } else {
+                        &record.install_reason
+                    };
+
                     if record.installed_at.is_empty() {
-                        println!("{} {} [{}]", record.name, record.version, profile);
+                        println!("{} {} [{}] ({})", record.name, record.version, profile, reason);
                     } else {
                         println!(
-                            "{} {} [{}] {}",
-                            record.name, record.version, profile, record.installed_at
+                            "{} {} [{}] ({}) {}",
+                            record.name, record.version, profile, reason, record.installed_at
                         );
                     }
                 }

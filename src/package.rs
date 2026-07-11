@@ -69,7 +69,10 @@ pub struct InstallRecord {
 
     #[serde(default)]
     pub installed_at: String,
-    
+
+    #[serde(default)]
+    pub install_reason: String,
+
     pub files: Vec<String>,
 }
 

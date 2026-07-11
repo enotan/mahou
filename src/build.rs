@@ -640,14 +640,21 @@ fn install_regular_file(source: &str, target: &str, metadata: &fs::Metadata) -> 
     Ok(())
 }
 
-fn write_install_record(package: &Package, files: &[String]) -> Result<(), String> {
-    write_install_record_with_version(&package.name, &package.version, &package.build_profile, files)
+fn write_install_record(package: &Package, files: &[String], install_reason: &str) -> Result<(), String> {
+    write_install_record_with_version(
+        &package.name, 
+        &package.version, 
+        &package.build_profile, 
+        install_reason,
+        files
+    )
 }
 
 pub fn write_install_record_with_version(
     name: &str,
     version: &str,
     build_profile: &str,
+    install_reason: &str,
     files: &[String],
 ) -> Result<(), String> {
     fs::create_dir_all(install_db_dir())
@@ -663,6 +670,7 @@ pub fn write_install_record_with_version(
     contents.push_str(&format!("version = \"{}\"\n", version));
     contents.push_str(&format!("build_profile = \"{}\"\n", build_profile));
     contents.push_str(&format!("installed_at = \"{}\"\n", installed_at));
+    contents.push_str(&format!("install_reason = \"{}\"\n", install_reason));
     contents.push_str("files = [\n");
 
     for file in files {
@@ -727,7 +735,12 @@ pub fn adopt_package(package: &Package, as_current: bool, dry_run: bool) -> Resu
         return Ok(true);
     }
 
-    write_install_record_with_version(&package.name, adopt_version, &package.build_profile, &[])?;
+    write_install_record_with_version(
+        &package.name, 
+        adopt_version, 
+        &package.build_profile, 
+        "adopted",
+        &[])?;
     println!("Adopted: {} {}", package.name, adopt_version);
     Ok(true)
 }
@@ -854,13 +867,16 @@ fn host_file_candidates(name: &str) -> Vec<String> {
     candidates
 }
 
-pub fn install_package(package: &Package, flags: &[String]) -> Result<(), String> {
+pub fn install_package(package: &Package, 
+    flags: &[String],
+    install_reason: &str,
+) -> Result<(), String> {
     build_package(package, flags)?;
 
     println!("Installing {} {}", package.name, package.version);
 
     let files = install_staged_files(package)?;
-    write_install_record(package, &files)?;
+    write_install_record(package, &files, install_reason)?;
 
     println!("Installed: {} ({} files)", package.name, files.len());
 

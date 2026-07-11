@@ -352,7 +352,7 @@ pub fn upgrade_installed_packages() -> Result<(), String> {
         );
 
         let feature_flags = active_feature_flags(&[]);
-        install_package(package, &feature_flags)?;
+        install_package(package, &feature_flags, "explicit")?;
         upgraded = true;
     }
 
