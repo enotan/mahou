@@ -461,6 +461,47 @@ fn main() {
                 eprintln!("Error: {}", message);
             }
         },
+        "orphans" => {
+            let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&[]);
+
+            let explicit_names = match explicit_package_names() {
+                Ok(names) => names,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            let required = match required_dependency_names(&packages, &explicit_names, &feature_flags) {
+                Ok(required) => required,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            let records = match load_installed_packages() {
+                Ok(records) => records,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            let mut found = false;
+
+            for record in records {
+                if record.install_reason == "dependency" && !required.contains(&record.name) {
+                    println!("{} {}", record.name, record.version);
+                    found = true;
+                }
+            }
+
+            if !found {
+                println!("No orphan packages");
+            }
+        }
         "files" => {
             if args.len() < 3 {
                 eprintln!("missing package name");
@@ -752,6 +793,7 @@ fn print_help() {
     println!("  mahou owns <path>");
     println!("  mahou conflicts <name>");
     println!("  mahou outdated");
+    println!("  mahou orphans");
     println!("  mahou update-check <name>");
     println!("  mahou update-recipe <name>");
     println!("  mahou repo-path");
@@ -814,6 +856,42 @@ fn print_features(package: &Package, flags: &[String]) {
             );
         }
     }
+}
+
+fn explicit_package_names() -> Result<Vec<String>, String> {
+    let records = load_installed_packages()?;
+
+    let mut names = Vec::new();
+
+    for record in records {
+        if record.install_reason == "explicit" {
+            names.push(record.name);
+        }
+    }
+
+    names.sort();
+    Ok(names)
+}
+
+fn required_dependency_names(
+    packages: &[Package],
+    explicit_names: &[String],
+    flags: &[String],
+) -> Result<HashSet<String>, String> {
+    let explicit_set: HashSet<String> = explicit_names.iter().cloned().collect();
+    let mut required = HashSet::new();
+
+    for name in explicit_names {
+        let order = resolve_package_order(packages, name, flags)?;
+
+        for package_name in order {
+            if !explicit_set.contains(&package_name) {
+                required.insert(package_name);
+            }
+        }
+    }
+
+    Ok(required)
 }
 
 fn resolve_package_order(
