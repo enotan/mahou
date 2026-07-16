@@ -4,6 +4,7 @@ use crate::config::{
 
 use crate::package::{InstallRecord, Package};
 
+use chrono::Utc;
 use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
@@ -12,7 +13,6 @@ use std::os::unix::fs as unix_fs;
 use std::path::Path;
 use std::process::Command;
 use std::time::{Duration, Instant};
-use chrono::Utc;
 
 use crate::features::expand_build_step;
 
@@ -263,7 +263,7 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
         .env("LIBRARY_PATH", library_path)
         .env("LD_LIBRARY_PATH", ld_library_path)
         .env("CMAKE_PREFIX_PATH", cmake_prefix_path);
-    
+
     for (name, value) in profile_env {
         command.env(name, value);
     }
@@ -275,7 +275,7 @@ fn run_build_step(package: &Package, step: &str) -> Result<(), String> {
     if !status.success() {
         return Err(format!("Build step failed for {}: {}", package.name, step));
     }
-    
+
     Ok(())
 }
 
@@ -312,7 +312,7 @@ fn build_profile_env(package: &Package) -> Vec<(&'static str, String)> {
             ),
         ],
         "native" => Vec::new(),
-        other =>{
+        other => {
             eprintln!(
                 "Warning: unknown build profile '{}' for package '{}'; using default profile.",
                 other, package.name
@@ -640,13 +640,17 @@ fn install_regular_file(source: &str, target: &str, metadata: &fs::Metadata) -> 
     Ok(())
 }
 
-fn write_install_record(package: &Package, files: &[String], install_reason: &str) -> Result<(), String> {
+fn write_install_record(
+    package: &Package,
+    files: &[String],
+    install_reason: &str,
+) -> Result<(), String> {
     write_install_record_with_version(
-        &package.name, 
-        &package.version, 
-        &package.build_profile, 
+        &package.name,
+        &package.version,
+        &package.build_profile,
         install_reason,
-        files
+        files,
     )
 }
 
@@ -736,11 +740,12 @@ pub fn adopt_package(package: &Package, as_current: bool, dry_run: bool) -> Resu
     }
 
     write_install_record_with_version(
-        &package.name, 
-        adopt_version, 
-        &package.build_profile, 
+        &package.name,
+        adopt_version,
+        &package.build_profile,
         "adopted",
-        &[])?;
+        &[],
+    )?;
     println!("Adopted: {} {}", package.name, adopt_version);
     Ok(true)
 }
@@ -867,7 +872,8 @@ fn host_file_candidates(name: &str) -> Vec<String> {
     candidates
 }
 
-pub fn install_package(package: &Package, 
+pub fn install_package(
+    package: &Package,
     flags: &[String],
     install_reason: &str,
 ) -> Result<(), String> {
@@ -960,7 +966,10 @@ pub fn check_file_conflicts(package: &Package, files: &[String]) -> Result<(), S
         };
 
         if owner != package.name {
-            return Err(format!("File conflict: {} is already owned by {}", file, owner));
+            return Err(format!(
+                "File conflict: {} is already owned by {}",
+                file, owner
+            ));
         }
     }
 

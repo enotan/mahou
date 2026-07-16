@@ -2,3 +2,4 @@
 /build
 /distfiles
 /stage
+.direnv/

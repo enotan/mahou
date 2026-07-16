@@ -1,10 +1,11 @@
 use std::collections::HashSet;
 use std::env;
+use std::fs;
 
 use mahou::build::*;
 use mahou::config::*;
 use mahou::features::*;
-use mahou::package::Package;
+use mahou::package::{Package, SystemManifest};
 use mahou::repo::*;
 use mahou::update::*;
 
@@ -87,6 +88,130 @@ fn main() {
                 None => {
                     eprintln!("Package not found: {}", name);
                 }
+            }
+        }
+        "plan" => {
+            if args.len() < 3 {
+                eprintln!("Missing manifest path");
+                return;
+            }
+
+            let manifest_path = &args[2];
+
+            let manifest = match load_system_manifest(manifest_path) {
+                Ok(manifest) => manifest,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            if manifest.packages.is_empty() {
+                println!("Manifest has no packages");
+                return;
+            }
+
+            let packages = load_repo_or_exit();
+
+            let installed = match load_installed_packages() {
+                Ok(records) => records,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            let installed_names: HashSet<String> =
+                installed.iter().map(|record| record.name.clone()).collect();
+
+            let mut missing_recipe = false;
+            let mut already_installed = Vec::new();
+            let mut would_install = Vec::new();
+
+            for package_name in &manifest.packages {
+                if find_package(&packages, package_name).is_none() {
+                    would_install.push(format!("{} (missing recipe)", package_name));
+                    missing_recipe = true;
+                    continue;
+                }
+
+                if installed_names.contains(package_name) {
+                    already_installed.push(package_name.clone());
+                } else {
+                    would_install.push(package_name.clone());
+                }
+            }
+
+            let feature_flags = active_feature_flags(&[]);
+            let mut would_install_dependencies = Vec::new();
+            let mut orphan_candidates = Vec::new();
+
+            let required_dependencies = if missing_recipe {
+                HashSet::new()
+            } else {
+                match required_dependency_names(&packages, &manifest.packages, &feature_flags) {
+                    Ok(dependencies) => dependencies,
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                        return;
+                    }
+                }
+            };
+
+            if !missing_recipe {
+                for dependency_name in &required_dependencies {
+                    if !installed_names.contains(dependency_name) {
+                        would_install_dependencies.push(dependency_name.clone());
+                    }
+                }
+
+                would_install_dependencies.sort();
+
+                for record in &installed {
+                    let explicitly_declared = manifest.packages.contains(&record.name);
+                    let still_required = required_dependencies.contains(&record.name);
+
+                    if record.install_reason == "dependency"
+                        && !explicitly_declared
+                        && !still_required
+                    {
+                        orphan_candidates.push(record.name.clone());
+                    }
+                }
+
+                orphan_candidates.sort();
+            }
+
+            if !already_installed.is_empty() {
+                println!("Already installed:");
+                for package_name in already_installed {
+                    println!("  {}", package_name);
+                }
+            }
+
+            if !would_install.is_empty() {
+                println!("Would install:");
+                for package_name in would_install {
+                    println!("  {}", package_name);
+                }
+            }
+
+            if !would_install_dependencies.is_empty() {
+                println!("Would install dependencies:");
+                for package_name in would_install_dependencies {
+                    println!("  {}", package_name);
+                }
+            }
+
+            if !orphan_candidates.is_empty() {
+                println!("Orphan candidates:");
+                for package_name in orphan_candidates {
+                    println!("  {}", package_name);
+                }
+            }
+
+            if missing_recipe {
+                eprintln!("Error: manifest references packages that are not in the recipe repo");
             }
         }
         "deps" => {
@@ -447,7 +572,10 @@ fn main() {
                     };
 
                     if record.installed_at.is_empty() {
-                        println!("{} {} [{}] ({})", record.name, record.version, profile, reason);
+                        println!(
+                            "{} {} [{}] ({})",
+                            record.name, record.version, profile, reason
+                        );
                     } else {
                         println!(
                             "{} {} [{}] ({}) {}",
@@ -473,13 +601,14 @@ fn main() {
                 }
             };
 
-            let required = match required_dependency_names(&packages, &explicit_names, &feature_flags) {
-                Ok(required) => required,
-                Err(message) => {
-                    eprintln!("Error: {}", message);
-                    return;
-                }
-            };
+            let required =
+                match required_dependency_names(&packages, &explicit_names, &feature_flags) {
+                    Ok(required) => required,
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                        return;
+                    }
+                };
 
             let records = match load_installed_packages() {
                 Ok(records) => records,
@@ -770,6 +899,14 @@ fn main() {
     }
 }
 
+fn load_system_manifest(path: &str) -> Result<SystemManifest, String> {
+    let contents = fs::read_to_string(path)
+        .map_err(|error| format!("Failed to read system manifest {}: {}", path, error))?;
+
+    toml::from_str(&contents)
+        .map_err(|error| format!("Failed to parse system manifest {}: {}", path, error))
+}
+
 fn print_help() {
     //self explanatory right
 
@@ -780,6 +917,7 @@ fn print_help() {
     println!("  mahou info <name>");
     println!("  mahou build <name>");
     println!("  mahou install <name>");
+    println!("  mahou plan <manifest.toml>");
     println!("  mahou uninstall <name> [--dry-run]");
     println!("  mahou adopt <name|--all> [--as-current] [--dry-run]");
     println!("  mahou deps <name>");

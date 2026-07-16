@@ -94,3 +94,9 @@ pub struct RecipeUpdate {
     pub sha256: String,
     pub source_dir: String,
 }
+
+#[derive(Debug, Deserialize)]
+pub struct SystemManifest {
+    #[serde(default)]
+    pub packages: Vec<String>,
+}
