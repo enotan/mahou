@@ -508,7 +508,10 @@ fn sanitize_build_component(value: &str) -> String {
 }
 
 fn is_package_owned_path(path: &str) -> bool {
-    !matches!(path, "./mahou-built" | "/usr/share/info/dir")
+    !matches!(
+        path,
+        "./mahou-built" | "/.mahou-built" | "/usr/share/info/dir"
+    )
 }
 
 pub fn collect_files(root: &str) -> Result<Vec<String>, String> {
