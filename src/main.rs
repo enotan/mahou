@@ -214,6 +214,103 @@ fn main() {
                 eprintln!("Error: manifest references packages that are not in the recipe repo");
             }
         }
+        "apply" => {
+            if args.len() < 3 {
+                eprintln!("Missing manifest path");
+                return;
+            }
+
+            let manifest_path = &args[2];
+
+            let manifest = match load_system_manifest(manifest_path) {
+                Ok(manifest) => manifest,
+                Err(message) => {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            };
+
+            if manifest.packages.is_empty() {
+                println!("Manifest has no packages");
+                return;
+            }
+
+            let packages = load_repo_or_exit();
+            let feature_flags = active_feature_flags(&args[3..]);
+
+            let mut visited = HashSet::new();
+            let mut install_order = Vec::new();
+
+            for package_name in &manifest.packages {
+                if let Err(message) = resolve_package(
+                    &packages,
+                    package_name,
+                    &feature_flags,
+                    &mut visited,
+                    &mut install_order,
+                ) {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            }
+
+            println!(
+                "Manifest is valid: {} explicit packages, {} packages in transaction",
+                manifest.packages.len(),
+                install_order.len()
+            );
+
+            println!("Transaction order:");
+            for package_name in &install_order {
+                println!("  {}", package_name);
+            }
+
+            let explicit_names: HashSet<String> = manifest.packages.iter().cloned().collect();
+
+            for package_name in install_order {
+                let Some(package) = find_package(&packages, &package_name) else {
+                    eprintln!("Error: Package vanished from repo: {}", package_name);
+                    return;
+                };
+
+                let install_reason = if explicit_names.contains(&package_name) {
+                    "explicit"
+                } else {
+                    match load_install_record(&package_name) {
+                        Ok(Some(record)) if record.install_reason == "explicit" => "explicit",
+                        Ok(_) => "dependency",
+                        Err(message) => {
+                            eprintln!("Error: {}", message);
+                            return;
+                        }
+                    }
+                };
+
+                match is_installed_same_version(package) {
+                    Ok(true) => {
+                        if explicit_names.contains(&package_name) {
+                            if let Err(message) = set_install_reason(&package_name, "explicit") {
+                                eprintln!("Error: {}", message);
+                                return;
+                            }
+                        }
+
+                        println!("Already installed: {} {}", package.name, package.version);
+                        continue;
+                    }
+                    Ok(false) => {}
+                    Err(message) => {
+                        eprintln!("Error: {}", message);
+                        return;
+                    }
+                }
+
+                if let Err(message) = install_package(package, &feature_flags, install_reason) {
+                    eprintln!("Error: {}", message);
+                    return;
+                }
+            }
+        }
         "deps" => {
             if args.len() < 3 {
                 eprintln!("Missing package name");
@@ -918,6 +1015,7 @@ fn print_help() {
     println!("  mahou build <name>");
     println!("  mahou install <name>");
     println!("  mahou plan <manifest.toml>");
+    println!("  mahou apply <manifest.toml>");
     println!("  mahou uninstall <name> [--dry-run]");
     println!("  mahou adopt <name|--all> [--as-current] [--dry-run]");
     println!("  mahou deps <name>");

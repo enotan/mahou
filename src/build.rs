@@ -917,6 +917,28 @@ pub fn load_install_record(name: &str) -> Result<Option<InstallRecord>, String> 
     Ok(Some(record))
 }
 
+pub fn set_install_reason(name: &str, install_reason: &str) -> Result<(), String> {
+    let Some(mut record) = load_install_record(name)? else {
+        return Err(format!("Package is not installed: {}", name));
+    };
+
+    if record.install_reason == install_reason {
+        return Ok(());
+    }
+
+    record.install_reason = install_reason.to_string();
+
+    let contents = toml::to_string_pretty(&record)
+        .map_err(|error| format!("Failed to serialize install record for {}: {}", name, error))?;
+
+    let path = install_record_path_for_name(name);
+
+    fs::write(&path, contents)
+        .map_err(|error| format!("Failed to write install record {}: {}", path, error))?;
+
+    Ok(())
+}
+
 pub fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
     let mut records = Vec::new();
 

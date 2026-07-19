@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 #[derive(Debug, Deserialize)]
@@ -59,7 +59,7 @@ pub struct UpdateInfo {
     pub source_dir_template: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Serialize, Debug, Deserialize)]
 pub struct InstallRecord {
     pub name: String,
     pub version: String,
