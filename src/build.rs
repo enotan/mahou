@@ -542,6 +542,10 @@ fn collect_files_recursive(
                 .to_string_lossy()
                 .to_string();
 
+            if relative == ".mahou-built" {
+                continue;
+            }
+
             files.push(format!("/{}", relative));
         }
     }
