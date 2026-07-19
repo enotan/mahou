@@ -507,6 +507,10 @@ fn sanitize_build_component(value: &str) -> String {
         .collect()
 }
 
+fn is_package_owned_path(path: &str) -> bool {
+    !matches!(path, "./mahou-built" | "/usr/share/info/dir")
+}
+
 pub fn collect_files(root: &str) -> Result<Vec<String>, String> {
     let mut files = Vec::new();
 
@@ -542,11 +546,13 @@ fn collect_files_recursive(
                 .to_string_lossy()
                 .to_string();
 
-            if relative == ".mahou-built" {
+            let installed_path = format!("/{}", relative);
+
+            if !is_package_owned_path(&installed_path) {
                 continue;
             }
 
-            files.push(format!("/{}", relative));
+            files.push(installed_path);
         }
     }
 
@@ -976,6 +982,9 @@ pub fn load_installed_packages() -> Result<Vec<InstallRecord>, String> {
 }
 
 pub fn find_file_owner(path: &str) -> Result<Option<String>, String> {
+    if !is_package_owned_path(path) {
+        return Ok(None);
+    }
     for record in load_installed_packages()? {
         if record.files.iter().any(|file| file == path) {
             return Ok(Some(record.name));
@@ -1010,6 +1019,9 @@ pub fn uninstall_package(name: &str, dry_run: bool) -> Result<(), String> {
     let mut removed = 0;
 
     for file in record.files.iter().rev() {
+        if !is_package_owned_path(file) {
+            continue;
+        }
         match fs::symlink_metadata(file) {
             Ok(metadata) => {
                 if metadata.is_file() || metadata.file_type().is_symlink() {
